@@ -1,0 +1,28 @@
+
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+
+html {
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+}
+
+a {
+
+ text-decoration: none;
+
+}
+
+.offcanvas {
+
+    background: rgba(199, 216, 249, 0.275);
+    
+
+}
