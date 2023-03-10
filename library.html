@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/tablet.css">
-    <link rel="stylesheet" href="css/activityAdd.css">
+    <link rel="stylesheet" href="css/librarry.css">
+
+    <script type="module" src="js/library.js"></script>
 
 </head>
 <body>
@@ -23,7 +25,7 @@
 
         <div class="offcanvas-header d-flex justify-content-start" style="margin-top: 2%;">
 
-            <div> <img src="assets/IMG_0564.jpeg " alt="profilResmi" width="50px" height="50px" style="border-radius: 50px;">  </div>
+            <div> <img src="assets/274348852_320609883437173_4953649348556891409_n.jpg" alt="profilResmi" width="50px" height="50px" style="border-radius: 50px;">  </div>
             <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
 
 
@@ -42,6 +44,7 @@
                 <a href="photoGalery.html" class="list-group-item list-group-item-action" >Foto Galeri</a>
                 <a href="blog.html" class="list-group-item list-group-item-action">Blog</a>
                 <a href="library.html" class="list-group-item list-group-item-action active"aria-current="true">Kütüphane</a>
+                <a href="costume.html" class="list-group-item list-group-item-action">Kostüm</a>
               </div>
 
               <div class="list-group">
@@ -60,7 +63,37 @@
         </div>
 
 
-        <script src="js/main.js"></script>
+        <div class="container" id="mainContainer" style="margin-left: 22%; margin-top: 1%;">
+
+          <div class="containerTitle d-flex justify-content-between border-bottom border-primary " >
+            
+            <div class="h3 text-primary m-auto pb-0 flex-fill">Kütüphane</div>
+    
+            <button class="btn btn-primary m-3" id="bookAddButton">Kitap Ekle</button>
+    
+          </div>
+        
+         </div>
+    
+      
+        <div class="container border-start height" id="addEditContainer" style=" margin-top: 1%; display: none; ">
+    
+       
+          <div class="containerTitle d-flex justify-content-between  border-bottom border-primary bg-white">
+  
+            <div class="h3 text-primary m-3 pb-0 flex-fill">Kitap Ekle</div>
+    
+            <button class="btn btn-danger m-3 me-0" id="activityaddCancelButton">Vazgeç</button>
+  
+            <button class="btn btn-success m-3" id="activityaddSuccessButton">Onayla</button>
+    
+         </div>
+         
+        </div>
+    
+      </div>
+
+      <script src="js/main.js"></script>
 
 
     
