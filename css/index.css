@@ -1,12 +1,58 @@
+
+* {
+
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+
+}
+
 body {
 
+display: flex;    
 background-color: #eff8ff;
+font-family: Verdana, Geneva, Tahoma, sans-serif;
 
 }
 
 #EBBKültürSantLogo {
 
-height: 150px;
+height: 100px;
+margin: 25px;
 
+
+}
+
+.menu-bar {
+
+    
+    height: fit-content;
+   
+    text-align: center;
+
+
+}
+
+.menu-bar ul {
+
+display: inline-flex;
+list-style: none;
+
+}
+
+.menu-bar ul li {
+
+    width: 150px;
+    margin: 15px;
+    padding: 15px;
+
+
+}
+
+.menu-bar ul li a {
+
+    text-decoration: none;
+    color: rgb(3, 30, 53);
 
 }
