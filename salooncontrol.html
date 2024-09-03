@@ -38,7 +38,7 @@
       td {
         border: 1px solid black;
         padding: 10px;
-        border-radius:10px;
+        border-radius: 10px;
         text-align: center;
         width: 150px;
         height: 160px;
@@ -122,7 +122,7 @@
     <div
       class="container"
       id="programTableContainer"
-      style="margin-left: 22%; margin-top: 1%;"
+      style="margin-left: 22%; margin-top: 1%"
     >
       <div
         class="containerTitle d-flex justify-content-between border-bottom border-primary"
@@ -141,8 +141,12 @@
           id="saloonFormSelect"
           style="width: 40%"
         >
-          <option value="1">İbrahim Erkal Kültür ve Sanat Merkezi</option>
-          <option value="2">Necip Fazıl Kültür ve Sanat Merkezi</option>
+          <option value="1">İbrahim Erkal Dadaş KSM (Büyük Salon)</option>
+          <option value="2">İbrahim Erkal Dadaş KSM (Küçük Salon)</option>
+          <option value="3">Necip Fazıl KSM (Büyük Salon)</option>
+          <option value="4">Necip Fazıl KSM (Seminer Salanu 1)</option>
+          <option value="5">Necip Fazıl KSM (Seminer Salanu 2)</option>
+          <option value="6">Necip Fazıl KSM (Fuaye)</option>
         </select>
 
         <select
@@ -264,20 +268,38 @@
       <div
         class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
       >
-        <div id="addEditTitle" class="h3 text-primary m-3 pb-0 flex-fill">Program Ekle</div>
+        <div id="addEditTitle" class="h3 text-primary m-3 pb-0 flex-fill">
+          Program Ekle
+        </div>
       </div>
 
       <div class="container d-flex justify-content-between mt-3">
-        <button id="morningButton" class="btn btn-light" style="flex: 1; margin: 5px">
+        <button
+          id="morningButton"
+          class="btn btn-light"
+          style="flex: 1; margin: 5px"
+        >
           09 - 12
         </button>
-        <button id="afternoonButton" class="btn btn-light" style="flex: 1; margin: 5px">
+        <button
+          id="afternoonButton"
+          class="btn btn-light"
+          style="flex: 1; margin: 5px"
+        >
           13 - 17
         </button>
-        <button id="nightButton" class="btn btn-light" style="flex: 1; margin: 5px">
+        <button
+          id="nightButton"
+          class="btn btn-light"
+          style="flex: 1; margin: 5px"
+        >
           19 - 23
         </button>
-        <button id="allDayButton" class="btn btn-light" style="flex: 1; margin: 5px">
+        <button
+          id="allDayButton"
+          class="btn btn-light"
+          style="flex: 1; margin: 5px"
+        >
           Tüm Gün
         </button>
 
@@ -289,11 +311,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center; 
-            
+            text-align: center;
           "
         >
-          <h5 id="priceInfoText">00.00 TL</h3>
+          <h3 id="priceInfoText">00.00 TL</h3>
         </div>
       </div>
 
@@ -315,7 +336,7 @@
             class="form-check-input"
             type="checkbox"
             value=""
-            id="managerAprovalCheck"
+            id="managerAprovalRequestCheck"
           />
           <label class="form-check-label" for="flexCheckIndeterminate">
             Yönetici Onayı
@@ -411,11 +432,19 @@
 
         <div class="justify-content-between d-flex">
           <button
-            class="btn btn-danger m-3 me-0"
+            class="btn btn-danger m-3"
             id="programAddEditCancelButton"
             style="flex: 1"
           >
             Vazgeç
+          </button>
+
+          <button
+            class="btn btn-danger m-3"
+            id="programCancelButton"
+            style="flex: 1; display: none"
+          >
+            İptal Et
           </button>
 
           <button
