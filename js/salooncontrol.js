@@ -40,12 +40,45 @@ const auth = getAuth(firebaseapp);
 const storage = getStorage(firebaseapp);
 const db = getFirestore(firebaseapp);
 
-onAuthStateChanged(auth, (user) => {
+var userAuthorityArray = [];
+var paswordEditStatus;
+
+var currentUser;
+
+onAuthStateChanged(auth, async (user) => {
   if (user != null) {
+    currentUser = auth.currentUser;
+    const getData = query(
+      collection(db, "Users"),
+      where("userEmail", "==", user.email)
+    );
+    const querySnapshot = await getDocs(getData);
+
+    querySnapshot.forEach((doc) => {
+      const daysDocument = doc.id;
+
+      userAuthorityArray = doc.data().userAuthority;
+      console.log(userAuthorityArray);
+    });
+
+    if (userAuthorityArray.includes("22")) {
+      morningButton.disabled = true;
+      afternoonButton.disabled = true;
+      nightButton.disabled = true;
+      allDayButton.disabled = true;
+
+      programAddEditSuccessButton.disabled = true;
+      programCancelButton.disabled = true;
+      programAddEditSuccessButton.style.display = "none";
+
+      programAddEditCancelButton.innerHTML = "Geri Dön";
+    }
   } else {
     window.location.href = "adminpanellogin.html";
   }
 });
+
+// Off Canvas
 
 const programTableContainer = document.getElementById("programTableContainer");
 const addEditProgramContainer = document.getElementById(
@@ -102,7 +135,7 @@ var year = today.getFullYear();
 var month = today.getMonth();
 var dayToday = today.getDate();
 
-var selectDate = new Date();
+var programDate = new Date();
 
 var extraKey = "";
 
@@ -128,6 +161,7 @@ var priceArrayList = [];
 
 var updateDocId = "";
 var venueDocId = "";
+var publicDayId = "";
 
 function getSaloonPrice() {
   const docRefsPrice = doc(db, "SaloonPrice", "FYXuqyPhmslWaY2ASu1r");
@@ -357,9 +391,11 @@ $("body").on("click", ".morningButton", async function () {
   var firstDayOfMonthActual = $(this).data("third-key");
   venueDocId = $(this).data("daysdocidKey");
 
+  publicDayId = `day${extraKey}`;
+
   console.log(venueDocId + "knsadms");
 
-  selectDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
+  programDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
 
   getSaloonPrice();
 
@@ -367,7 +403,8 @@ $("body").on("click", ".morningButton", async function () {
 
   const getData = query(
     collection(db, "ProgramList"),
-    where("selectDate", "==", selectDate)
+    where("programDate", "==", programDate),
+    where("programStatus", "==", true)
   );
   const querySnapshot = await getDocs(getData);
 
@@ -382,39 +419,61 @@ $("body").on("click", ".morningButton", async function () {
   });
 
   if (key1 == "") {
-    programTableContainer.style.display = "none";
-    addEditProgramContainer.style.display = "";
-    addEditButtonStatus = "Add";
-    if (saloonSessionArrayList.includes("1")) {
-      morningButton.classList.remove("btn-light");
-      morningButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      morningButton.disabled = true;
-      allDayButton.disabled = true;
-    }
+    reservationStatusSelect.value = "0";
+    paymentInfoSelect.value = "0";
+    managerAprovalCheck.checked = false;
+    programCategorySelect.value = "0";
+    programCorporationText.value = "";
+    programNameText.value = "";
+    programDescriptionText.value = "";
+    programNameSurNameText.value = "";
+    programTelephonenumberText.value = "";
+    programEmailText.value = "";
+    programNotesText.value = "";
+    programTecnicalNotesText.value = "";
+    if (userAuthorityArray.includes("22")) {
+      alert("Program oluşturma yetkiniz yok!");
+    } else {
+      if (programDate < new Date()) {
+        alert("Geçmiş bir tarihe program oluşturamazsınız!!");
+      } else {
+        programTableContainer.style.display = "none";
+        addEditProgramContainer.style.display = "";
+        addEditButtonStatus = "Add";
 
-    if (saloonSessionArrayList.includes("2")) {
-      afternoonButton.classList.remove("btn-light");
-      afternoonButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      afternoonButton.disabled = true;
-      allDayButton.disabled = true;
-    }
+        if (saloonSessionArrayList.includes("1")) {
+          morningButton.classList.remove("btn-light");
+          morningButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          morningButton.disabled = true;
+          allDayButton.disabled = true;
+        }
 
-    if (saloonSessionArrayList.includes("3")) {
-      nightButton.classList.remove("btn-light");
-      nightButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      nightButton.disabled = true;
-      allDayButton.disabled = true;
+        if (saloonSessionArrayList.includes("2")) {
+          afternoonButton.classList.remove("btn-light");
+          afternoonButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          afternoonButton.disabled = true;
+          allDayButton.disabled = true;
+        }
+
+        if (saloonSessionArrayList.includes("3")) {
+          nightButton.classList.remove("btn-light");
+          nightButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          nightButton.disabled = true;
+          allDayButton.disabled = true;
+        }
+      }
     }
   } else {
     programTableContainer.style.display = "none";
     addEditProgramContainer.style.display = "";
     addEditButtonStatus = "Edit";
+    programAddEditSuccessButton.innerHTML = "Güncelle";
     programCancelButton.style.display = "";
 
     updateDocId = key1;
@@ -464,7 +523,7 @@ $("body").on("click", ".morningButton", async function () {
           const contactEmail = docSnap.data().contactEmail;
           const notes = docSnap.data().notes;
           const tecnicalNotes = docSnap.data().tecnicalNotes;
-          const programDate = docSnap.data().selectDate;
+          const programDate = docSnap.data().programDate;
           const saloon = docSnap.data().saloon;
           const totalPrice = docSnap.data().price;
 
@@ -501,7 +560,9 @@ $("body").on("click", ".afternonButton", async function () {
   var firstDayOfMonthActual = $(this).data("third-key");
   venueDocId = $(this).data("daysdocidKey");
 
-  selectDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
+  publicDayId = `day${extraKey}`;
+
+  programDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
 
   getSaloonPrice();
 
@@ -509,7 +570,8 @@ $("body").on("click", ".afternonButton", async function () {
 
   const getData = query(
     collection(db, "ProgramList"),
-    where("selectDate", "==", selectDate)
+    where("programDate", "==", programDate),
+    where("programStatus", "==", true)
   );
   const querySnapshot = await getDocs(getData);
 
@@ -524,39 +586,60 @@ $("body").on("click", ".afternonButton", async function () {
   });
 
   if (key2 == "") {
-    programTableContainer.style.display = "none";
-    addEditProgramContainer.style.display = "";
-    addEditButtonStatus = "Add";
-    if (saloonSessionArrayList.includes("1")) {
-      morningButton.classList.remove("btn-light");
-      morningButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      morningButton.disabled = true;
-      allDayButton.disabled = true;
-    }
+    reservationStatusSelect.value = "0";
+    paymentInfoSelect.value = "0";
+    managerAprovalCheck.checked = false;
+    programCategorySelect.value = "0";
+    programCorporationText.value = "";
+    programNameText.value = "";
+    programDescriptionText.value = "";
+    programNameSurNameText.value = "";
+    programTelephonenumberText.value = "";
+    programEmailText.value = "";
+    programNotesText.value = "";
+    programTecnicalNotesText.value = "";
+    if (userAuthorityArray.includes("22")) {
+      alert("Program oluşturma yetkiniz yok!");
+    } else {
+      if (programDate < new Date()) {
+        alert("Geçmiş bir tarihe program oluşturamazsınız!!");
+      } else {
+        programTableContainer.style.display = "none";
+        addEditProgramContainer.style.display = "";
+        addEditButtonStatus = "Add";
+        if (saloonSessionArrayList.includes("1")) {
+          morningButton.classList.remove("btn-light");
+          morningButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          morningButton.disabled = true;
+          allDayButton.disabled = true;
+        }
 
-    if (saloonSessionArrayList.includes("2")) {
-      afternoonButton.classList.remove("btn-light");
-      afternoonButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      afternoonButton.disabled = true;
-      allDayButton.disabled = true;
-    }
+        if (saloonSessionArrayList.includes("2")) {
+          afternoonButton.classList.remove("btn-light");
+          afternoonButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          afternoonButton.disabled = true;
+          allDayButton.disabled = true;
+        }
 
-    if (saloonSessionArrayList.includes("3")) {
-      nightButton.classList.remove("btn-light");
-      nightButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      nightButton.disabled = true;
-      allDayButton.disabled = true;
+        if (saloonSessionArrayList.includes("3")) {
+          nightButton.classList.remove("btn-light");
+          nightButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          nightButton.disabled = true;
+          allDayButton.disabled = true;
+        }
+      }
     }
   } else {
     programTableContainer.style.display = "none";
     addEditProgramContainer.style.display = "";
     addEditButtonStatus = "Edit";
+    programAddEditSuccessButton.innerHTML = "Güncelle";
     programCancelButton.style.display = "";
 
     updateDocId = key2;
@@ -606,7 +689,7 @@ $("body").on("click", ".afternonButton", async function () {
           const contactEmail = docSnap.data().contactEmail;
           const notes = docSnap.data().notes;
           const tecnicalNotes = docSnap.data().tecnicalNotes;
-          const programDate = docSnap.data().selectDate;
+          const programDate = docSnap.data().programDate;
           const saloon = docSnap.data().saloon;
           const totalPrice = docSnap.data().price;
 
@@ -643,7 +726,9 @@ $("body").on("click", ".nightButton", async function () {
   var firstDayOfMonthActual = $(this).data("third-key");
   venueDocId = $(this).data("daysdocidKey");
 
-  selectDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
+  publicDayId = `day${extraKey}`;
+
+  programDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
 
   getSaloonPrice();
 
@@ -651,7 +736,8 @@ $("body").on("click", ".nightButton", async function () {
 
   const getData = query(
     collection(db, "ProgramList"),
-    where("selectDate", "==", selectDate)
+    where("programDate", "==", programDate),
+    where("programStatus", "==", true)
   );
   const querySnapshot = await getDocs(getData);
 
@@ -666,39 +752,61 @@ $("body").on("click", ".nightButton", async function () {
   });
 
   if (key3 == "") {
-    programTableContainer.style.display = "none";
-    addEditProgramContainer.style.display = "";
-    addEditButtonStatus = "Add";
-    if (saloonSessionArrayList.includes("1")) {
-      morningButton.classList.remove("btn-light");
-      morningButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      morningButton.disabled = true;
-      allDayButton.disabled = true;
-    }
+    reservationStatusSelect.value = "0";
+    paymentInfoSelect.value = "0";
+    managerAprovalCheck.checked = false;
+    programCategorySelect.value = "0";
+    programCorporationText.value = "";
+    programNameText.value = "";
+    programDescriptionText.value = "";
+    programNameSurNameText.value = "";
+    programTelephonenumberText.value = "";
+    programEmailText.value = "";
+    programNotesText.value = "";
+    programTecnicalNotesText.value = "";
 
-    if (saloonSessionArrayList.includes("2")) {
-      afternoonButton.classList.remove("btn-light");
-      afternoonButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      afternoonButton.disabled = true;
-      allDayButton.disabled = true;
-    }
+    if (userAuthorityArray.includes("22")) {
+      alert("Program oluşturma yetkiniz yok!");
+    } else {
+      if (programDate < new Date()) {
+        alert("Geçmiş bir tarihe program oluşturamazsınız!!");
+      } else {
+        programTableContainer.style.display = "none";
+        addEditProgramContainer.style.display = "";
+        addEditButtonStatus = "Add";
+        if (saloonSessionArrayList.includes("1")) {
+          morningButton.classList.remove("btn-light");
+          morningButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          morningButton.disabled = true;
+          allDayButton.disabled = true;
+        }
 
-    if (saloonSessionArrayList.includes("3")) {
-      nightButton.classList.remove("btn-light");
-      nightButton.classList.add("btn-danger");
-      allDayButton.classList.remove("btn-light");
-      allDayButton.classList.add("btn-danger");
-      nightButton.disabled = true;
-      allDayButton.disabled = true;
+        if (saloonSessionArrayList.includes("2")) {
+          afternoonButton.classList.remove("btn-light");
+          afternoonButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          afternoonButton.disabled = true;
+          allDayButton.disabled = true;
+        }
+
+        if (saloonSessionArrayList.includes("3")) {
+          nightButton.classList.remove("btn-light");
+          nightButton.classList.add("btn-danger");
+          allDayButton.classList.remove("btn-light");
+          allDayButton.classList.add("btn-danger");
+          nightButton.disabled = true;
+          allDayButton.disabled = true;
+        }
+      }
     }
   } else {
     programTableContainer.style.display = "none";
     addEditProgramContainer.style.display = "";
     addEditButtonStatus = "Edit";
+    programAddEditSuccessButton.innerHTML = "Güncelle";
     programCancelButton.style.display = "";
 
     updateDocId = key3;
@@ -748,7 +856,7 @@ $("body").on("click", ".nightButton", async function () {
           const contactEmail = docSnap.data().contactEmail;
           const notes = docSnap.data().notes;
           const tecnicalNotes = docSnap.data().tecnicalNotes;
-          const programDate = docSnap.data().selectDate;
+          const programDate = docSnap.data().programDate;
           const saloon = docSnap.data().saloon;
           const totalPrice = docSnap.data().price;
 
@@ -938,6 +1046,20 @@ $("#goButton").on("click", async function () {
           namestatus3 = activity3Name;
         }
 
+        console.log(
+          $("#monthFormSelect").val() +
+            $("#yearFormSelect").val() +
+            new Date().getMonth() +
+            new Date().getFullYear()
+        );
+        if (
+          dayNum == dayToday &&
+          parseInt($("#monthFormSelect").val()) == new Date().getMonth() &&
+          parseInt($("#yearFormSelect").val()) == new Date().getFullYear()
+        ) {
+          $(`#${dayId}`).css("background-color", "#A2CDF2");
+        }
+
         let proCode = `
   
           <div class="justify-content-between"> 
@@ -967,139 +1089,272 @@ $("#goButton").on("click", async function () {
 });
 
 $("#programCancelButton").on("click", async function () {
-  const docRef = doc(db, "ProgramList", updateDocId);
+  try {
+    const docRef = doc(db, "ProgramList", updateDocId);
 
-  await deleteDoc(docRef)
-    .then(() => {
-      console.log("Belge başarıyla silindi!");
-    })
-    .catch((error) => {
-      console.error("Belge silinirken hata oluştu: ", error);
+    updateDoc(docRef, {
+      programStatus: false,
+      cancelUser: currentUser.email,
+      cancelDAte: new Date(),
     });
 
-  console.log(programSessionArrayList + " " + venueDocId);
-  if (programSessionArrayList.includes("1")) {
-    const docRefUpdate = doc(db, "VenueTracking", venueDocId);
+    const updatePromises = [];
 
-    updateDoc(docRefUpdate, {
-      activity1DocId: "0",
-      activity1Name: "",
-    })
-      .then(() => {
-        console.log("Belge başarıyla güncellendi!");
-      })
-      .catch((error) => {
-        console.error("Belge güncellenirken hata oluştu: ", error);
-      });
-  }
+    if (programSessionArrayList.includes("1")) {
+      const docRefUpdate = doc(db, "VenueTracking", venueDocId);
 
-  if (programSessionArrayList.includes("2")) {
-    const docRefUpdate = doc(db, "VenueTracking", venueDocId);
+      updatePromises.push(
+        updateDoc(docRefUpdate, {
+          activity1DocId: "0",
+          activity1Name: "",
+        })
+      );
+    }
 
-    updateDoc(docRefUpdate, {
-      activity2DocId: "0",
-      activity2Name: "",
-    })
-      .then(() => {
-        console.log("Belge başarıyla güncellendi!");
-      })
-      .catch((error) => {
-        console.error("Belge güncellenirken hata oluştu: ", error);
-      });
-  }
+    if (programSessionArrayList.includes("2")) {
+      const docRefUpdate = doc(db, "VenueTracking", venueDocId);
 
-  if (programSessionArrayList.includes("3")) {
-    const docRefUpdate = doc(db, "VenueTracking", venueDocId);
+      updatePromises.push(
+        updateDoc(docRefUpdate, {
+          activity2DocId: "0",
+          activity2Name: "",
+        })
+      );
+    }
 
-    updateDoc(docRefUpdate, {
-      activity3DocId: "0",
-      activity3Name: "",
-    })
-      .then(() => {
-        console.log("Belge başarıyla güncellendi!");
-      })
-      .catch((error) => {
-        console.error("Belge güncellenirken hata oluştu: ", error);
-      });
-  }
+    if (programSessionArrayList.includes("3")) {
+      const docRefUpdate = doc(db, "VenueTracking", venueDocId);
+
+      updatePromises.push(
+        updateDoc(docRefUpdate, {
+          activity3DocId: "0",
+          activity3Name: "",
+        })
+      );
+    }
+
+    await Promise.all(updatePromises);
+
+    alert("Program başarılı bir şekilde iptal edildi.");
+    window.location.reload();
+  } catch (error) {}
 });
 
 $("#programAddEditSuccessButton").on("click", async function () {
+  var dayAddAddDocument = "";
+
+  const getData = query(
+    collection(db, "VenueTracking"),
+    where("year", "==", year),
+    where("month", "==", month),
+    where("day", "==", publicDayId),
+    where("saloon", "==", saloonCode)
+  );
+  const querySnapshot = await getDocs(getData);
+
+  querySnapshot.forEach((doc) => {
+    dayAddAddDocument = doc.id;
+  });
+
   var manageAprovalRequest = $("#managerAprovalRequestCheck").is(":checked");
 
-  console.log(addEditButtonStatus);
-
   if (addEditButtonStatus == "Add") {
-    var docIdAdd = "";
-    try {
-      const docRefProgram = await addDoc(collection(db, "ProgramList"), {
-        programSessionArrayList: programSessionArrayList,
-        reservationStatus: reservationStatusSelect.value,
-        paymentInfo: paymentInfoSelect.value,
-        managerAprovalRequest: manageAprovalRequest,
-        category: programCategorySelect.value,
-        corporation: programCorporationText.value,
-        name: programNameText.value,
-        description: programDescriptionText.value,
-        contactNameSurname: programNameSurNameText.value,
-        contactTelephone: programTelephonenumberText.value,
-        contactEmail: programEmailText.value,
-        notes: programNotesText.value,
-        tecnicalNotes: programTecnicalNotesText.value,
-        selectDate: selectDate,
-        saloon: saloonCode,
-        price: totalPrice,
-      });
+    if (programSessionArrayList.length == 0) {
+      alert("Lütfen program için seans seçin!!");
+    } else {
+      if (
+        reservationStatusSelect.value == "0" ||
+        paymentInfoSelect.value == "0" ||
+        programCategorySelect.value == "" ||
+        programCorporationText.value == "" ||
+        programNameText.value == "" ||
+        programNameSurNameText.value == "" ||
+        programTelephonenumberText.value == ""
+      ) {
+        alert("Lütfen tüm alanları doldurun.");
 
-      docIdAdd = docRefProgram.id;
+        if (reservationStatusSelect.value == "0") {
+          reservationStatusSelect.classList.add("is-invalid");
+        } else {
+          reservationStatusSelect.classList.remove("is-invalid");
+        }
 
-      var activityDocId1 = "";
-      var activityDocId2 = "";
-      var activityDocId3 = "";
+        if (paymentInfoSelect.value == "0") {
+          paymentInfoSelect.classList.add("is-invalid");
+        } else {
+          paymentInfoSelect.classList.remove("is-invalid");
+        }
 
-      if (programSessionArrayList.includes("1")) {
-        activityDocId1 = docIdAdd;
-        activity1Name = programCorporationText.value;
+        if (programCategorySelect.value == "0") {
+          programCategorySelect.classList.add("is-invalid");
+        } else {
+          programCategorySelect.classList.remove("is-invalid");
+        }
+
+        if (programCorporationText.value == "") {
+          programCorporationText.classList.add("is-invalid");
+        } else {
+          programCorporationText.classList.remove("is-invalid");
+        }
+
+        if (programNameText.value == "") {
+          programNameText.classList.add("is-invalid");
+        } else {
+          programNameText.classList.remove("is-invalid");
+        }
+
+        if (programNameSurNameText.value == "") {
+          programNameSurNameText.classList.add("is-invalid");
+        } else {
+          programNameSurNameText.classList.remove("is-invalid");
+        }
+
+        if (programTelephonenumberText.value == "") {
+          programTelephonenumberText.classList.add("is-invalid");
+        } else {
+          programTelephonenumberText.classList.remove("is-invalid");
+        }
       } else {
-        activityDocId1 = "0";
-        activity1Name = "";
+        var docIdAdd = "";
+        try {
+          const docRefProgram = await addDoc(collection(db, "ProgramList"), {
+            programSessionArrayList: programSessionArrayList,
+            reservationStatus: reservationStatusSelect.value,
+            paymentInfo: paymentInfoSelect.value,
+            managerAprovalRequest: manageAprovalRequest,
+            category: programCategorySelect.value,
+            corporation: programCorporationText.value,
+            name: programNameText.value,
+            description: programDescriptionText.value,
+            contactNameSurname: programNameSurNameText.value,
+            contactTelephone: programTelephonenumberText.value,
+            contactEmail: programEmailText.value,
+            notes: programNotesText.value,
+            tecnicalNotes: programTecnicalNotesText.value,
+            programDate: programDate,
+            saloon: saloonCode,
+            price: totalPrice,
+            programStatus: true,
+            addUser: currentUser.email,
+            addDate: new Date(),
+            editUser: "",
+            editDate: new Date(),
+            cancelUser: "",
+            cancelDAte: new Date(),
+          });
+
+          docIdAdd = docRefProgram.id;
+
+          var activityDocId1 = "";
+          var activityDocId2 = "";
+          var activityDocId3 = "";
+
+          if (programSessionArrayList.includes("1")) {
+            activityDocId1 = docIdAdd;
+            activity1Name = programCorporationText.value;
+          } else {
+            activityDocId1 = "0";
+            activity1Name = "";
+          }
+
+          if (programSessionArrayList.includes("2")) {
+            activityDocId2 = docIdAdd;
+            activity2Name = programCorporationText.value;
+          } else {
+            activityDocId2 = "0";
+            activity2Name = "";
+          }
+
+          if (programSessionArrayList.includes("3")) {
+            activityDocId3 = docIdAdd;
+            activity3Name = programCorporationText.value;
+          } else {
+            activityDocId3 = "0";
+            activity3Name = "";
+          }
+
+          if (dayAddAddDocument == "") {
+            let dayId = `day${extraKey}`;
+            const docRefVenue = await addDoc(collection(db, "VenueTracking"), {
+              activity1DocId: activityDocId1,
+              activity1Name: activity1Name,
+              activity2DocId: activityDocId2,
+              activity2Name: activity2Name,
+              activity3DocId: activityDocId3,
+              activity3Name: activity3Name,
+              saloon: saloonCode,
+              day: dayId,
+              month: month,
+              year: year,
+            });
+          } else {
+            const updatePromises = [];
+
+            if (programSessionArrayList.includes("1")) {
+              const docRefUpdate = doc(db, "VenueTracking", dayAddAddDocument);
+
+              updatePromises.push(
+                updateDoc(docRefUpdate, {
+                  activity1DocId: activityDocId1,
+                  activity1Name: activity1Name,
+                })
+              );
+            }
+
+            if (programSessionArrayList.includes("2")) {
+              const docRefUpdate = doc(db, "VenueTracking", dayAddAddDocument);
+
+              updatePromises.push(
+                updateDoc(docRefUpdate, {
+                  activity2DocId: activityDocId2,
+                  activity2Name: activity2Name,
+                })
+              );
+            }
+
+            if (programSessionArrayList.includes("3")) {
+              const docRefUpdate = doc(db, "VenueTracking", dayAddAddDocument);
+
+              updatePromises.push(
+                updateDoc(docRefUpdate, {
+                  activity3DocId: activityDocId3,
+                  activity3Name: activity3Name,
+                })
+              );
+            }
+
+            await Promise.all(updatePromises);
+          }
+
+          alert("Program başarılı bir şekilde eklendi");
+
+          window.location.reload();
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
       }
-
-      if (programSessionArrayList.includes("2")) {
-        activityDocId2 = docIdAdd;
-        activity2Name = programCorporationText.value;
-      } else {
-        activityDocId2 = "0";
-        activity2Name = "";
-      }
-
-      if (programSessionArrayList.includes("3")) {
-        activityDocId3 = docIdAdd;
-        activity3Name = programCorporationText.value;
-      } else {
-        activityDocId3 = "0";
-        activity3Name = "";
-      }
-
-      let dayId = `day${extraKey}`;
-      const docRefVenue = await addDoc(collection(db, "VenueTracking"), {
-        activity1DocId: activityDocId1,
-        activity1Name: activity1Name,
-        activity2DocId: activityDocId2,
-        activity2Name: activity2Name,
-        activity3DocId: activityDocId3,
-        activity3Name: activity3Name,
-        saloon: saloonCode,
-        day: dayId,
-        month: month,
-        year: year,
-      });
-
-      alert("Etkinlik başalı bir şekilde eklendi");
-    } catch (e) {
-      console.error("Error adding document: ", e);
     }
   } else if (addEditButtonStatus == "Edit") {
+    const docRef = doc(db, "ProgramList", updateDocId);
+
+    updateDoc(docRef, {
+      reservationStatus: reservationStatusSelect.value,
+      paymentInfo: paymentInfoSelect.value,
+      managerAprovalRequest: manageAprovalRequest,
+      category: programCategorySelect.value,
+      corporation: programCorporationText.value,
+      name: programNameText.value,
+      description: programDescriptionText.value,
+      contactNameSurname: programNameSurNameText.value,
+      contactTelephone: programTelephonenumberText.value,
+      contactEmail: programEmailText.value,
+      notes: programNotesText.value,
+      tecnicalNotes: programTecnicalNotesText.value,
+
+      editUser: currentUser.email,
+      editDate: new Date(),
+    });
+    alert("Program başarılı bir şekilde güncellendi");
   }
 });
 
@@ -1143,7 +1398,7 @@ $("#morningButton").on("click", function () {
       return item !== morningPrice;
     });
 
-    console.log(priceArrayList);
+    console.log(priceArrayList + " " + programSessionArrayList);
 
     morningButton.classList.remove("btn-danger");
     morningButton.classList.add("btn-light");
@@ -1159,7 +1414,7 @@ $("#morningButton").on("click", function () {
     programSessionArrayList.push("1");
     priceArrayList.push(morningPrice);
 
-    console.log(priceArrayList);
+    console.log(priceArrayList + " " + programSessionArrayList);
 
     morningButton.classList.add("btn-danger");
     morningButton.classList.remove("btn-light");
@@ -1184,7 +1439,7 @@ $("#afternoonButton").on("click", function () {
       return item !== afternoonPrice;
     });
 
-    console.log(priceArrayList);
+    console.log(priceArrayList + " " + programSessionArrayList);
 
     afternoonButton.classList.remove("btn-danger");
     afternoonButton.classList.add("btn-light");
@@ -1199,7 +1454,7 @@ $("#afternoonButton").on("click", function () {
     programSessionArrayList.push("2");
     priceArrayList.push(afternoonPrice);
 
-    console.log(priceArrayList);
+    console.log(priceArrayList + " " + programSessionArrayList);
     afternoonButton.classList.add("btn-danger");
     afternoonButton.classList.remove("btn-light");
 
@@ -1222,7 +1477,7 @@ $("#nightButton").on("click", function () {
       return item !== nightPrice;
     });
 
-    console.log(priceArrayList);
+    console.log(priceArrayList + " " + programSessionArrayList);
 
     nightButton.classList.remove("btn-danger");
     nightButton.classList.add("btn-light");
@@ -1237,7 +1492,7 @@ $("#nightButton").on("click", function () {
     programSessionArrayList.push("3");
     priceArrayList.push(nightPrice);
 
-    console.log(priceArrayList);
+    console.log(priceArrayList + " " + programSessionArrayList);
 
     nightButton.classList.add("btn-danger");
     nightButton.classList.remove("btn-light");
@@ -1305,4 +1560,58 @@ $("#allDayButton").on("click", function () {
     totalPrice = total;
     priceInfoText.innerHTML = totalPrice + " TL";
   }
+});
+
+// her sayfada olacak Kodlar
+
+const autoLogoutTime = 300000; // 5 dakika
+
+let logoutTimer;
+
+function startLogoutTimer() {
+  logoutTimer = setTimeout(() => {
+    // Oturum açmış olan kullanıcıyı çıkış yap
+    const auth = getAuth();
+
+    signOut(auth)
+      .then(() => {
+        window.location.href = "adminpanellogin.html";
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  }, autoLogoutTime);
+}
+
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  startLogoutTimer();
+}
+
+window.onload = resetLogoutTimer;
+document.onmousemove = resetLogoutTimer;
+document.onkeypress = resetLogoutTimer;
+document.onclick = resetLogoutTimer;
+document.onscroll = resetLogoutTimer;
+
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    startLogoutTimer();
+  } else {
+    clearTimeout(logoutTimer); // Kullanıcı çıkış yaptıysa zamanlayıcıyı durdur
+  }
+});
+
+$("#logoutButton").on("click", function () {
+  console.log("tık ");
+
+  const auth = getAuth();
+
+  signOut(auth)
+    .then(() => {
+      window.location.href = "adminpanellogin.html";
+    })
+    .catch((error) => {
+      // An error happened.
+    });
 });

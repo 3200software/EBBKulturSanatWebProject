@@ -1,55 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Giriş Yap</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" 
-    rel="stylesheet" 
-    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" 
-    crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/mobile.css">
-    <link rel="stylesheet" href="css/tablet.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/tablet.css" />
 
     <script type="module" src="js/login.js"></script>
+  </head>
+  <body>
+    <form
+      class="container m-10 mt-5 w-25 border rounded p-3 d-flex flex-column justify-content-center"
+    >
+      <img
+        src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
+        class="img-thumbnail w-50 mb-5 mt-5 border border-primary rounded-circle"
+        alt="EbbKulturSanatLogo"
+        style="margin: auto"
+      />
 
-    
+      <div
+        class="text-primary h2 mb-5"
+        style="margin: auto; text-align: center"
+      >
+        Yönetici Paneli Giriş
+      </div>
 
-</head>
-<body>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="InputEmail1"
+          aria-describedby="emailHelp"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Şifre</label>
+        <input type="password" class="form-control" id="InputPassword1" />
+      </div>
 
-    <form class="container m-10 mt-5 w-25 border  rounded p-3 d-flex flex-column justify-content-center">
+      <button type="submit" class="btn btn-primary" id="loginButton">
+        Giriş Yap
+      </button>
+    </form>
 
-        <img src="assets/274348852_320609883437173_4953649348556891409_n.jpg" class="img-thumbnail w-50 mb-5 mt-5 border border-primary rounded-circle" alt="EbbKulturSanatLogo" style="margin: auto;">
+    <div
+      class="modal fade"
+      id="newPasswordModal"
+      tabindex="-1"
+      aria-labelledby="newPasswordModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Şifre Değiştir!</h5>
+          </div>
+          <div class="modal-body">
+            <p>
+              İlk defa sisteme giriş yaparken şifreni değiştirmelisin. Lütfen
+              yeni şifreni kimseyle paylaşma!
+            </p>
+          </div>
 
-        <div class="text-primary h2 mb-5" style="margin: auto; text-align: center;">Yönetici Paneli Giriş</div>
+          <div class="modal-body col">
+            <input
+              type="password"
+              class="form-control mb-2"
+              placeholder="Yeni Şifre"
+              id="newPaswordInPut"
+            />
+            <input
+              type="password"
+              class="form-control mt-2"
+              placeholder="Yeni Şifre "
+              id="newPaswordAgainInPut"
+            />
+          </div>
 
-        <div class="mb-3" >
-          <label for="exampleInputEmail1" class="form-label">Email</label>
-          <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp">
-          
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-danger m-1"
+              id="noEditPasswordButton"
+            >
+              Çıkış Yap
+            </button>
+            <button
+              type="button"
+              class="btn btn-success m-1"
+              id="editPasswordButton"
+            >
+              Şifreni Değiştir
+            </button>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Şifre</label>
-          <input type="password" class="form-control" id="InputPassword1">
-        </div>
-        
-        <button type="submit" class="btn btn-primary" id="loginButton">Giriş Yap</button>
-      </form>
+      </div>
+    </div>
 
-      
-      
-      
-      <script src="js/main.js"></script>
-    
-     
+    <script src="js/main.js"></script>
 
-
-
-    
-</body>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
 </html>
