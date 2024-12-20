@@ -14,40 +14,360 @@
 
     <title>EBB Sanat Merkezi</title>
 
+    <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/indexMobile.css" />
+
     <script type="module" src="js/index.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <div
-      class="menu-bar"
+    <!--Navbar-->
+
+    <section
+      class="container-lg d-flex justify-content-between"
+      style="background-color: #ffffff; margin-top: 1%"
+    >
+      <a href="index.html"
+        ><img
+          src="assets/Asset 1.png"
+          alt="SanatMerkeziLogo"
+          style="width: 100px; height: 100px"
+      /></a>
+
+      <nav class="navbar navbar-expand-lg">
+        <div class="container-lg">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a
+                  class="nav-link ms-4 me-4 active border-bottom"
+                  aria-current="page"
+                  href="index.html"
+                  >Ana Sayfa</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link ms-4 me-4" href="ourActivity.html"
+                  >Etkinliklerimiz</a
+                >
+                <div
+                  id="mainborder2"
+                  style="
+                    border-bottom: 2px solid #3b94c4;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                    visibility: hidden;
+                  "
+                ></div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link ms-4 me-4" href="ourhalls.html"
+                  >Salonlarımız</a
+                >
+
+                <div
+                  id="mainborder3"
+                  style="
+                    border-bottom: 2px solid #3b94c4;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                    visibility: hidden;
+                  "
+                ></div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link ms-4" href="contact.html">İletişim</a>
+                <div
+                  id="mainborder4"
+                  style="
+                    border-bottom: 2px solid #3b94c4;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                    visibility: hidden;
+                  "
+                ></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </section>
+
+    <!-- //Banner -->
+    <section class="container-lg mt-4" style="background-color: #ffffff">
+      <div id="slider" class="container-lg">
+        <input type="radio" name="slider" id="slide1" checked />
+        <input type="radio" name="slider" id="slide2" />
+        <input type="radio" name="slider" id="slide3" />
+        <input type="radio" name="slider" id="slide4" />
+        <div id="slides">
+          <div id="overflow">
+            <div class="inner">
+              <div class="slide slide_1">
+                <div class="slide-content">
+                  <h2>görsel</h2>
+                  <p></p>
+                </div>
+              </div>
+              <div class="slide slide_2">
+                <div class="slide-content">
+                  <h2>Slide 2</h2>
+                  <p>Content for Slide 2</p>
+                </div>
+              </div>
+              <div class="slide slide_3">
+                <div class="slide-content">
+                  <h2>Slide 3</h2>
+                  <p>Content for Slide 3</p>
+                </div>
+              </div>
+              <div class="slide slide_4">
+                <div class="slide-content">
+                  <h2>Slide 4</h2>
+                  <p>Content for Slide 4</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="controls">
+          <label for="slide1"></label>
+          <label for="slide2"></label>
+          <label for="slide3"></label>
+          <label for="slide4"></label>
+        </div>
+        <div id="bullets">
+          <label for="slide1"></label>
+          <label for="slide2"></label>
+          <label for="slide3"></label>
+          <label for="slide4"></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- // AşıklıkGelenegi -->
+
+    <a href="asiklik.html">
+      <section
+        class="container-fluid"
+        style="
+          margin-top: 15px;
+          background-color: #ffffff;
+          background-image: url(assets/2e5c2117-d6fd-4c09-914e-500110230fee\ kopya.png);
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        "
+      >
+        <div class="container-lg">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              aspect-ratio: 6/1;
+            "
+          >
+            <h3
+              class="d-flex h1 align-self-center justify-content-around"
+              style="color: #3b94c4; margin-left: 2%"
+            >
+              Aşıklık Geleneği
+            </h3>
+          </div>
+        </div>
+      </section>
+    </a>
+
+    <!-- //Etkinliklerimiz -->
+    <section
+      class="container-fluid"
+      style="background-color: #95c9e5; margin-top: 20px; padding-bottom: 20px"
+    >
+      <div class="container-lg">
+        <h2 style="color: #f4f8fb; padding-top: 30px">Etkinliklerimiz</h2>
+
+        <div
+          class="rounded-4"
+          style="
+            width: 300px;
+            background-color: #f4f8fb;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #95c9e5;
+            margin-bottom: 20px;
+            padding: 20px; /* İçerik aralığı */
+          "
+        >
+          <img
+            class="rounded-3"
+            src="https://via.placeholder.com/250x200"
+            alt="Placeholder"
+            style="width: 250px; height: 200px; background-color: #f4f8fb"
+          />
+
+          <h2 style="margin-top: 10px; color: #3b94c4; text-align: center">
+            Title
+          </h2>
+
+          <p
+            style="
+              margin-top: 10px;
+              color: #3b94c4;
+              text-align: center;
+              word-break: break-word; /* Çok uzun kelimeleri kırar */
+            "
+          >
+            jaksdlkajdslkjalksdjlakşjdalkjsdlkajdlkaskljskajdaskjdkjasndkjasdjknaskjdnjkasdjkasdnkjas
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- //Baskandan -->
+    <section
+      class="container-fluid"
       style="
-        display: flex;
-        justify-content: space-between;
-        margin-left: 20%;
-        margin-right: 20%;
-        margin-top: 2%;
+        background: linear-gradient(15deg, #f4f8fb, #bcdcee);
+        margin-top: 20px;
       "
     >
-      <img
-        src="assets/Asset 1.png"
-        alt="SanatMerkeziLogo"
-        style="width: 100px; height: 100px"
-      />
+      <div
+        class="container-lg d-flex justify-content-between"
+        style="padding-top: 30px; padding-bottom: 30px"
+      >
+        <div
+          class=""
+          style="
+            margin: 10px;
+            padding-left: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+          "
+        >
+          <h1></h1>
 
-      <ul>
-        <li><a href="#">Ana Sayfa</a></li>
-        <li><a href="#">Salonlarımız</a></li>
-        <li><a href="#">Etkinliklerimiz</a></li>
-        <li><a href="#">İletişim</a></li>
-        <li><a href="#">Fatih</a></li>
-      </ul>
-    </div>
+          <h2 style="color: #3b94c4; text-indent: 30px; margin-top: 30px">
+            Başkanın Mesajı
+          </h2>
 
-    <div class="homeSlider" style="display: flex">
-      <img src="assets/as.jpg" alt="" />
-    </div>
+          <h4
+            style="
+              text-indent: 30px;
+              width: 750px;
+              color: #95c9e5;
+              text-align: justify;
+            "
+          >
+            Kültür ve sanat, bir milletin kimliğini koruyan, toplumsal bağlarını
+            güçlendiren ve gelecek nesillere ilham veren en değerli miraslardan
+            biridir. Bu alanlar, yalnızca bireylerin estetik duygularını
+            geliştirmekle kalmaz; aynı zamanda şehirlerin ve ülkelerin medeniyet
+            yolculuğunda yol gösterici bir rol üstlenir. Erzurum gibi tarihi ve
+            kültürel birikimiyle öne çıkan bir şehirde, bu değerleri koruyup
+            daha ileriye taşımak, bizim için hem bir sorumluluk hem de bir gurur
+            kaynağıdır.
+          </h4>
+        </div>
 
-    <a href="activity.html">Activity Add</a>
+        <img
+          class="rounded-5"
+          src="assets/MEHMET_SEKMEN_CERCEVEE kopyası.jpg"
+          alt=""
+          style="width: 30%; border: 10px #3b94c4"
+        />
+      </div>
+    </section>
+
+    <!-- // alt Bİlgi -->
+    <section
+      class="container-fluid rounded-3"
+      style="
+        padding-top: 100px;
+        padding-bottom: 100px;
+        margin-top: 25px;
+        background-image: url(assets/36d4e220-181b-4e07-8fe5-7ca9a82aa1e9\ kopya.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: #f6f9fb;
+        background-position: center;
+        margin-bottom: 20px;
+      "
+    >
+      <div class="container-lg d-flex justify-content-between">
+        <div class="ms-5">
+          <a
+            href="https://www.erzurum.bel.tr/"
+            target="_blank"
+            title="Erzurum Büyükşehir Belediyesi Resmi Stesi"
+          >
+            <img src="assets/EbbLogo@4x.png" alt="" style="height: 150px" />
+          </a>
+        </div>
+
+        <div class="d-flex flex-column justify-content-between">
+          <a href="index.html">
+            <img class="" src="assets/Asset 1.png" alt="" style="height: 150px"
+          /></a>
+        </div>
+
+        <div class="d-flex flex-column justify-content-between">
+          <h4>Kültür Sanat</h4>
+
+          <a class="bottomLink" href="ourActivity.html">Etkinliklerimiz</a>
+
+          <a class="bottomLink" href="ourhalls.html">Salonlarımız</a>
+
+          <a class="bottomLink" href="news.html">Haberler</a>
+
+          <a class="bottomLink" href="contact.html">İletişim</a>
+
+          <a class="bottomLink" href="activity.html">Yönetim Paneli</a>
+        </div>
+
+        <div class="d-flex flex-column justify-content-between me-5">
+          <h4>Sosyal Medya</h4>
+
+          <a
+            class="bottomLink"
+            href="https://www.instagram.com/ebbsanatmerkezi/"
+            target="_blank"
+            >İnstagram</a
+          >
+
+          <a
+            class="bottomLink"
+            href="https://www.facebook.com/EbbSanatMerkezi/?locale=tr_TR"
+            target="_blank"
+            >Facebook</a
+          >
+
+          <a class="bottomLink" href="h" target="_blank">X</a>
+
+          <a
+            class="bottomLink"
+            href="https://www.youtube.com/@erzurumbuyuksehirbelediyes2404"
+            target="_blank"
+            >Youtube</a
+          >
+        </div>
+      </div>
+    </section>
 
     <script src="js/main.js"></script>
   </body>

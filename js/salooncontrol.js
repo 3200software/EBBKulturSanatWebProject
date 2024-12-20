@@ -58,7 +58,6 @@ onAuthStateChanged(auth, async (user) => {
       const daysDocument = doc.id;
 
       userAuthorityArray = doc.data().userAuthority;
-      console.log(userAuthorityArray);
     });
 
     if (userAuthorityArray.includes("22")) {
@@ -127,6 +126,8 @@ const programAddEditSuccessButton = document.getElementById(
   "programAddEditSuccessButton"
 );
 
+const freeRequestCheck = document.getElementById("freeRequestCheck");
+
 const programCancelButton = document.getElementById("programCancelButton");
 
 const today = new Date();
@@ -164,14 +165,55 @@ var venueDocId = "";
 var publicDayId = "";
 
 function getSaloonPrice() {
-  const docRefsPrice = doc(db, "SaloonPrice", "FYXuqyPhmslWaY2ASu1r");
+  var saloonDocId = "";
+
+  if ($("#saloonFormSelect").val() == "1") {
+    saloonDocId = "FYXuqyPhmslWaY2ASu1r";
+  } else if ($("#saloonFormSelect").val() == "2") {
+    saloonDocId = "hjUZLD5OWWLXRYK6DkIt";
+  } else if ($("#saloonFormSelect").val() == "3") {
+    saloonDocId = "r6xDofNYMy7AmEaBiJW6";
+  } else if ($("#saloonFormSelect").val() == "4") {
+    saloonDocId = "wnsuA9oTU3rwGN7vTLr4";
+  } else if ($("#saloonFormSelect").val() == "5") {
+    saloonDocId = "HLE54ES3AYpXeMK55YMa";
+  } else if ($("#saloonFormSelect").val() == "6") {
+    saloonDocId = "RGPi4hPJQjRJNudXjRmh";
+  } else if ($("#saloonFormSelect").val() == "7") {
+    saloonDocId = "RGPi4hPJQjRJNudXjRmh";
+  }
+
+  const docRefsPrice = doc(db, "SaloonPrice", saloonDocId);
 
   getDoc(docRefsPrice)
     .then((docSnap) => {
       if (docSnap.exists()) {
-        morningPrice = docSnap.data().morning;
-        afternoonPrice = docSnap.data().afternon;
-        nightPrice = docSnap.data().night;
+        var morningPriceStr = docSnap.data().morning;
+        var afternoonPriceStr = docSnap.data().afternon;
+        var nightPriceStr = docSnap.data().night;
+
+        if (freeRequestCheck.checked) {
+          morningPrice = 0;
+          afternoonPrice = 0;
+          nightPrice = 0;
+          paymentInfoSelect.style.display = "none";
+        } else {
+          morningPrice = parseFloat(
+            morningPriceStr.replace(/\./g, "").replace(",", ".")
+          );
+          afternoonPrice = parseFloat(
+            afternoonPriceStr.replace(/\./g, "").replace(",", ".")
+          );
+          nightPrice = parseFloat(
+            nightPriceStr.replace(/\./g, "").replace(",", ".")
+          );
+
+          paymentInfoSelect.style.display = "";
+        }
+
+        morningButton.innerText = "08-12 / (" + morningPrice + " TL)";
+        afternoonButton.innerText = "13-17 / (" + afternoonPrice + " TL)";
+        nightButton.innerText = "18-23 / (" + nightPrice + " TL )";
       } else {
         console.error("Belge alınırken hata oluştu:", error);
       }
@@ -188,6 +230,8 @@ function getDaysInMonth(year, month) {
 }
 
 function getFirstDayOfMonth(year, month) {
+  console.log("aa" + year + month);
+
   var firstDay = new Date(year, month, 1).getDay();
 
   if (firstDay == 0) {
@@ -215,11 +259,23 @@ function getDateForDay(dayNum, firstDayOfMonth, year, month) {
   // Gerçek tarihi oluştur
   const date = new Date(year, month, actualDay);
 
+  date.setHours(23, 59, 0, 0);
+
   console.log(
-    `Gün ${dayNum}, ${date.toLocaleDateString()} tarihine denk geliyor.`
+    `Gün ${dayNum}, ${date.toLocaleDateString()} ${date.toLocaleTimeString()} tarihine denk geliyor.`
   );
   return date;
 }
+
+freeRequestCheck.addEventListener("change", () => {
+  if (freeRequestCheck.checked) {
+    getSaloonPrice();
+    paymentInfoSelect.style.display = "none";
+  } else {
+    getSaloonPrice();
+    paymentInfoSelect.style.display = "";
+  }
+});
 
 var firstDayOfMonth = getFirstDayOfMonth(year, month);
 
@@ -227,6 +283,10 @@ var firstDayOfMonth = getFirstDayOfMonth(year, month);
 var daysInMonth = getDaysInMonth(year, month);
 
 var daysNumber = firstDayOfMonth + daysInMonth - 1;
+
+$("#goButton").prop("disabled", true);
+$("#warningTitleBack").css("display", "");
+$("#warningTitle").html("Salon takip yüklenirken lütfen bekleyin!");
 
 for (let i = firstDayOfMonth; i <= daysNumber; i++) {
   let dayId = `day${i}`;
@@ -385,7 +445,16 @@ for (let i = firstDayOfMonth; i <= daysNumber; i++) {
   }
 }
 
+$("#goButton").prop("disabled", false);
+$("#warningTitleBack").css("display", "none");
+
 $("body").on("click", ".morningButton", async function () {
+  saloonCode = $("#saloonFormSelect").val();
+
+  year = parseInt($("#yearFormSelect").val());
+
+  month = parseInt($("#monthFormSelect").val());
+
   var key1 = $(this).data("key");
   extraKey = $(this).data("extra-key");
   var firstDayOfMonthActual = $(this).data("third-key");
@@ -394,6 +463,8 @@ $("body").on("click", ".morningButton", async function () {
   publicDayId = `day${extraKey}`;
 
   console.log(venueDocId + "knsadms");
+
+  freeRequestCheck.checked = false;
 
   programDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
 
@@ -418,7 +489,7 @@ $("body").on("click", ".morningButton", async function () {
     }
   });
 
-  if (key1 == "") {
+  if (key1 == "0") {
     reservationStatusSelect.value = "0";
     paymentInfoSelect.value = "0";
     managerAprovalCheck.checked = false;
@@ -543,7 +614,7 @@ $("body").on("click", ".morningButton", async function () {
           programNotesText.value = notes;
           programTecnicalNotesText.value = tecnicalNotes;
 
-          priceInfoText.innerHTML = totalPrice + " TL";
+          priceInfoText.value = totalPrice + " TL";
         } else {
           // Belge yoksa
         }
@@ -555,6 +626,11 @@ $("body").on("click", ".morningButton", async function () {
 });
 
 $("body").on("click", ".afternonButton", async function () {
+  saloonCode = $("#saloonFormSelect").val();
+
+  year = parseInt($("#yearFormSelect").val());
+
+  month = parseInt($("#monthFormSelect").val());
   var key2 = $(this).data("key");
   extraKey = $(this).data("extra-key");
   var firstDayOfMonthActual = $(this).data("third-key");
@@ -565,6 +641,8 @@ $("body").on("click", ".afternonButton", async function () {
   programDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
 
   getSaloonPrice();
+
+  freeRequestCheck.checked = false;
 
   var saloonSessionArrayList = [];
 
@@ -585,7 +663,7 @@ $("body").on("click", ".afternonButton", async function () {
     }
   });
 
-  if (key2 == "") {
+  if (key2 == "0") {
     reservationStatusSelect.value = "0";
     paymentInfoSelect.value = "0";
     managerAprovalCheck.checked = false;
@@ -709,7 +787,7 @@ $("body").on("click", ".afternonButton", async function () {
           programNotesText.value = notes;
           programTecnicalNotesText.value = tecnicalNotes;
 
-          priceInfoText.innerHTML = totalPrice + " TL";
+          priceInfoText.value = totalPrice + " TL";
         } else {
           // Belge yoksa
         }
@@ -721,6 +799,11 @@ $("body").on("click", ".afternonButton", async function () {
 });
 
 $("body").on("click", ".nightButton", async function () {
+  saloonCode = $("#saloonFormSelect").val();
+
+  year = parseInt($("#yearFormSelect").val());
+
+  month = parseInt($("#monthFormSelect").val());
   var key3 = $(this).data("key");
   extraKey = $(this).data("extra-key");
   var firstDayOfMonthActual = $(this).data("third-key");
@@ -731,6 +814,8 @@ $("body").on("click", ".nightButton", async function () {
   programDate = getDateForDay(extraKey, firstDayOfMonthActual, year, month);
 
   getSaloonPrice();
+
+  freeRequestCheck.checked = false;
 
   var saloonSessionArrayList = [];
 
@@ -751,7 +836,7 @@ $("body").on("click", ".nightButton", async function () {
     }
   });
 
-  if (key3 == "") {
+  if (key3 == "0") {
     reservationStatusSelect.value = "0";
     paymentInfoSelect.value = "0";
     managerAprovalCheck.checked = false;
@@ -769,6 +854,7 @@ $("body").on("click", ".nightButton", async function () {
       alert("Program oluşturma yetkiniz yok!");
     } else {
       if (programDate < new Date()) {
+        console.log(programDate + " " + new Date());
         alert("Geçmiş bir tarihe program oluşturamazsınız!!");
       } else {
         programTableContainer.style.display = "none";
@@ -876,7 +962,7 @@ $("body").on("click", ".nightButton", async function () {
           programNotesText.value = notes;
           programTecnicalNotesText.value = tecnicalNotes;
 
-          priceInfoText.innerHTML = totalPrice + " TL";
+          priceInfoText.value = totalPrice + " TL";
         } else {
           // Belge yoksa
         }
@@ -921,6 +1007,11 @@ $("#goButton").on("click", async function () {
   var daysInMonth = getDaysInMonth(year, month);
 
   var daysNumber = firstDayOfMonth + daysInMonth - 1;
+
+  $("#goButton").prop("disabled", true);
+  $("#warningTitleBack").css("display", "");
+  $("#warningTitle").html("Seçtiğiniz tarih yüklenirken lütfen bekleyin!");
+
   for (let i = firstDayOfMonth; i <= daysNumber; i++) {
     let dayId = `day${i}`;
 
@@ -1086,6 +1177,9 @@ $("#goButton").on("click", async function () {
       }
     }
   }
+
+  $("#goButton").prop("disabled", false);
+  $("#warningTitleBack").css("display", "none");
 });
 
 $("#programCancelButton").on("click", async function () {
@@ -1135,8 +1229,225 @@ $("#programCancelButton").on("click", async function () {
 
     await Promise.all(updatePromises);
 
+    programTableContainer.style.display = "";
+    addEditProgramContainer.style.display = "none";
+    addEditButtonStatus = "";
+
+    morningButton.classList.add("btn-light");
+    morningButton.classList.remove("btn-danger");
+
+    afternoonButton.classList.add("btn-light");
+    afternoonButton.classList.remove("btn-danger");
+
+    nightButton.classList.add("btn-light");
+    nightButton.classList.remove("btn-danger");
+
+    allDayButton.classList.add("btn-light");
+    allDayButton.classList.remove("btn-danger");
+
+    morningButton.disabled = false;
+    afternoonButton.disabled = false;
+    nightButton.disabled = false;
+    allDayButton.disabled = false;
+
+    totalPrice = 0;
+    priceInfoText.value = 0 + " TL";
+    priceArrayList.length = 0;
+    programSessionArrayList.length = 0;
+    console.log(priceArrayList.length + " sadas");
+    programCancelButton.style.display = "none";
+
+    $(`td`).css("background-color", "White");
+
+    for (let i = 1; i <= 42; i++) {
+      let dayId = `day${i}`;
+
+      const products = document.querySelector(`#${dayId}`);
+      products.innerHTML = "";
+    }
+
+    var firstDayOfMonth = getFirstDayOfMonth(year, month);
+    // Ocak 0. İndexeSahiptir
+
+    var daysInMonth = getDaysInMonth(year, month);
+
+    var daysNumber = firstDayOfMonth + daysInMonth - 1;
+
+    $("#goButton").prop("disabled", true);
+    $("#warningTitleBack").css("display", "");
+    $("#warningTitle").html("Liste Güncelleniyor! Lütfen Bekleyin!");
+
+    for (let i = firstDayOfMonth; i <= daysNumber; i++) {
+      let dayId = `day${i}`;
+
+      const products = document.querySelector(`#${dayId}`);
+
+      let dayNum = i - firstDayOfMonth + 1;
+      var daysDocId = "0";
+      var firebaseDay = "0";
+      var activity1Name = "";
+      var activity1DocId = "0";
+      var activity2Name = "";
+      var activity2DocId = "0";
+      var activity3Name = "";
+      var activity3DocId = "0";
+
+      const monthArray = [
+        "Ocak",
+        "Şubat",
+        "Mart",
+        "Nisan",
+        "Mayıs",
+        "Haziran",
+        "Temmuz",
+        "Ağustos",
+        "Eylül",
+        "Ekim",
+        "Kasım",
+        "Aralık",
+      ];
+
+      var monthName = monthArray[month];
+
+      let InvWritingItem = [];
+
+      if (!products) {
+        continue;
+      } else {
+        InvWritingItem = [
+          daysDocId,
+          activity1DocId,
+          activity2DocId,
+          activity3DocId,
+          activity1Name,
+          activity2Name,
+          activity3Name,
+        ];
+        const getData = query(
+          collection(db, "VenueTracking"),
+          where("year", "==", year),
+          where("month", "==", month),
+          where("day", "==", dayId),
+          where("saloon", "==", saloonCode)
+        );
+
+        const querySnapshot = await getDocs(getData);
+
+        querySnapshot.forEach((doc) => {
+          const daysDocument = doc.id;
+
+          daysDocId = daysDocument;
+          activity1DocId = doc.data().activity1DocId;
+          activity1Name = doc.data().activity1Name;
+
+          activity2DocId = doc.data().activity2DocId;
+          activity2Name = doc.data().activity2Name;
+
+          activity3DocId = doc.data().activity3DocId;
+          activity3Name = doc.data().activity3Name;
+
+          console.log(activity3DocId + " dasa");
+
+          InvWritingItem = [
+            daysDocId,
+            activity1DocId,
+            activity2DocId,
+            activity3DocId,
+            activity1Name,
+            activity2Name,
+            activity3Name,
+          ];
+        });
+
+        createInvWritingArray(InvWritingItem);
+
+        function createInvWritingArray([
+          daysDocId,
+          activity1DocId,
+          activity2DocId,
+          activity3DocId,
+          activity1Name,
+          activity2Name,
+          activity3Name,
+        ]) {
+          var btnStatus1 = "";
+          var btnStatus2 = "";
+          var btnStatus3 = "";
+          var namestatus1 = "";
+          var namestatus2 = "";
+          var namestatus3 = "";
+
+          console.log(activity3DocId);
+
+          if (activity1DocId == "0") {
+            btnStatus1 = "btn-light";
+            namestatus1 = "09 - 12";
+          } else {
+            btnStatus1 = "btn-danger";
+            namestatus1 = activity1Name;
+          }
+
+          if (activity2DocId == "0") {
+            btnStatus2 = "btn-light";
+            namestatus2 = "13 - 17";
+          } else {
+            btnStatus2 = "btn-danger";
+            namestatus2 = activity2Name;
+          }
+
+          if (activity3DocId == "0") {
+            btnStatus3 = "btn-light";
+            namestatus3 = "19 - 23";
+          } else {
+            btnStatus3 = "btn-danger";
+            namestatus3 = activity3Name;
+          }
+
+          console.log(
+            $("#monthFormSelect").val() +
+              $("#yearFormSelect").val() +
+              new Date().getMonth() +
+              new Date().getFullYear()
+          );
+          if (
+            dayNum == dayToday &&
+            parseInt($("#monthFormSelect").val()) == new Date().getMonth() &&
+            parseInt($("#yearFormSelect").val()) == new Date().getFullYear()
+          ) {
+            $(`#${dayId}`).css("background-color", "#A2CDF2");
+          }
+
+          let proCode = `
+    
+            <div class="justify-content-between"> 
+          
+             <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">${
+               dayNum + " " + monthName
+             }</div>
+          
+             <div class="row m-1">
+            
+            <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus1} </button>
+          
+            <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus2}</button>
+          
+            <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3}  answerBtn border nightButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;">${namestatus3}</button>
+          
+            </div>
+            
+            </div>
+          
+            `;
+
+          products.innerHTML += proCode;
+        }
+      }
+    }
+
+    $("#goButton").prop("disabled", false);
+    $("#warningTitleBack").css("display", "none");
+
     alert("Program başarılı bir şekilde iptal edildi.");
-    window.location.reload();
   } catch (error) {}
 });
 
@@ -1162,175 +1473,814 @@ $("#programAddEditSuccessButton").on("click", async function () {
     if (programSessionArrayList.length == 0) {
       alert("Lütfen program için seans seçin!!");
     } else {
-      if (
-        reservationStatusSelect.value == "0" ||
-        paymentInfoSelect.value == "0" ||
-        programCategorySelect.value == "" ||
-        programCorporationText.value == "" ||
-        programNameText.value == "" ||
-        programNameSurNameText.value == "" ||
-        programTelephonenumberText.value == ""
-      ) {
-        alert("Lütfen tüm alanları doldurun.");
+      if (freeRequestCheck.checked) {
+        if (
+          reservationStatusSelect.value == "0" ||
+          programCategorySelect.value == "" ||
+          programCorporationText.value == "" ||
+          programNameText.value == "" ||
+          programNameSurNameText.value == "" ||
+          programTelephonenumberText.value == ""
+        ) {
+          alert("Lütfen tüm alanları doldurun.");
 
-        if (reservationStatusSelect.value == "0") {
-          reservationStatusSelect.classList.add("is-invalid");
-        } else {
-          reservationStatusSelect.classList.remove("is-invalid");
-        }
-
-        if (paymentInfoSelect.value == "0") {
-          paymentInfoSelect.classList.add("is-invalid");
-        } else {
-          paymentInfoSelect.classList.remove("is-invalid");
-        }
-
-        if (programCategorySelect.value == "0") {
-          programCategorySelect.classList.add("is-invalid");
-        } else {
-          programCategorySelect.classList.remove("is-invalid");
-        }
-
-        if (programCorporationText.value == "") {
-          programCorporationText.classList.add("is-invalid");
-        } else {
-          programCorporationText.classList.remove("is-invalid");
-        }
-
-        if (programNameText.value == "") {
-          programNameText.classList.add("is-invalid");
-        } else {
-          programNameText.classList.remove("is-invalid");
-        }
-
-        if (programNameSurNameText.value == "") {
-          programNameSurNameText.classList.add("is-invalid");
-        } else {
-          programNameSurNameText.classList.remove("is-invalid");
-        }
-
-        if (programTelephonenumberText.value == "") {
-          programTelephonenumberText.classList.add("is-invalid");
-        } else {
-          programTelephonenumberText.classList.remove("is-invalid");
-        }
-      } else {
-        var docIdAdd = "";
-        try {
-          const docRefProgram = await addDoc(collection(db, "ProgramList"), {
-            programSessionArrayList: programSessionArrayList,
-            reservationStatus: reservationStatusSelect.value,
-            paymentInfo: paymentInfoSelect.value,
-            managerAprovalRequest: manageAprovalRequest,
-            category: programCategorySelect.value,
-            corporation: programCorporationText.value,
-            name: programNameText.value,
-            description: programDescriptionText.value,
-            contactNameSurname: programNameSurNameText.value,
-            contactTelephone: programTelephonenumberText.value,
-            contactEmail: programEmailText.value,
-            notes: programNotesText.value,
-            tecnicalNotes: programTecnicalNotesText.value,
-            programDate: programDate,
-            saloon: saloonCode,
-            price: totalPrice,
-            programStatus: true,
-            addUser: currentUser.email,
-            addDate: new Date(),
-            editUser: "",
-            editDate: new Date(),
-            cancelUser: "",
-            cancelDAte: new Date(),
-          });
-
-          docIdAdd = docRefProgram.id;
-
-          var activityDocId1 = "";
-          var activityDocId2 = "";
-          var activityDocId3 = "";
-
-          if (programSessionArrayList.includes("1")) {
-            activityDocId1 = docIdAdd;
-            activity1Name = programCorporationText.value;
+          if (reservationStatusSelect.value == "0") {
+            reservationStatusSelect.classList.add("is-invalid");
           } else {
-            activityDocId1 = "0";
-            activity1Name = "";
+            reservationStatusSelect.classList.remove("is-invalid");
           }
 
-          if (programSessionArrayList.includes("2")) {
-            activityDocId2 = docIdAdd;
-            activity2Name = programCorporationText.value;
+          if (paymentInfoSelect.value == "0") {
+            paymentInfoSelect.classList.add("is-invalid");
           } else {
-            activityDocId2 = "0";
-            activity2Name = "";
+            paymentInfoSelect.classList.remove("is-invalid");
           }
 
-          if (programSessionArrayList.includes("3")) {
-            activityDocId3 = docIdAdd;
-            activity3Name = programCorporationText.value;
+          if (programCategorySelect.value == "0") {
+            programCategorySelect.classList.add("is-invalid");
           } else {
-            activityDocId3 = "0";
-            activity3Name = "";
+            programCategorySelect.classList.remove("is-invalid");
           }
 
-          if (dayAddAddDocument == "") {
-            let dayId = `day${extraKey}`;
-            const docRefVenue = await addDoc(collection(db, "VenueTracking"), {
-              activity1DocId: activityDocId1,
-              activity1Name: activity1Name,
-              activity2DocId: activityDocId2,
-              activity2Name: activity2Name,
-              activity3DocId: activityDocId3,
-              activity3Name: activity3Name,
+          if (programCorporationText.value == "") {
+            programCorporationText.classList.add("is-invalid");
+          } else {
+            programCorporationText.classList.remove("is-invalid");
+          }
+
+          if (programNameText.value == "") {
+            programNameText.classList.add("is-invalid");
+          } else {
+            programNameText.classList.remove("is-invalid");
+          }
+
+          if (programNameSurNameText.value == "") {
+            programNameSurNameText.classList.add("is-invalid");
+          } else {
+            programNameSurNameText.classList.remove("is-invalid");
+          }
+
+          if (programTelephonenumberText.value == "") {
+            programTelephonenumberText.classList.add("is-invalid");
+          } else {
+            programTelephonenumberText.classList.remove("is-invalid");
+          }
+        } else {
+          var docIdAdd = "";
+          try {
+            const docRefProgram = await addDoc(collection(db, "ProgramList"), {
+              programSessionArrayList: programSessionArrayList,
+              reservationStatus: reservationStatusSelect.value,
+              paymentInfo: paymentInfoSelect.value,
+              managerAprovalRequest: manageAprovalRequest,
+              category: programCategorySelect.value,
+              corporation: programCorporationText.value,
+              name: programNameText.value,
+              description: programDescriptionText.value,
+              contactNameSurname: programNameSurNameText.value,
+              contactTelephone: programTelephonenumberText.value,
+              contactEmail: programEmailText.value,
+              notes: programNotesText.value,
+              tecnicalNotes: programTecnicalNotesText.value,
+              programDate: programDate,
               saloon: saloonCode,
-              day: dayId,
-              month: month,
-              year: year,
+              price: totalPrice,
+              programStatus: true,
+              addUser: currentUser.email,
+              addDate: new Date(),
+              editUser: "",
+              editDate: new Date(),
+              cancelUser: "",
+              cancelDAte: new Date(),
             });
-          } else {
-            const updatePromises = [];
+
+            docIdAdd = docRefProgram.id;
+
+            var activityDocId1 = "";
+            var activityDocId2 = "";
+            var activityDocId3 = "";
 
             if (programSessionArrayList.includes("1")) {
-              const docRefUpdate = doc(db, "VenueTracking", dayAddAddDocument);
-
-              updatePromises.push(
-                updateDoc(docRefUpdate, {
-                  activity1DocId: activityDocId1,
-                  activity1Name: activity1Name,
-                })
-              );
+              activityDocId1 = docIdAdd;
+              activity1Name = programCorporationText.value;
+            } else {
+              activityDocId1 = "0";
+              activity1Name = "";
             }
 
             if (programSessionArrayList.includes("2")) {
-              const docRefUpdate = doc(db, "VenueTracking", dayAddAddDocument);
-
-              updatePromises.push(
-                updateDoc(docRefUpdate, {
-                  activity2DocId: activityDocId2,
-                  activity2Name: activity2Name,
-                })
-              );
+              activityDocId2 = docIdAdd;
+              activity2Name = programCorporationText.value;
+            } else {
+              activityDocId2 = "0";
+              activity2Name = "";
             }
 
             if (programSessionArrayList.includes("3")) {
-              const docRefUpdate = doc(db, "VenueTracking", dayAddAddDocument);
-
-              updatePromises.push(
-                updateDoc(docRefUpdate, {
-                  activity3DocId: activityDocId3,
-                  activity3Name: activity3Name,
-                })
-              );
+              activityDocId3 = docIdAdd;
+              activity3Name = programCorporationText.value;
+            } else {
+              activityDocId3 = "0";
+              activity3Name = "";
             }
 
-            await Promise.all(updatePromises);
+            if (dayAddAddDocument == "") {
+              let dayId = `day${extraKey}`;
+              const docRefVenue = await addDoc(
+                collection(db, "VenueTracking"),
+                {
+                  activity1DocId: activityDocId1,
+                  activity1Name: activity1Name,
+                  activity2DocId: activityDocId2,
+                  activity2Name: activity2Name,
+                  activity3DocId: activityDocId3,
+                  activity3Name: activity3Name,
+                  saloon: saloonCode,
+                  day: dayId,
+                  month: month,
+                  year: year,
+                }
+              );
+            } else {
+              const updatePromises = [];
+
+              if (programSessionArrayList.includes("1")) {
+                const docRefUpdate = doc(
+                  db,
+                  "VenueTracking",
+                  dayAddAddDocument
+                );
+
+                updatePromises.push(
+                  updateDoc(docRefUpdate, {
+                    activity1DocId: activityDocId1,
+                    activity1Name: activity1Name,
+                  })
+                );
+              }
+
+              if (programSessionArrayList.includes("2")) {
+                const docRefUpdate = doc(
+                  db,
+                  "VenueTracking",
+                  dayAddAddDocument
+                );
+
+                updatePromises.push(
+                  updateDoc(docRefUpdate, {
+                    activity2DocId: activityDocId2,
+                    activity2Name: activity2Name,
+                  })
+                );
+              }
+
+              if (programSessionArrayList.includes("3")) {
+                const docRefUpdate = doc(
+                  db,
+                  "VenueTracking",
+                  dayAddAddDocument
+                );
+
+                updatePromises.push(
+                  updateDoc(docRefUpdate, {
+                    activity3DocId: activityDocId3,
+                    activity3Name: activity3Name,
+                  })
+                );
+              }
+
+              await Promise.all(updatePromises);
+            }
+
+            programTableContainer.style.display = "";
+            addEditProgramContainer.style.display = "none";
+            addEditButtonStatus = "";
+
+            morningButton.classList.add("btn-light");
+            morningButton.classList.remove("btn-danger");
+
+            afternoonButton.classList.add("btn-light");
+            afternoonButton.classList.remove("btn-danger");
+
+            nightButton.classList.add("btn-light");
+            nightButton.classList.remove("btn-danger");
+
+            allDayButton.classList.add("btn-light");
+            allDayButton.classList.remove("btn-danger");
+
+            morningButton.disabled = false;
+            afternoonButton.disabled = false;
+            nightButton.disabled = false;
+            allDayButton.disabled = false;
+
+            totalPrice = 0;
+            priceInfoText.value = 0 + " TL";
+            priceArrayList.length = 0;
+            programSessionArrayList.length = 0;
+            console.log(priceArrayList.length + " sadas");
+            programCancelButton.style.display = "none";
+
+            $(`td`).css("background-color", "White");
+
+            for (let i = 1; i <= 42; i++) {
+              let dayId = `day${i}`;
+
+              const products = document.querySelector(`#${dayId}`);
+              products.innerHTML = "";
+            }
+
+            var firstDayOfMonth = getFirstDayOfMonth(year, month);
+            // Ocak 0. İndexeSahiptir
+
+            var daysInMonth = getDaysInMonth(year, month);
+
+            var daysNumber = firstDayOfMonth + daysInMonth - 1;
+
+            $("#goButton").prop("disabled", true);
+            $("#warningTitleBack").css("display", "");
+            $("#warningTitle").html("Liste Güncelleniyor! Lütfen Bekleyin!");
+
+            for (let i = firstDayOfMonth; i <= daysNumber; i++) {
+              let dayId = `day${i}`;
+
+              const products = document.querySelector(`#${dayId}`);
+
+              let dayNum = i - firstDayOfMonth + 1;
+              var daysDocId = "0";
+              var firebaseDay = "0";
+              var activity1Name = "";
+              var activity1DocId = "0";
+              var activity2Name = "";
+              var activity2DocId = "0";
+              var activity3Name = "";
+              var activity3DocId = "0";
+
+              const monthArray = [
+                "Ocak",
+                "Şubat",
+                "Mart",
+                "Nisan",
+                "Mayıs",
+                "Haziran",
+                "Temmuz",
+                "Ağustos",
+                "Eylül",
+                "Ekim",
+                "Kasım",
+                "Aralık",
+              ];
+
+              var monthName = monthArray[month];
+
+              let InvWritingItem = [];
+
+              if (!products) {
+                continue;
+              } else {
+                InvWritingItem = [
+                  daysDocId,
+                  activity1DocId,
+                  activity2DocId,
+                  activity3DocId,
+                  activity1Name,
+                  activity2Name,
+                  activity3Name,
+                ];
+                const getData = query(
+                  collection(db, "VenueTracking"),
+                  where("year", "==", year),
+                  where("month", "==", month),
+                  where("day", "==", dayId),
+                  where("saloon", "==", saloonCode)
+                );
+
+                const querySnapshot = await getDocs(getData);
+
+                querySnapshot.forEach((doc) => {
+                  const daysDocument = doc.id;
+
+                  daysDocId = daysDocument;
+                  activity1DocId = doc.data().activity1DocId;
+                  activity1Name = doc.data().activity1Name;
+
+                  activity2DocId = doc.data().activity2DocId;
+                  activity2Name = doc.data().activity2Name;
+
+                  activity3DocId = doc.data().activity3DocId;
+                  activity3Name = doc.data().activity3Name;
+
+                  console.log(activity3DocId + " dasa");
+
+                  InvWritingItem = [
+                    daysDocId,
+                    activity1DocId,
+                    activity2DocId,
+                    activity3DocId,
+                    activity1Name,
+                    activity2Name,
+                    activity3Name,
+                  ];
+                });
+
+                createInvWritingArray(InvWritingItem);
+
+                function createInvWritingArray([
+                  daysDocId,
+                  activity1DocId,
+                  activity2DocId,
+                  activity3DocId,
+                  activity1Name,
+                  activity2Name,
+                  activity3Name,
+                ]) {
+                  var btnStatus1 = "";
+                  var btnStatus2 = "";
+                  var btnStatus3 = "";
+                  var namestatus1 = "";
+                  var namestatus2 = "";
+                  var namestatus3 = "";
+
+                  console.log(activity3DocId);
+
+                  if (activity1DocId == "0") {
+                    btnStatus1 = "btn-light";
+                    namestatus1 = "09 - 12";
+                  } else {
+                    btnStatus1 = "btn-danger";
+                    namestatus1 = activity1Name;
+                  }
+
+                  if (activity2DocId == "0") {
+                    btnStatus2 = "btn-light";
+                    namestatus2 = "13 - 17";
+                  } else {
+                    btnStatus2 = "btn-danger";
+                    namestatus2 = activity2Name;
+                  }
+
+                  if (activity3DocId == "0") {
+                    btnStatus3 = "btn-light";
+                    namestatus3 = "19 - 23";
+                  } else {
+                    btnStatus3 = "btn-danger";
+                    namestatus3 = activity3Name;
+                  }
+
+                  console.log(
+                    $("#monthFormSelect").val() +
+                      $("#yearFormSelect").val() +
+                      new Date().getMonth() +
+                      new Date().getFullYear()
+                  );
+                  if (
+                    dayNum == dayToday &&
+                    parseInt($("#monthFormSelect").val()) ==
+                      new Date().getMonth() &&
+                    parseInt($("#yearFormSelect").val()) ==
+                      new Date().getFullYear()
+                  ) {
+                    $(`#${dayId}`).css("background-color", "#A2CDF2");
+                  }
+
+                  let proCode = `
+            
+                    <div class="justify-content-between"> 
+                  
+                     <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">${
+                       dayNum + " " + monthName
+                     }</div>
+                  
+                     <div class="row m-1">
+                    
+                    <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus1} </button>
+                  
+                    <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus2}</button>
+                  
+                    <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3}  answerBtn border nightButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;">${namestatus3}</button>
+                  
+                    </div>
+                    
+                    </div>
+                  
+                    `;
+
+                  products.innerHTML += proCode;
+                }
+              }
+            }
+
+            $("#goButton").prop("disabled", false);
+            $("#warningTitleBack").css("display", "none");
+
+            alert("Program başarılı bir şekilde eklendi");
+          } catch (e) {
+            console.error("Error adding document: ", e);
+          }
+        }
+      } else {
+        if (
+          reservationStatusSelect.value == "0" ||
+          paymentInfoSelect.value == "0" ||
+          programCategorySelect.value == "" ||
+          programCorporationText.value == "" ||
+          programNameText.value == "" ||
+          programNameSurNameText.value == "" ||
+          programTelephonenumberText.value == ""
+        ) {
+          alert("Lütfen tüm alanları doldurun.");
+
+          if (reservationStatusSelect.value == "0") {
+            reservationStatusSelect.classList.add("is-invalid");
+          } else {
+            reservationStatusSelect.classList.remove("is-invalid");
           }
 
-          alert("Program başarılı bir şekilde eklendi");
+          if (paymentInfoSelect.value == "0") {
+            paymentInfoSelect.classList.add("is-invalid");
+          } else {
+            paymentInfoSelect.classList.remove("is-invalid");
+          }
 
-          window.location.reload();
-        } catch (e) {
-          console.error("Error adding document: ", e);
+          if (programCategorySelect.value == "0") {
+            programCategorySelect.classList.add("is-invalid");
+          } else {
+            programCategorySelect.classList.remove("is-invalid");
+          }
+
+          if (programCorporationText.value == "") {
+            programCorporationText.classList.add("is-invalid");
+          } else {
+            programCorporationText.classList.remove("is-invalid");
+          }
+
+          if (programNameText.value == "") {
+            programNameText.classList.add("is-invalid");
+          } else {
+            programNameText.classList.remove("is-invalid");
+          }
+
+          if (programNameSurNameText.value == "") {
+            programNameSurNameText.classList.add("is-invalid");
+          } else {
+            programNameSurNameText.classList.remove("is-invalid");
+          }
+
+          if (programTelephonenumberText.value == "") {
+            programTelephonenumberText.classList.add("is-invalid");
+          } else {
+            programTelephonenumberText.classList.remove("is-invalid");
+          }
+        } else {
+          var docIdAdd = "";
+          try {
+            const docRefProgram = await addDoc(collection(db, "ProgramList"), {
+              programSessionArrayList: programSessionArrayList,
+              reservationStatus: reservationStatusSelect.value,
+              paymentInfo: paymentInfoSelect.value,
+              managerAprovalRequest: manageAprovalRequest,
+              category: programCategorySelect.value,
+              corporation: programCorporationText.value,
+              name: programNameText.value,
+              description: programDescriptionText.value,
+              contactNameSurname: programNameSurNameText.value,
+              contactTelephone: programTelephonenumberText.value,
+              contactEmail: programEmailText.value,
+              notes: programNotesText.value,
+              tecnicalNotes: programTecnicalNotesText.value,
+              programDate: programDate,
+              saloon: saloonCode,
+              price: totalPrice,
+              programStatus: true,
+              addUser: currentUser.email,
+              addDate: new Date(),
+              editUser: "",
+              editDate: new Date(),
+              cancelUser: "",
+              cancelDAte: new Date(),
+            });
+
+            docIdAdd = docRefProgram.id;
+
+            var activityDocId1 = "";
+            var activityDocId2 = "";
+            var activityDocId3 = "";
+
+            if (programSessionArrayList.includes("1")) {
+              activityDocId1 = docIdAdd;
+              activity1Name = programCorporationText.value;
+            } else {
+              activityDocId1 = "0";
+              activity1Name = "";
+            }
+
+            if (programSessionArrayList.includes("2")) {
+              activityDocId2 = docIdAdd;
+              activity2Name = programCorporationText.value;
+            } else {
+              activityDocId2 = "0";
+              activity2Name = "";
+            }
+
+            if (programSessionArrayList.includes("3")) {
+              activityDocId3 = docIdAdd;
+              activity3Name = programCorporationText.value;
+            } else {
+              activityDocId3 = "0";
+              activity3Name = "";
+            }
+
+            if (dayAddAddDocument == "") {
+              let dayId = `day${extraKey}`;
+              const docRefVenue = await addDoc(
+                collection(db, "VenueTracking"),
+                {
+                  activity1DocId: activityDocId1,
+                  activity1Name: activity1Name,
+                  activity2DocId: activityDocId2,
+                  activity2Name: activity2Name,
+                  activity3DocId: activityDocId3,
+                  activity3Name: activity3Name,
+                  saloon: saloonCode,
+                  day: dayId,
+                  month: month,
+                  year: year,
+                }
+              );
+            } else {
+              const updatePromises = [];
+
+              if (programSessionArrayList.includes("1")) {
+                const docRefUpdate = doc(
+                  db,
+                  "VenueTracking",
+                  dayAddAddDocument
+                );
+
+                updatePromises.push(
+                  updateDoc(docRefUpdate, {
+                    activity1DocId: activityDocId1,
+                    activity1Name: activity1Name,
+                  })
+                );
+              }
+
+              if (programSessionArrayList.includes("2")) {
+                const docRefUpdate = doc(
+                  db,
+                  "VenueTracking",
+                  dayAddAddDocument
+                );
+
+                updatePromises.push(
+                  updateDoc(docRefUpdate, {
+                    activity2DocId: activityDocId2,
+                    activity2Name: activity2Name,
+                  })
+                );
+              }
+
+              if (programSessionArrayList.includes("3")) {
+                const docRefUpdate = doc(
+                  db,
+                  "VenueTracking",
+                  dayAddAddDocument
+                );
+
+                updatePromises.push(
+                  updateDoc(docRefUpdate, {
+                    activity3DocId: activityDocId3,
+                    activity3Name: activity3Name,
+                  })
+                );
+              }
+
+              await Promise.all(updatePromises);
+            }
+
+            programTableContainer.style.display = "";
+            addEditProgramContainer.style.display = "none";
+            addEditButtonStatus = "";
+
+            morningButton.classList.add("btn-light");
+            morningButton.classList.remove("btn-danger");
+
+            afternoonButton.classList.add("btn-light");
+            afternoonButton.classList.remove("btn-danger");
+
+            nightButton.classList.add("btn-light");
+            nightButton.classList.remove("btn-danger");
+
+            allDayButton.classList.add("btn-light");
+            allDayButton.classList.remove("btn-danger");
+
+            morningButton.disabled = false;
+            afternoonButton.disabled = false;
+            nightButton.disabled = false;
+            allDayButton.disabled = false;
+
+            totalPrice = 0;
+            priceInfoText.value = 0 + " TL";
+            priceArrayList.length = 0;
+            programSessionArrayList.length = 0;
+            console.log(priceArrayList.length + " sadas");
+            programCancelButton.style.display = "none";
+
+            $(`td`).css("background-color", "White");
+
+            for (let i = 1; i <= 42; i++) {
+              let dayId = `day${i}`;
+
+              const products = document.querySelector(`#${dayId}`);
+              products.innerHTML = "";
+            }
+
+            var firstDayOfMonth = getFirstDayOfMonth(year, month);
+            // Ocak 0. İndexeSahiptir
+
+            var daysInMonth = getDaysInMonth(year, month);
+
+            var daysNumber = firstDayOfMonth + daysInMonth - 1;
+
+            $("#goButton").prop("disabled", true);
+            $("#warningTitleBack").css("display", "");
+            $("#warningTitle").html("Liste Güncelleniyor! Lütfen Bekleyin!");
+
+            for (let i = firstDayOfMonth; i <= daysNumber; i++) {
+              let dayId = `day${i}`;
+
+              const products = document.querySelector(`#${dayId}`);
+
+              let dayNum = i - firstDayOfMonth + 1;
+              var daysDocId = "0";
+              var firebaseDay = "0";
+              var activity1Name = "";
+              var activity1DocId = "0";
+              var activity2Name = "";
+              var activity2DocId = "0";
+              var activity3Name = "";
+              var activity3DocId = "0";
+
+              const monthArray = [
+                "Ocak",
+                "Şubat",
+                "Mart",
+                "Nisan",
+                "Mayıs",
+                "Haziran",
+                "Temmuz",
+                "Ağustos",
+                "Eylül",
+                "Ekim",
+                "Kasım",
+                "Aralık",
+              ];
+
+              var monthName = monthArray[month];
+
+              let InvWritingItem = [];
+
+              if (!products) {
+                continue;
+              } else {
+                InvWritingItem = [
+                  daysDocId,
+                  activity1DocId,
+                  activity2DocId,
+                  activity3DocId,
+                  activity1Name,
+                  activity2Name,
+                  activity3Name,
+                ];
+                const getData = query(
+                  collection(db, "VenueTracking"),
+                  where("year", "==", year),
+                  where("month", "==", month),
+                  where("day", "==", dayId),
+                  where("saloon", "==", saloonCode)
+                );
+
+                const querySnapshot = await getDocs(getData);
+
+                querySnapshot.forEach((doc) => {
+                  const daysDocument = doc.id;
+
+                  daysDocId = daysDocument;
+                  activity1DocId = doc.data().activity1DocId;
+                  activity1Name = doc.data().activity1Name;
+
+                  activity2DocId = doc.data().activity2DocId;
+                  activity2Name = doc.data().activity2Name;
+
+                  activity3DocId = doc.data().activity3DocId;
+                  activity3Name = doc.data().activity3Name;
+
+                  console.log(activity3DocId + " dasa");
+
+                  InvWritingItem = [
+                    daysDocId,
+                    activity1DocId,
+                    activity2DocId,
+                    activity3DocId,
+                    activity1Name,
+                    activity2Name,
+                    activity3Name,
+                  ];
+                });
+
+                createInvWritingArray(InvWritingItem);
+
+                function createInvWritingArray([
+                  daysDocId,
+                  activity1DocId,
+                  activity2DocId,
+                  activity3DocId,
+                  activity1Name,
+                  activity2Name,
+                  activity3Name,
+                ]) {
+                  var btnStatus1 = "";
+                  var btnStatus2 = "";
+                  var btnStatus3 = "";
+                  var namestatus1 = "";
+                  var namestatus2 = "";
+                  var namestatus3 = "";
+
+                  console.log(activity3DocId);
+
+                  if (activity1DocId == "0") {
+                    btnStatus1 = "btn-light";
+                    namestatus1 = "09 - 12";
+                  } else {
+                    btnStatus1 = "btn-danger";
+                    namestatus1 = activity1Name;
+                  }
+
+                  if (activity2DocId == "0") {
+                    btnStatus2 = "btn-light";
+                    namestatus2 = "13 - 17";
+                  } else {
+                    btnStatus2 = "btn-danger";
+                    namestatus2 = activity2Name;
+                  }
+
+                  if (activity3DocId == "0") {
+                    btnStatus3 = "btn-light";
+                    namestatus3 = "19 - 23";
+                  } else {
+                    btnStatus3 = "btn-danger";
+                    namestatus3 = activity3Name;
+                  }
+
+                  console.log(
+                    $("#monthFormSelect").val() +
+                      $("#yearFormSelect").val() +
+                      new Date().getMonth() +
+                      new Date().getFullYear()
+                  );
+                  if (
+                    dayNum == dayToday &&
+                    parseInt($("#monthFormSelect").val()) ==
+                      new Date().getMonth() &&
+                    parseInt($("#yearFormSelect").val()) ==
+                      new Date().getFullYear()
+                  ) {
+                    $(`#${dayId}`).css("background-color", "#A2CDF2");
+                  }
+
+                  let proCode = `
+            
+                    <div class="justify-content-between"> 
+                  
+                     <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">${
+                       dayNum + " " + monthName
+                     }</div>
+                  
+                     <div class="row m-1">
+                    
+                    <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus1} </button>
+                  
+                    <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus2}</button>
+                  
+                    <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3}  answerBtn border nightButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;">${namestatus3}</button>
+                  
+                    </div>
+                    
+                    </div>
+                  
+                    `;
+
+                  products.innerHTML += proCode;
+                }
+              }
+            }
+
+            $("#goButton").prop("disabled", false);
+            $("#warningTitleBack").css("display", "none");
+
+            alert("Program başarılı bir şekilde eklendi");
+          } catch (e) {
+            console.error("Error adding document: ", e);
+          }
         }
       }
     }
@@ -1358,6 +2308,12 @@ $("#programAddEditSuccessButton").on("click", async function () {
   }
 });
 
+priceInfoText.onchange = function () {
+  totalPrice = priceInfoText.value;
+
+  priceInfoText.value = totalPrice + " TL";
+};
+
 $("#programAddEditCancelButton").on("click", function () {
   programTableContainer.style.display = "";
   addEditProgramContainer.style.display = "none";
@@ -1381,7 +2337,37 @@ $("#programAddEditCancelButton").on("click", function () {
   allDayButton.disabled = false;
 
   totalPrice = 0;
-  priceInfoText.innerHTML = 0 + " TL";
+  priceInfoText.value = 0 + " TL";
+  priceArrayList.length = 0;
+  programSessionArrayList.length = 0;
+  console.log(priceArrayList.length + " sadas");
+  programCancelButton.style.display = "none";
+});
+
+$("#backButton").on("click", function () {
+  programTableContainer.style.display = "";
+  addEditProgramContainer.style.display = "none";
+  addEditButtonStatus = "";
+
+  morningButton.classList.add("btn-light");
+  morningButton.classList.remove("btn-danger");
+
+  afternoonButton.classList.add("btn-light");
+  afternoonButton.classList.remove("btn-danger");
+
+  nightButton.classList.add("btn-light");
+  nightButton.classList.remove("btn-danger");
+
+  allDayButton.classList.add("btn-light");
+  allDayButton.classList.remove("btn-danger");
+
+  morningButton.disabled = false;
+  afternoonButton.disabled = false;
+  nightButton.disabled = false;
+  allDayButton.disabled = false;
+
+  totalPrice = 0;
+  priceInfoText.value = 0 + " TL";
   priceArrayList.length = 0;
   programSessionArrayList.length = 0;
   console.log(priceArrayList.length + " sadas");
@@ -1398,6 +2384,11 @@ $("#morningButton").on("click", function () {
       return item !== morningPrice;
     });
 
+    if (programSessionArrayList.length < 3) {
+      allDayButton.classList.add("btn-light");
+      allDayButton.classList.remove("btn-danger");
+    }
+
     console.log(priceArrayList + " " + programSessionArrayList);
 
     morningButton.classList.remove("btn-danger");
@@ -1407,12 +2398,17 @@ $("#morningButton").on("click", function () {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
+    totalPrice = Math.round(total * 100) / 100;
 
-    priceInfoText.innerHTML = totalPrice + " TL";
+    priceInfoText.value = totalPrice + " TL";
   } else {
     programSessionArrayList.push("1");
     priceArrayList.push(morningPrice);
+
+    if (programSessionArrayList.length == 3) {
+      allDayButton.classList.remove("btn-light");
+      allDayButton.classList.add("btn-danger");
+    }
 
     console.log(priceArrayList + " " + programSessionArrayList);
 
@@ -1423,9 +2419,9 @@ $("#morningButton").on("click", function () {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
+    totalPrice = Math.round(total * 100) / 100;
 
-    priceInfoText.innerHTML = totalPrice + " TL";
+    priceInfoText.value = totalPrice + " TL";
   }
 });
 
@@ -1439,6 +2435,11 @@ $("#afternoonButton").on("click", function () {
       return item !== afternoonPrice;
     });
 
+    if (programSessionArrayList.length < 3) {
+      allDayButton.classList.add("btn-light");
+      allDayButton.classList.remove("btn-danger");
+    }
+
     console.log(priceArrayList + " " + programSessionArrayList);
 
     afternoonButton.classList.remove("btn-danger");
@@ -1448,11 +2449,16 @@ $("#afternoonButton").on("click", function () {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
-    priceInfoText.innerHTML = totalPrice + " TL";
+    totalPrice = Math.round(total * 100) / 100;
+    priceInfoText.value = totalPrice + " TL";
   } else {
     programSessionArrayList.push("2");
     priceArrayList.push(afternoonPrice);
+
+    if (programSessionArrayList.length == 3) {
+      allDayButton.classList.remove("btn-light");
+      allDayButton.classList.add("btn-danger");
+    }
 
     console.log(priceArrayList + " " + programSessionArrayList);
     afternoonButton.classList.add("btn-danger");
@@ -1462,8 +2468,8 @@ $("#afternoonButton").on("click", function () {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
-    priceInfoText.innerHTML = totalPrice + " TL";
+    totalPrice = Math.round(total * 100) / 100;
+    priceInfoText.value = totalPrice + " TL";
   }
 });
 
@@ -1477,6 +2483,11 @@ $("#nightButton").on("click", function () {
       return item !== nightPrice;
     });
 
+    if (programSessionArrayList.length < 3) {
+      allDayButton.classList.add("btn-light");
+      allDayButton.classList.remove("btn-danger");
+    }
+
     console.log(priceArrayList + " " + programSessionArrayList);
 
     nightButton.classList.remove("btn-danger");
@@ -1486,11 +2497,16 @@ $("#nightButton").on("click", function () {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
-    priceInfoText.innerHTML = totalPrice + " TL";
+    totalPrice = Math.round(total * 100) / 100;
+    priceInfoText.value = totalPrice + " TL";
   } else {
     programSessionArrayList.push("3");
     priceArrayList.push(nightPrice);
+
+    if (programSessionArrayList.length == 3) {
+      allDayButton.classList.remove("btn-light");
+      allDayButton.classList.add("btn-danger");
+    }
 
     console.log(priceArrayList + " " + programSessionArrayList);
 
@@ -1501,13 +2517,16 @@ $("#nightButton").on("click", function () {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
-    priceInfoText.innerHTML = totalPrice + " TL";
+    totalPrice = Math.round(total * 100) / 100;
+    priceInfoText.value = totalPrice + " TL";
   }
 });
 
 $("#allDayButton").on("click", function () {
-  if (programSessionArrayList.length > 0) {
+  if (
+    programSessionArrayList.length >= 0 &&
+    programSessionArrayList.length < 3
+  ) {
     programSessionArrayList.length = 0;
     programSessionArrayList.push("1");
     programSessionArrayList.push("2");
@@ -1532,33 +2551,29 @@ $("#allDayButton").on("click", function () {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
-    priceInfoText.innerHTML = totalPrice + " TL";
-  } else {
-    programSessionArrayList.push("1");
-    programSessionArrayList.push("2");
-    programSessionArrayList.push("3");
+    totalPrice = Math.round(total * 100) / 100;
+    priceInfoText.value = totalPrice + " TL";
+  } else if (programSessionArrayList.length == 3) {
+    programSessionArrayList = [];
 
-    priceArrayList.push(morningPrice);
-    priceArrayList.push(afternoonPrice);
-    priceArrayList.push(nightPrice);
+    priceArrayList = [];
 
-    morningButton.classList.remove("btn-light");
-    afternoonButton.classList.remove("btn-light");
-    nightButton.classList.remove("btn-light");
-    allDayButton.classList.remove("btn-light");
+    morningButton.classList.add("btn-light");
+    afternoonButton.classList.add("btn-light");
+    nightButton.classList.add("btn-light");
+    allDayButton.classList.add("btn-light");
 
-    morningButton.classList.add("btn-danger");
-    afternoonButton.classList.add("btn-danger");
-    nightButton.classList.add("btn-danger");
-    allDayButton.classList.add("btn-danger");
+    morningButton.classList.remove("btn-danger");
+    afternoonButton.classList.remove("btn-danger");
+    nightButton.classList.remove("btn-danger");
+    allDayButton.classList.remove("btn-danger");
 
     let total = priceArrayList.reduce((accumulator, currentValue) => {
       return accumulator + currentValue;
     }, 0);
 
-    totalPrice = total;
-    priceInfoText.innerHTML = totalPrice + " TL";
+    totalPrice = Math.round(total * 100) / 100;
+    priceInfoText.value = totalPrice + " TL";
   }
 });
 

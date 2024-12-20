@@ -1,28 +1,57 @@
-
 * {
-
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-
-}
-
-
-html {
-
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 a {
-
- text-decoration: none;
-
+  text-decoration: none;
 }
 
 .offcanvas {
+  background: rgba(255, 255, 255, 0.275);
+}
 
-    background: rgba(199, 216, 249, 0.275);
-    
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
+.bottomLink {
+  color: black;
+  margin: 5px;
+}
+
+body {
+  justify-content: center;
+  background-color: #ffffff;
+
+  height: 100vh; /* Sayfa yüksekliğini tam ekran yapmak için */
+  margin: 0; /* Sayfa kenar boşluklarını sıfırlama */
+}
+
+#EBBKültürSantLogo {
+  width: auto;
+  height: 100px;
+  margin: 25px;
+}
+
+.container-lg {
+  padding: 0px;
+}
+
+.navbar {
+  padding: 0px;
+  background-color: #ffffff;
+}
+
+.nav-link.active {
+  color: #8b63e1; /* Seçili metnin rengi */
+  background-color: #ffffff; /* Seçili öğenin arka plan rengi */
+}
+
+.nav-link:hover + {
+  color: #95c9e5; /* Hover metin rengi */
+  background-color: #ffffff; /* Hover arka plan rengi */
 }

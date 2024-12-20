@@ -127,7 +127,7 @@
     </div>
 
     <div
-      class="container"
+      class="container-fluid"
       id="programTableContainer"
       style="margin-left: 22%; margin-top: 1%"
     >
@@ -137,7 +137,12 @@
         <div class="h3 text-primary m-auto pb-0 flex-fill mb-3 mt-3">
           Salon Takip
         </div>
+
+        
+
       </div>
+
+   
 
       <div
         class="container border rounded-2 d-flex mt-2 mb-2 border-primary justify-content-between"
@@ -150,9 +155,10 @@
         >
           <option value="1">İbrahim Erkal Dadaş KSM (Büyük Salon)</option>
           <option value="2">İbrahim Erkal Dadaş KSM (Küçük Salon)</option>
+          <option value="7">İbrahim Erkal Dadaş KSM (Fuaye)</option>
           <option value="3">Necip Fazıl KSM (Büyük Salon)</option>
-          <option value="4">Necip Fazıl KSM (Seminer Salanu 1)</option>
-          <option value="5">Necip Fazıl KSM (Seminer Salanu 2)</option>
+          <option value="4">Necip Fazıl KSM (Seminer Salonu 1)</option>
+          <option value="5">Necip Fazıl KSM (Seminer Salonu 2)</option>
           <option value="6">Necip Fazıl KSM (Fuaye)</option>
         </select>
 
@@ -189,6 +195,13 @@
         <button class="btn btn-primary ms-2 mb-2 mt-2 ps-5 pe-5" id="goButton">
           Git
         </button>
+      </div>
+
+      <div id="warningTitleBack" class="bg-warning mt-2 mb-2 rounded-2 p-2" style="display: flex; justify-content: center; align-items: center; display: none;">
+
+        <h4 style="margin: 0;" id="warningTitle">warningTitle</h4>
+
+
       </div>
 
       <div class="">
@@ -278,9 +291,26 @@
         <div id="addEditTitle" class="h3 text-primary m-3 pb-0 flex-fill">
           Program Ekle
         </div>
+
+        <button class= "btn btn-primary mb-3 mt-3 me-4" id="backButton">Geri Dön</button>
+
       </div>
 
-      <div class="container d-flex justify-content-between mt-3">
+      <div
+        class="container d-flex justify-content-between mt-3 border border-primary rounded-2 "
+      >
+        <div class="form-check ms-2 mt-2 mb-2 me-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="freeRequestCheck"
+          />
+          <label class="form-check-label" for="flexCheckIndeterminate">
+            Ücretsiz
+          </label>
+        </div>
+
         <button
           id="morningButton"
           class="btn btn-light"
@@ -310,19 +340,15 @@
           Tüm Gün
         </button>
 
-        <div
-          class="text-bg-danger text-wrap rounded-2"
-          style="
-            flex: 1;
-            margin: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-          "
-        >
-          <h3 id="priceInfoText">00.00 TL</h3>
-        </div>
+          <input type="text" class="form-control pe-5 bg-warning" id="priceInfoText" value="00.00 TL" style=" margin: 10px;; display: flex;
+          justify-content: center;
+          align-items: center;   
+          height: 50px;          
+          width: 200px;         
+          border: 1px solid #ccc;
+          text-align: center;    
+          box-sizing: border-box;"></input>
+ 
       </div>
 
       <h6 class="ms-3 mt-2">
@@ -395,6 +421,8 @@
             placeholder="Program Hakkında"
           ></textarea>
         </div>
+
+        <h5 class="text-primary ms-3">İletişim</h4>
 
         <div class="m-3">
           <input

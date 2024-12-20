@@ -1,0 +1,44 @@
+/* Medya Sorguları */
+@media (max-width: 400px) {
+  /* Navbar */
+  .navbar-toggler {
+    margin: 10px 0;
+  }
+
+  .container-lg {
+    padding: 10px;
+  }
+
+  /* Başkanın Mesajı ve Görsel */
+  .container-lg.d-flex {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  section img {
+    max-width: 100%;
+    margin: 10px auto;
+  }
+
+  /* Alt Bilgi */
+  .container-lg.d-flex {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .ms-5,
+  .me-5 {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 576px) {
+  h2,
+  h4 {
+    font-size: 1rem;
+  }
+
+  .bottomLink {
+    font-size: 0.8rem;
+  }
+}
