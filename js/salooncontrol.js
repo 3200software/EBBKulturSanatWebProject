@@ -288,162 +288,7 @@ $("#goButton").prop("disabled", true);
 $("#warningTitleBack").css("display", "");
 $("#warningTitle").html("Salon takip yüklenirken lütfen bekleyin!");
 
-for (let i = firstDayOfMonth; i <= daysNumber; i++) {
-  let dayId = `day${i}`;
-
-  const products = document.querySelector(`#${dayId}`);
-
-  let dayNum = i - firstDayOfMonth + 1;
-  var daysDocId = "0";
-  var firebaseDay = "0";
-  var activity1Name = "";
-  var activity1DocId = "0";
-  var activity2Name = "";
-  var activity2DocId = "0";
-  var activity3Name = "";
-  var activity3DocId = "0";
-
-  const monthArray = [
-    "Ocak",
-    "Şubat",
-    "Mart",
-    "Nisan",
-    "Mayıs",
-    "Haziran",
-    "Temmuz",
-    "Ağustos",
-    "Eylül",
-    "Ekim",
-    "Kasım",
-    "Aralık",
-  ];
-
-  var monthName = monthArray[month];
-
-  let InvWritingItem = [];
-
-  if (!products) {
-    continue;
-  } else {
-    InvWritingItem = [
-      daysDocId,
-      activity1DocId,
-      activity2DocId,
-      activity3DocId,
-      activity1Name,
-      activity2Name,
-      activity3Name,
-    ];
-    const getData = query(
-      collection(db, "VenueTracking"),
-      where("year", "==", year),
-      where("month", "==", month),
-      where("day", "==", dayId),
-      where("saloon", "==", saloonCode)
-    );
-    const querySnapshot = await getDocs(getData);
-
-    querySnapshot.forEach((doc) => {
-      const daysDocument = doc.id;
-
-      daysDocId = daysDocument;
-
-      activity1DocId = doc.data().activity1DocId;
-      activity1Name = doc.data().activity1Name;
-
-      activity2DocId = doc.data().activity2DocId;
-      activity2Name = doc.data().activity2Name;
-
-      activity3DocId = doc.data().activity3DocId;
-      activity3Name = doc.data().activity3Name;
-
-      InvWritingItem = [
-        daysDocId,
-        activity1DocId,
-        activity2DocId,
-        activity3DocId,
-        activity1Name,
-        activity2Name,
-        activity3Name,
-      ];
-    });
-
-    createInvWritingArray(InvWritingItem);
-
-    function createInvWritingArray([
-      daysDocId,
-      activity1DocId,
-      activity2DocId,
-      activity3DocId,
-      activity1Name,
-      activity2Name,
-      activity3Name,
-    ]) {
-      var btnStatus1 = "";
-      var btnStatus2 = "";
-      var btnStatus3 = "";
-      var namestatus1 = "";
-      var namestatus2 = "";
-      var namestatus3 = "";
-
-      console.log(activity3DocId);
-
-      if (activity1DocId == "0") {
-        btnStatus1 = "btn-light";
-        namestatus1 = "09 - 12";
-      } else {
-        btnStatus1 = "btn-danger";
-        namestatus1 = activity1Name;
-      }
-
-      if (activity2DocId == "0") {
-        btnStatus2 = "btn-light";
-        namestatus2 = "13 - 17";
-      } else {
-        btnStatus2 = "btn-danger";
-        namestatus2 = activity2Name;
-      }
-
-      if (activity3DocId == "0") {
-        btnStatus3 = "btn-light";
-        namestatus3 = "19 - 23";
-      } else {
-        btnStatus3 = "btn-danger";
-        namestatus3 = activity3Name;
-      }
-
-      if (dayNum == dayToday) {
-        $(`#${dayId}`).css("background-color", "#A2CDF2");
-      }
-
-      let proCode = `
-
-
-
-      <div class="justify-content-between"> 
-      
-         <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">${
-           dayNum + " " + monthName
-         }</div>
-      
-         <div class="row m-1">
-        
-        <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center; " >${namestatus1} </button>
-      
-        <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus2}</button>
-      
-        <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3} answerBtn border nightButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;">${namestatus3}</button>
-      
-        </div>
-        
-        </div>
-      
-        `;
-
-      products.innerHTML += proCode;
-    }
-  }
-}
+processDaysInMonth(firstDayOfMonth, daysNumber, month, year, saloonCode);
 
 $("#goButton").prop("disabled", false);
 $("#warningTitleBack").css("display", "none");
@@ -2630,3 +2475,124 @@ $("#logoutButton").on("click", function () {
       // An error happened.
     });
 });
+
+async function processDaysInMonth(
+  firstDayOfMonth,
+  daysNumber,
+  month,
+  year,
+  saloonCode
+) {
+  try {
+    const monthArray = [
+      "Ocak",
+      "Şubat",
+      "Mart",
+      "Nisan",
+      "Mayıs",
+      "Haziran",
+      "Temmuz",
+      "Ağustos",
+      "Eylül",
+      "Ekim",
+      "Kasım",
+      "Aralık",
+    ];
+
+    const monthName = monthArray[month];
+    const dayToday = new Date().getDate(); // Bugünün gün numarasını alın
+
+    for (let i = firstDayOfMonth; i <= daysNumber; i++) {
+      try {
+        let dayId = `day${i}`;
+        const products = document.querySelector(`#${dayId}`);
+        if (!products) {
+          continue;
+        }
+
+        let dayNum = i - firstDayOfMonth + 1;
+        let daysDocId = "0";
+        let activity1Name = "";
+        let activity1DocId = "0";
+        let activity2Name = "";
+        let activity2DocId = "0";
+        let activity3Name = "";
+        let activity3DocId = "0";
+
+        const getData = query(
+          collection(db, "VenueTracking"),
+          where("year", "==", year),
+          where("month", "==", month),
+          where("day", "==", dayId),
+          where("saloon", "==", saloonCode)
+        );
+
+        const querySnapshot = await getDocs(getData);
+
+        querySnapshot.forEach((doc) => {
+          const daysDocument = doc.id;
+
+          daysDocId = daysDocument;
+          activity1DocId = doc.data().activity1DocId;
+          activity1Name = doc.data().activity1Name;
+          activity2DocId = doc.data().activity2DocId;
+          activity2Name = doc.data().activity2Name;
+          activity3DocId = doc.data().activity3DocId;
+          activity3Name = doc.data().activity3Name;
+        });
+
+        createInvWritingArray([
+          daysDocId,
+          activity1DocId,
+          activity2DocId,
+          activity3DocId,
+          activity1Name,
+          activity2Name,
+          activity3Name,
+        ]);
+
+        function createInvWritingArray([
+          daysDocId,
+          activity1DocId,
+          activity2DocId,
+          activity3DocId,
+          activity1Name,
+          activity2Name,
+          activity3Name,
+        ]) {
+          let btnStatus1 = activity1DocId === "0" ? "btn-light" : "btn-danger";
+          let namestatus1 = activity1DocId === "0" ? "09 - 12" : activity1Name;
+
+          let btnStatus2 = activity2DocId === "0" ? "btn-light" : "btn-danger";
+          let namestatus2 = activity2DocId === "0" ? "13 - 17" : activity2Name;
+
+          let btnStatus3 = activity3DocId === "0" ? "btn-light" : "btn-danger";
+          let namestatus3 = activity3DocId === "0" ? "19 - 23" : activity3Name;
+
+          if (dayNum === dayToday) {
+            $(`#${dayId}`).css("background-color", "#A2CDF2");
+          }
+
+          let proCode = `
+            <div class="justify-content-between"> 
+              <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">
+                ${dayNum + " " + monthName}
+              </div>
+              <div class="row m-1">
+                <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus1}</button>
+                <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style="width: 100%; height:35px; table-layout: fixed;  white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus2}</button>
+                <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3} answerBtn border nightButton mt-1" style="width: 100%; height:35px;  table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus3}</button>
+              </div>
+            </div>
+          `;
+
+          products.innerHTML += proCode;
+        }
+      } catch (innerError) {
+        console.error(`Hata oluştu (dayId: day${i}):`, innerError);
+      }
+    }
+  } catch (error) {
+    console.error("Genel hata:", error);
+  }
+}
