@@ -353,8 +353,8 @@ $("body").on("click", ".morningButton", async function () {
       if (programDate < new Date()) {
         alert("Geçmiş bir tarihe program oluşturamazsınız!!");
       } else {
-        programTableContainer.style.display = "none";
-        addEditProgramContainer.style.display = "";
+        $("#programTableContainer").hide();
+        $("#addEditProgramContainer").show();
         addEditButtonStatus = "Add";
 
         if (saloonSessionArrayList.includes("1")) {
@@ -386,8 +386,8 @@ $("body").on("click", ".morningButton", async function () {
       }
     }
   } else {
-    programTableContainer.style.display = "none";
-    addEditProgramContainer.style.display = "";
+    $("#programTableContainer").hide();
+    $("#addEditProgramContainer").show();
     addEditButtonStatus = "Edit";
     programAddEditSuccessButton.innerHTML = "Güncelle";
     programCancelButton.style.display = "";
@@ -527,8 +527,8 @@ $("body").on("click", ".afternonButton", async function () {
       if (programDate < new Date()) {
         alert("Geçmiş bir tarihe program oluşturamazsınız!!");
       } else {
-        programTableContainer.style.display = "none";
-        addEditProgramContainer.style.display = "";
+        $("#programTableContainer").hide();
+        $("#addEditProgramContainer").show();
         addEditButtonStatus = "Add";
         if (saloonSessionArrayList.includes("1")) {
           morningButton.classList.remove("btn-light");
@@ -559,8 +559,8 @@ $("body").on("click", ".afternonButton", async function () {
       }
     }
   } else {
-    programTableContainer.style.display = "none";
-    addEditProgramContainer.style.display = "";
+    $("#programTableContainer").hide();
+    $("#addEditProgramContainer").show();
     addEditButtonStatus = "Edit";
     programAddEditSuccessButton.innerHTML = "Güncelle";
     programCancelButton.style.display = "";
@@ -702,8 +702,8 @@ $("body").on("click", ".nightButton", async function () {
         console.log(programDate + " " + new Date());
         alert("Geçmiş bir tarihe program oluşturamazsınız!!");
       } else {
-        programTableContainer.style.display = "none";
-        addEditProgramContainer.style.display = "";
+        $("#programTableContainer").hide();
+        $("#addEditProgramContainer").show();
         addEditButtonStatus = "Add";
         if (saloonSessionArrayList.includes("1")) {
           morningButton.classList.remove("btn-light");
@@ -734,8 +734,8 @@ $("body").on("click", ".nightButton", async function () {
       }
     }
   } else {
-    programTableContainer.style.display = "none";
-    addEditProgramContainer.style.display = "";
+    $("#programTableContainer").hide();
+    $("#addEditProgramContainer").show();
     addEditButtonStatus = "Edit";
     programAddEditSuccessButton.innerHTML = "Güncelle";
     programCancelButton.style.display = "";
@@ -857,6 +857,16 @@ $("#goButton").on("click", async function () {
   $("#warningTitleBack").css("display", "");
   $("#warningTitle").html("Seçtiğiniz tarih yüklenirken lütfen bekleyin!");
 
+  // Önce tüm satırları görünür yap
+  for (let row = 1; row <= 6; row++) {
+    const rowElement = document.querySelector(
+      `#calendar tbody tr:nth-child(${row})`
+    );
+    if (rowElement) {
+      rowElement.style.display = "";
+    }
+  }
+
   for (let i = firstDayOfMonth; i <= daysNumber; i++) {
     let dayId = `day${i}`;
 
@@ -910,6 +920,7 @@ $("#goButton").on("click", async function () {
         where("day", "==", dayId),
         where("saloon", "==", saloonCode)
       );
+
       const querySnapshot = await getDocs(getData);
 
       querySnapshot.forEach((doc) => {
@@ -924,8 +935,6 @@ $("#goButton").on("click", async function () {
 
         activity3DocId = doc.data().activity3DocId;
         activity3Name = doc.data().activity3Name;
-
-        console.log(activity3DocId + " dasa");
 
         InvWritingItem = [
           daysDocId,
@@ -956,8 +965,6 @@ $("#goButton").on("click", async function () {
         var namestatus2 = "";
         var namestatus3 = "";
 
-        console.log(activity3DocId);
-
         if (activity1DocId == "0") {
           btnStatus1 = "btn-light";
           namestatus1 = "09 - 12";
@@ -982,12 +989,6 @@ $("#goButton").on("click", async function () {
           namestatus3 = activity3Name;
         }
 
-        console.log(
-          $("#monthFormSelect").val() +
-            $("#yearFormSelect").val() +
-            new Date().getMonth() +
-            new Date().getFullYear()
-        );
         if (
           dayNum == dayToday &&
           parseInt($("#monthFormSelect").val()) == new Date().getMonth() &&
@@ -997,28 +998,42 @@ $("#goButton").on("click", async function () {
         }
 
         let proCode = `
-  
           <div class="justify-content-between"> 
-        
-           <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">${
-             dayNum + " " + monthName
-           }</div>
-        
-           <div class="row m-1">
-          
-          <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus1} </button>
-        
-          <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus2}</button>
-        
-          <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3}  answerBtn border nightButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;">${namestatus3}</button>
-        
+            <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">
+              ${dayNum + " " + monthName}
+            </div>
+            <div class="row m-1">
+              <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus1}</button>
+              <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus2}</button>
+              <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3} answerBtn border nightButton mt-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus3}</button>
+            </div>
           </div>
-          
-          </div>
-        
-          `;
+        `;
 
         products.innerHTML += proCode;
+      }
+    }
+  }
+
+  // Boş satırları kontrol et ve gizle
+  for (let row = 6; row >= 1; row--) {
+    const rowElement = document.querySelector(
+      `#calendar tbody tr:nth-child(${row})`
+    );
+    if (rowElement) {
+      const cells = rowElement.querySelectorAll("td");
+      let isEmpty = true;
+
+      cells.forEach((cell) => {
+        if (cell.querySelector(".text-bg-primary")) {
+          isEmpty = false;
+        }
+      });
+
+      if (isEmpty) {
+        rowElement.style.display = "none";
+      } else {
+        break; // İçi dolu bir satır bulunca döngüyü sonlandır
       }
     }
   }
@@ -1215,76 +1230,56 @@ $("#programCancelButton").on("click", async function () {
           activity2Name,
           activity3Name,
         ]) {
-          var btnStatus1 = "";
-          var btnStatus2 = "";
-          var btnStatus3 = "";
-          var namestatus1 = "";
-          var namestatus2 = "";
-          var namestatus3 = "";
+          let btnStatus1 = activity1DocId === "0" ? "btn-light" : "btn-danger";
+          let namestatus1 = activity1DocId === "0" ? "09 - 12" : activity1Name;
 
-          console.log(activity3DocId);
+          let btnStatus2 = activity2DocId === "0" ? "btn-light" : "btn-danger";
+          let namestatus2 = activity2DocId === "0" ? "13 - 17" : activity2Name;
 
-          if (activity1DocId == "0") {
-            btnStatus1 = "btn-light";
-            namestatus1 = "09 - 12";
-          } else {
-            btnStatus1 = "btn-danger";
-            namestatus1 = activity1Name;
-          }
+          let btnStatus3 = activity3DocId === "0" ? "btn-light" : "btn-danger";
+          let namestatus3 = activity3DocId === "0" ? "19 - 23" : activity3Name;
 
-          if (activity2DocId == "0") {
-            btnStatus2 = "btn-light";
-            namestatus2 = "13 - 17";
-          } else {
-            btnStatus2 = "btn-danger";
-            namestatus2 = activity2Name;
-          }
-
-          if (activity3DocId == "0") {
-            btnStatus3 = "btn-light";
-            namestatus3 = "19 - 23";
-          } else {
-            btnStatus3 = "btn-danger";
-            namestatus3 = activity3Name;
-          }
-
-          console.log(
-            $("#monthFormSelect").val() +
-              $("#yearFormSelect").val() +
-              new Date().getMonth() +
-              new Date().getFullYear()
-          );
-          if (
-            dayNum == dayToday &&
-            parseInt($("#monthFormSelect").val()) == new Date().getMonth() &&
-            parseInt($("#yearFormSelect").val()) == new Date().getFullYear()
-          ) {
+          if (dayNum === dayToday) {
             $(`#${dayId}`).css("background-color", "#A2CDF2");
           }
 
           let proCode = `
-    
             <div class="justify-content-between"> 
-          
-             <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">${
-               dayNum + " " + monthName
-             }</div>
-          
-             <div class="row m-1">
-            
-            <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus1} </button>
-          
-            <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;" >${namestatus2}</button>
-          
-            <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3}  answerBtn border nightButton mt-1" style= "width: 155px; height:35px; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis; text-align: center;">${namestatus3}</button>
-          
+              <div class="text-bg-primary text-wrap m-1" id="customerAproveReasonForRejectionText" style="border-radius: 5px;">
+                ${dayNum + " " + monthName}
+              </div>
+              <div class="row m-1">
+                <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus1}</button>
+                <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus2}</button>
+                <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3} answerBtn border nightButton mt-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus3}</button>
+              </div>
             </div>
-            
-            </div>
-          
-            `;
+          `;
 
           products.innerHTML += proCode;
+        }
+      }
+    }
+
+    // Boş satırları kontrol et ve gizle
+    for (let row = 6; row >= 1; row--) {
+      const rowElement = document.querySelector(
+        `#calendar tbody tr:nth-child(${row})`
+      );
+      if (rowElement) {
+        const cells = rowElement.querySelectorAll("td");
+        let isEmpty = true;
+
+        cells.forEach((cell) => {
+          if (cell.querySelector(".text-bg-primary")) {
+            isEmpty = false;
+          }
+        });
+
+        if (isEmpty) {
+          rowElement.style.display = "none";
+        } else {
+          break; // İçi dolu bir satır bulunca döngüyü sonlandır
         }
       }
     }
@@ -2160,8 +2155,8 @@ priceInfoText.onchange = function () {
 };
 
 $("#programAddEditCancelButton").on("click", function () {
-  programTableContainer.style.display = "";
-  addEditProgramContainer.style.display = "none";
+  $("#programTableContainer").show();
+  $("#addEditProgramContainer").hide();
   addEditButtonStatus = "";
 
   morningButton.classList.add("btn-light");
@@ -2190,8 +2185,8 @@ $("#programAddEditCancelButton").on("click", function () {
 });
 
 $("#backButton").on("click", function () {
-  programTableContainer.style.display = "";
-  addEditProgramContainer.style.display = "none";
+  $("#programTableContainer").show();
+  $("#addEditProgramContainer").hide();
   addEditButtonStatus = "";
 
   morningButton.classList.add("btn-light");
@@ -2500,8 +2495,19 @@ async function processDaysInMonth(
     ];
 
     const monthName = monthArray[month];
-    const dayToday = new Date().getDate(); // Bugünün gün numarasını alın
+    const dayToday = new Date().getDate();
 
+    // Önce tüm satırları görünür yap
+    for (let row = 1; row <= 6; row++) {
+      const rowElement = document.querySelector(
+        `#calendar tbody tr:nth-child(${row})`
+      );
+      if (rowElement) {
+        rowElement.style.display = "";
+      }
+    }
+
+    // Takvimi oluştur
     for (let i = firstDayOfMonth; i <= daysNumber; i++) {
       try {
         let dayId = `day${i}`;
@@ -2531,7 +2537,6 @@ async function processDaysInMonth(
 
         querySnapshot.forEach((doc) => {
           const daysDocument = doc.id;
-
           daysDocId = daysDocument;
           activity1DocId = doc.data().activity1DocId;
           activity1Name = doc.data().activity1Name;
@@ -2580,8 +2585,8 @@ async function processDaysInMonth(
               </div>
               <div class="row m-1">
                 <button type="button" data-key1="" data-key="${activity1DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus1} answerBtn border morningButton mt-1 p-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus1}</button>
-                <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style="width: 100%; height:35px; table-layout: fixed;  white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus2}</button>
-                <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3} answerBtn border nightButton mt-1" style="width: 100%; height:35px;  table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus3}</button>
+                <button type="button" data-key2="" data-key="${activity2DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus2} answerBtn border afternonButton mt-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus2}</button>
+                <button type="button" data-key3="" data-key="${activity3DocId}" data-extra-key="${i}" data-third-key="${firstDayOfMonth}" data-daysDocId-key="${daysDocId}" class="btn ${btnStatus3} answerBtn border nightButton mt-1" style="width: 100%; height:35px; table-layout: fixed; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: center; vertical-align: middle;">${namestatus3}</button>
               </div>
             </div>
           `;
@@ -2592,7 +2597,62 @@ async function processDaysInMonth(
         console.error(`Hata oluştu (dayId: day${i}):`, innerError);
       }
     }
+
+    // Boş satırları kontrol et ve gizle
+    for (let row = 6; row >= 1; row--) {
+      const rowElement = document.querySelector(
+        `#calendar tbody tr:nth-child(${row})`
+      );
+      if (rowElement) {
+        const cells = rowElement.querySelectorAll("td");
+        let isEmpty = true;
+
+        cells.forEach((cell) => {
+          if (cell.querySelector(".text-bg-primary")) {
+            isEmpty = false;
+          }
+        });
+
+        if (isEmpty) {
+          rowElement.style.display = "none";
+        } else {
+          break; // İçi dolu bir satır bulunca döngüyü sonlandır
+        }
+      }
+    }
   } catch (error) {
     console.error("Genel hata:", error);
   }
+}
+
+function hideEmptyLastRow() {
+  // Son satırın hücrelerini seç (day36-day42)
+  const lastRowCells = Array.from({ length: 7 }, (_, i) =>
+    document.getElementById(`day${36 + i}`)
+  );
+
+  // Tüm hücrelerin boş olup olmadığını kontrol et
+  const allEmpty = lastRowCells.every((cell) => !cell.textContent.trim());
+
+  // Eğer tüm hücreler boşsa
+  if (allEmpty) {
+    // Son satırı bul ve gizle
+    const lastRow = lastRowCells[0].parentElement;
+    lastRow.style.display = "none";
+  }
+}
+
+// Takvim oluşturulduktan sonra bu fonksiyonu çağır
+function createCalendar() {
+  // ... existing calendar creation code ...
+
+  // Takvim oluşturulduktan sonra son satırı kontrol et
+  hideEmptyLastRow();
+}
+
+async function createCalendarTable() {
+  // ... existing calendar creation code ...
+
+  // Takvim oluşturulduktan sonra son satırı kontrol et
+  hideEmptyLastRow();
 }

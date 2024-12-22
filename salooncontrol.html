@@ -24,10 +24,17 @@
     <link rel="stylesheet" href="css/mobile.css" />
     <link rel="stylesheet" href="css/tablet.css" />
     <link rel="stylesheet" href="css/activity.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <script type="module" src="js/salooncontrol.js"></script>
 
     <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
       table {
         width: 100%;
         border-collapse: separate;
@@ -36,7 +43,19 @@
         table-layout: fixed;
       }
 
-      th,
+      th {
+        border: 1px solid black;
+        padding: 8px;
+        border-radius: 10px;
+        text-align: center;
+        width: calc(100% / 7);
+        height: 40px;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       td {
         border: 1px solid black;
         padding: 10px;
@@ -77,8 +96,36 @@
       }
 
       .main-content {
+        flex: 1;
         position: relative;
         z-index: 1;
+      }
+
+      footer {
+        height: 50px;
+        background-color: var(--bs-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: auto;
+      }
+
+      .container-fluid {
+        margin-bottom: 50px;
+      }
+
+      #addEditProgramContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        display: none;
+      }
+
+      #addEditProgramContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
       }
     </style>
   </head>
@@ -161,10 +208,12 @@
         id="programTableContainer"
       >
         <div
-          class="containerTitle d-flex justify-content-between border-bottom border-primary"
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
         >
-          <button class="btn btn-primary mb-3 mt-3" id="menuButton">Menü</button>
-          <div class="h3 text-primary pb-0 mb-3 mt-3">
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">
             Salon Takip
           </div>
         </div>
@@ -223,13 +272,10 @@
         </div>
 
         <div id="warningTitleBack" class="bg-warning mt-2 mb-2 rounded-2 p-2" style="display: flex; justify-content: center; align-items: center; display: none;">
-
           <h4 style="margin: 0;" id="warningTitle">warningTitle</h4>
-
-
         </div>
 
-        <div class="container-fluid">
+        <div class="container-fluid" style="margin-bottom: 50px;">
           <table id="calendar">
             <thead>
               <tr>
@@ -306,13 +352,16 @@
       </div>
 
       <div
-        class="container-fluid border-start height"
+        class="container-fluid"
         id="addEditProgramContainer"
-        style="margin-top: 1%; margin-left: 22%; display: none"
+        style="margin-top: 1%;"
       >
         <div
           class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
         >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton2">
+            <i class="fas fa-bars"></i>
+          </button>
           <div id="addEditTitle" class="h3 text-primary m-3 pb-0 flex-fill">
             Program Ekle
           </div>
@@ -322,16 +371,17 @@
         </div>
 
         <div
-          class="container d-flex justify-content-between mt-3 border border-primary rounded-2 "
+          class="container-fluid d-flex justify-content-between mt-3 border border-primary rounded-2"
+          style="width: 100%;"
         >
-          <div class="form-check ms-2 mt-2 mb-2 me-2">
+          <div class="form-check d-flex align-items-center ms-2 mt-2 mb-2 me-2">
             <input
               class="form-check-input"
               type="checkbox"
               value=""
               id="freeRequestCheck"
             />
-            <label class="form-check-label" for="flexCheckIndeterminate">
+            <label class="form-check-label ms-2 mb-0" for="flexCheckIndeterminate">
               Ücretsiz
             </label>
           </div>
@@ -365,163 +415,175 @@
             Tüm Gün
           </button>
 
-            <input type="text" class="form-control pe-5 bg-warning" id="priceInfoText" value="00.00 TL" style=" margin: 10px;; display: flex;
-            justify-content: center;
-            align-items: center;   
-            height: 50px;          
-            width: 200px;         
-            border: 1px solid #ccc;
-            text-align: center;    
-            box-sizing: border-box;"></input>
- 
+          <input 
+            type="text" 
+            class="form-control pe-5 bg-warning" 
+            id="priceInfoText" 
+            value="00.00 TL" 
+            style="margin: 5px; 
+                   height: 50px;          
+                   width: 200px;         
+                   border: 1px solid #ccc;
+                   text-align: center;    
+                   box-sizing: border-box;
+                   display: flex;
+                   align-items: center;
+                   justify-content: center;"
+          ></input>
         </div>
 
         <h6 class="ms-3 mt-2">
           "*" ile işaretli alanların doldurulması zorunludur!
         </h6>
 
-        <div class="d-flex justify-content-between mt-3 mb-3 ms-3">
-          <select class="form-select me-2" name="" id="reservationStatusSelect">
-            <option value="0" selected>* Rezervasyon</option>
-            <option value="1">Ön Rezervasyon</option>
-            <option value="2">Kesin Rezervasyon</option>
-          </select>
+        <div class="container-fluid border border-primary rounded-2 p-3">
+          <div class="d-flex justify-content-between mt-3 mb-3">
+            <select class="form-select me-2" name="" id="reservationStatusSelect">
+              <option value="0" selected>* Rezervasyon</option>
+              <option value="1">Ön Rezervasyon</option>
+              <option value="2">Kesin Rezervasyon</option>
+            </select>
 
-          <select class="form-select ms-2 me-2" name="" id="paymentInfoSelect">
-            <option value="0" selected>* Ödeme</option>
-            <option value="1">Ödeme Yapıldı</option>
-            <option value="2">Ödeme Yapılmadı</option>
-          </select>
+            <select class="form-select ms-2 me-2" name="" id="paymentInfoSelect">
+              <option value="0" selected>* Ödeme</option>
+              <option value="1">Ödeme Yapıldı</option>
+              <option value="2">Ödeme Yapılmadı</option>
+            </select>
 
-          <div class="form-check ms-2" style="width: 300px">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              value=""
-              id="managerAprovalRequestCheck"
-            />
-            <label class="form-check-label" for="flexCheckIndeterminate">
-              Yönetici Onayı
-            </label>
-          </div>
-        </div>
-
-        <div class="container d-flex">
-          <select
-            class="form-select me-1 ms-1"
-            id="programCategorySelect"
-            aria-label="Default select example"
-          >
-            <option value="0" selected>* Kategori</option>
-            <option value="1">Tiyatro</option>
-            <option value="2">Konser</option>
-            <option value="3">Toplantı/Seminer</option>
-          </select>
-        </div>
-
-        <div class="m-3">
-          <input
-            type="text"
-            class="form-control"
-            id="programCorporationText"
-            placeholder=" * Programı Düzenleyen Kurum/Firma "
-          />
-        </div>
-
-        <div class="">
-          <div class="m-3">
-            <input
-              type="text"
-              class="form-control"
-              id="programNameText"
-              placeholder=" * Program Adı"
-            />
+            <div class="form-check ms-2" style="width: 300px">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="managerAprovalRequestCheck"
+              />
+              <label class="form-check-label" for="flexCheckIndeterminate">
+                Yönetici Onayı
+              </label>
+            </div>
           </div>
 
-          <div class="m-3">
-            <textarea
-              class="form-control"
-              id="programDescriptionText"
-              rows="3"
-              placeholder="Program Hakkında"
-            ></textarea>
-          </div>
-
-          <h5 class="text-primary ms-3">İletişim</h4>
-
-          <div class="m-3">
-            <input
-              type="text"
-              class="form-control"
-              id="programNameSurNameText"
-              placeholder=" * Adı Soyadı"
-            />
-          </div>
-
-          <div class="m-3">
-            <input
-              type="tel"
-              class="form-control"
-              id="programTelephonenumberText"
-              placeholder=" * Telefon"
-            />
+          <div class="container d-flex">
+            <select
+              class="form-select me-1 ms-1"
+              id="programCategorySelect"
+              aria-label="Default select example"
+            >
+              <option value="0" selected>* Kategori</option>
+              <option value="1">Tiyatro</option>
+              <option value="2">Konser</option>
+              <option value="3">Toplantı/Seminer</option>
+            </select>
           </div>
 
           <div class="m-3">
             <input
               type="text"
               class="form-control"
-              id="programEmailText"
-              placeholder="E-Mail"
+              id="programCorporationText"
+              placeholder=" * Programı Düzenleyen Kurum/Firma "
             />
           </div>
 
-          <div class="m-3">
-            <textarea
-              class="form-control"
-              id="programNotesText"
-              rows="3"
-              placeholder="Not"
-            ></textarea>
-          </div>
+          <div class="">
+            <div class="m-3">
+              <input
+                type="text"
+                class="form-control"
+                id="programNameText"
+                placeholder=" * Program Adı"
+              />
+            </div>
 
-          <div class="m-3">
-            <textarea
-              class="form-control"
-              id="programTecnicalNotesText"
-              rows="3"
-              placeholder="Teknik Notlar"
-            ></textarea>
-          </div>
+            <div class="m-3">
+              <textarea
+                class="form-control"
+                id="programDescriptionText"
+                rows="3"
+                placeholder="Program Hakkında"
+              ></textarea>
+            </div>
 
-          <div class="justify-content-between d-flex">
-            <button
-              class="btn btn-danger m-3"
-              id="programAddEditCancelButton"
-              style="flex: 1"
-            >
-              Vazgeç
-            </button>
+            <h5 class="text-primary ms-3">İletişim</h4>
 
-            <button
-              class="btn btn-danger m-3"
-              id="programCancelButton"
-              style="flex: 1; display: none"
-            >
-              İptal Et
-            </button>
+            <div class="m-3">
+              <input
+                type="text"
+                class="form-control"
+                id="programNameSurNameText"
+                placeholder=" * Adı Soyadı"
+              />
+            </div>
 
-            <button
-              class="btn btn-success m-3"
-              id="programAddEditSuccessButton"
-              style="flex: 1"
-            >
-              Onayla
-            </button>
+            <div class="m-3">
+              <input
+                type="tel"
+                class="form-control"
+                id="programTelephonenumberText"
+                placeholder=" * Telefon"
+              />
+            </div>
+
+            <div class="m-3">
+              <input
+                type="text"
+                class="form-control"
+                id="programEmailText"
+                placeholder="E-Mail"
+              />
+            </div>
+
+            <div class="m-3">
+              <textarea
+                class="form-control"
+                id="programNotesText"
+                rows="3"
+                placeholder="Not"
+              ></textarea>
+            </div>
+
+            <div class="m-3">
+              <textarea
+                class="form-control"
+                id="programTecnicalNotesText"
+                rows="3"
+                placeholder="Teknik Notlar"
+              ></textarea>
+            </div>
+
+            <div class="justify-content-between d-flex">
+              <button
+                class="btn btn-danger m-3"
+                id="programAddEditCancelButton"
+                style="flex: 1"
+              >
+                Vazgeç
+              </button>
+
+              <button
+                class="btn btn-danger m-3"
+                id="programCancelButton"
+                style="flex: 1; display: none"
+              >
+                İptal Et
+              </button>
+
+              <button
+                class="btn btn-success m-3"
+                id="programAddEditSuccessButton"
+                style="flex: 1"
+              >
+                Onayla
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <footer>
+      <p style="margin: 0;">© 2024 EBB Kültür Sanat. Tüm hakları saklıdır.</p>
+    </footer>
 
     <script src="js/main.js"></script>
 
@@ -531,12 +593,34 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const menuButton = document.getElementById("menuButton");
+        const menuButton2 = document.getElementById("menuButton2");
+        const menuIcon = menuButton.querySelector("i");
+        const menuIcon2 = menuButton2.querySelector("i");
         const adminPanel = document.getElementById("adminPanelSideMenu");
         const programTable = document.getElementById("programTableContainer");
+        const addEditContainer = document.getElementById("addEditProgramContainer");
 
-        menuButton.addEventListener("click", function () {
+        function toggleMenu(icon) {
           adminPanel.classList.toggle("show");
           programTable.classList.toggle("shifted");
+          addEditContainer.classList.toggle("shifted");
+          
+          // İkon değişimi
+          if (icon.classList.contains("fa-bars")) {
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
+          } else {
+            icon.classList.remove("fa-times");
+            icon.classList.add("fa-bars");
+          }
+        }
+
+        menuButton.addEventListener("click", function() {
+          toggleMenu(menuIcon);
+        });
+
+        menuButton2.addEventListener("click", function() {
+          toggleMenu(menuIcon2);
         });
       });
     </script>
