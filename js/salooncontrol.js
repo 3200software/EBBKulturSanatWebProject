@@ -300,14 +300,14 @@ $("body").on("click", ".morningButton", async function () {
 
   month = parseInt($("#monthFormSelect").val());
 
+  console.log("sdsd" + saloonCode + "  " + year + "   " + month);
+
   var key1 = $(this).data("key");
   extraKey = $(this).data("extra-key");
   var firstDayOfMonthActual = $(this).data("third-key");
   venueDocId = $(this).data("daysdocidKey");
 
   publicDayId = `day${extraKey}`;
-
-  console.log(venueDocId + "knsadms");
 
   freeRequestCheck.checked = false;
 
@@ -320,7 +320,8 @@ $("body").on("click", ".morningButton", async function () {
   const getData = query(
     collection(db, "ProgramList"),
     where("programDate", "==", programDate),
-    where("programStatus", "==", true)
+    where("programStatus", "==", true),
+    where("saloon", "==", saloonCode)
   );
   const querySnapshot = await getDocs(getData);
 
@@ -476,6 +477,8 @@ $("body").on("click", ".afternonButton", async function () {
   year = parseInt($("#yearFormSelect").val());
 
   month = parseInt($("#monthFormSelect").val());
+
+  console.log("sdsd" + saloonCode + "  " + year + "   " + month);
   var key2 = $(this).data("key");
   extraKey = $(this).data("extra-key");
   var firstDayOfMonthActual = $(this).data("third-key");
@@ -494,7 +497,8 @@ $("body").on("click", ".afternonButton", async function () {
   const getData = query(
     collection(db, "ProgramList"),
     where("programDate", "==", programDate),
-    where("programStatus", "==", true)
+    where("programStatus", "==", true),
+    where("saloon", "==", saloonCode)
   );
   const querySnapshot = await getDocs(getData);
 
@@ -649,6 +653,8 @@ $("body").on("click", ".nightButton", async function () {
   year = parseInt($("#yearFormSelect").val());
 
   month = parseInt($("#monthFormSelect").val());
+
+  console.log("sdsd" + saloonCode + "  " + year + "   " + month);
   var key3 = $(this).data("key");
   extraKey = $(this).data("extra-key");
   var firstDayOfMonthActual = $(this).data("third-key");
@@ -667,7 +673,8 @@ $("body").on("click", ".nightButton", async function () {
   const getData = query(
     collection(db, "ProgramList"),
     where("programDate", "==", programDate),
-    where("programStatus", "==", true)
+    where("programStatus", "==", true),
+    where("saloon", "==", saloonCode)
   );
   const querySnapshot = await getDocs(getData);
 
@@ -838,6 +845,8 @@ $("#monthFormSelect").on("change", function () {
 
 $("#goButton").on("click", async function () {
   $(`td`).css("background-color", "White");
+
+  console.log(year + " " + month + "  " + saloonCode);
 
   for (let i = 1; i <= 42; i++) {
     let dayId = `day${i}`;
@@ -1114,7 +1123,7 @@ $("#programCancelButton").on("click", async function () {
     priceInfoText.value = 0 + " TL";
     priceArrayList.length = 0;
     programSessionArrayList.length = 0;
-    console.log(priceArrayList.length + " sadas");
+
     programCancelButton.style.display = "none";
 
     $(`td`).css("background-color", "White");
@@ -1205,8 +1214,6 @@ $("#programCancelButton").on("click", async function () {
 
           activity3DocId = doc.data().activity3DocId;
           activity3Name = doc.data().activity3Name;
-
-          console.log(activity3DocId + " dasa");
 
           InvWritingItem = [
             daysDocId,
@@ -1517,7 +1524,7 @@ $("#programAddEditSuccessButton").on("click", async function () {
             priceInfoText.value = 0 + " TL";
             priceArrayList.length = 0;
             programSessionArrayList.length = 0;
-            console.log(priceArrayList.length + " sadas");
+
             programCancelButton.style.display = "none";
 
             $(`td`).css("background-color", "White");
@@ -1609,8 +1616,6 @@ $("#programAddEditSuccessButton").on("click", async function () {
                   activity3DocId = doc.data().activity3DocId;
                   activity3Name = doc.data().activity3Name;
 
-                  console.log(activity3DocId + " dasa");
-
                   InvWritingItem = [
                     daysDocId,
                     activity1DocId,
@@ -1640,8 +1645,6 @@ $("#programAddEditSuccessButton").on("click", async function () {
                   var namestatus2 = "";
                   var namestatus3 = "";
 
-                  console.log(activity3DocId);
-
                   if (activity1DocId == "0") {
                     btnStatus1 = "btn-light";
                     namestatus1 = "09 - 12";
@@ -1666,12 +1669,6 @@ $("#programAddEditSuccessButton").on("click", async function () {
                     namestatus3 = activity3Name;
                   }
 
-                  console.log(
-                    $("#monthFormSelect").val() +
-                      $("#yearFormSelect").val() +
-                      new Date().getMonth() +
-                      new Date().getFullYear()
-                  );
                   if (
                     dayNum == dayToday &&
                     parseInt($("#monthFormSelect").val()) ==
@@ -1922,7 +1919,7 @@ $("#programAddEditSuccessButton").on("click", async function () {
             priceInfoText.value = 0 + " TL";
             priceArrayList.length = 0;
             programSessionArrayList.length = 0;
-            console.log(priceArrayList.length + " sadas");
+
             programCancelButton.style.display = "none";
 
             $(`td`).css("background-color", "White");
@@ -2014,8 +2011,6 @@ $("#programAddEditSuccessButton").on("click", async function () {
                   activity3DocId = doc.data().activity3DocId;
                   activity3Name = doc.data().activity3Name;
 
-                  console.log(activity3DocId + " dasa");
-
                   InvWritingItem = [
                     daysDocId,
                     activity1DocId,
@@ -2045,8 +2040,6 @@ $("#programAddEditSuccessButton").on("click", async function () {
                   var namestatus2 = "";
                   var namestatus3 = "";
 
-                  console.log(activity3DocId);
-
                   if (activity1DocId == "0") {
                     btnStatus1 = "btn-light";
                     namestatus1 = "09 - 12";
@@ -2071,12 +2064,6 @@ $("#programAddEditSuccessButton").on("click", async function () {
                     namestatus3 = activity3Name;
                   }
 
-                  console.log(
-                    $("#monthFormSelect").val() +
-                      $("#yearFormSelect").val() +
-                      new Date().getMonth() +
-                      new Date().getFullYear()
-                  );
                   if (
                     dayNum == dayToday &&
                     parseInt($("#monthFormSelect").val()) ==
@@ -2180,7 +2167,7 @@ $("#programAddEditCancelButton").on("click", function () {
   priceInfoText.value = 0 + " TL";
   priceArrayList.length = 0;
   programSessionArrayList.length = 0;
-  console.log(priceArrayList.length + " sadas");
+
   programCancelButton.style.display = "none";
 });
 
@@ -2210,7 +2197,7 @@ $("#backButton").on("click", function () {
   priceInfoText.value = 0 + " TL";
   priceArrayList.length = 0;
   programSessionArrayList.length = 0;
-  console.log(priceArrayList.length + " sadas");
+
   programCancelButton.style.display = "none";
 });
 
@@ -2228,8 +2215,6 @@ $("#morningButton").on("click", function () {
       allDayButton.classList.add("btn-light");
       allDayButton.classList.remove("btn-danger");
     }
-
-    console.log(priceArrayList + " " + programSessionArrayList);
 
     morningButton.classList.remove("btn-danger");
     morningButton.classList.add("btn-light");
@@ -2249,8 +2234,6 @@ $("#morningButton").on("click", function () {
       allDayButton.classList.remove("btn-light");
       allDayButton.classList.add("btn-danger");
     }
-
-    console.log(priceArrayList + " " + programSessionArrayList);
 
     morningButton.classList.add("btn-danger");
     morningButton.classList.remove("btn-light");
@@ -2280,8 +2263,6 @@ $("#afternoonButton").on("click", function () {
       allDayButton.classList.remove("btn-danger");
     }
 
-    console.log(priceArrayList + " " + programSessionArrayList);
-
     afternoonButton.classList.remove("btn-danger");
     afternoonButton.classList.add("btn-light");
 
@@ -2300,7 +2281,6 @@ $("#afternoonButton").on("click", function () {
       allDayButton.classList.add("btn-danger");
     }
 
-    console.log(priceArrayList + " " + programSessionArrayList);
     afternoonButton.classList.add("btn-danger");
     afternoonButton.classList.remove("btn-light");
 
@@ -2328,8 +2308,6 @@ $("#nightButton").on("click", function () {
       allDayButton.classList.remove("btn-danger");
     }
 
-    console.log(priceArrayList + " " + programSessionArrayList);
-
     nightButton.classList.remove("btn-danger");
     nightButton.classList.add("btn-light");
 
@@ -2347,8 +2325,6 @@ $("#nightButton").on("click", function () {
       allDayButton.classList.remove("btn-light");
       allDayButton.classList.add("btn-danger");
     }
-
-    console.log(priceArrayList + " " + programSessionArrayList);
 
     nightButton.classList.add("btn-danger");
     nightButton.classList.remove("btn-light");
@@ -2458,8 +2434,6 @@ auth.onAuthStateChanged((user) => {
 });
 
 $("#logoutButton").on("click", function () {
-  console.log("tık ");
-
   const auth = getAuth();
 
   signOut(auth)
