@@ -3464,10 +3464,9 @@ btnAddActivitySuccess.addEventListener("click", async () => {
 });
 
 btnActivityAdd.addEventListener("click", () => {
-  if (addEditActivityContainer.style.display === "none") {
-    addEditActivityContainer.style.display = "";
-    btnActivityAdd.style.visibility = "hidden";
-  }
+  mainActivityContainer.style.display = "none";
+  addEditActivityContainer.style.display = "block";
+  btnActivityAdd.style.visibility = "hidden";
 });
 
 btnLogout.addEventListener("click", () => {
@@ -3483,10 +3482,11 @@ btnLogout.addEventListener("click", () => {
 });
 
 btnActivityAddCancel.addEventListener("click", () => {
-  if (addEditActivityContainer.style.display != "none") {
+  console.log("asda");
+  if (addEditActivityContainer.style.display !== "none") {
     addEditActivityContainer.style.display = "none";
     btnActivityAdd.style.visibility = "visible";
-    window.location.reload();
+    location.reload();
   }
 });
 

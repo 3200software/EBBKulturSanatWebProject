@@ -17,333 +17,462 @@
     <link rel="stylesheet" href="css/mobile.css" />
     <link rel="stylesheet" href="css/tablet.css" />
     <link rel="stylesheet" href="css/activity.css" />
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <script type="module" src="js/activty.js"></script>
+
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .offcanvas {
+        transform: translateX(-100%);
+        visibility: visible;
+        transition: transform 0.3s ease;
+        width: 400px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        height: 100vh;
+        background-color: white;
+      }
+
+      .offcanvas.show {
+        transform: translateX(0);
+      }
+
+      #mainContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+      }
+
+      #mainContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+      }
+
+      .main-content {
+        flex: 1;
+        position: relative;
+        z-index: 1;
+      }
+
+      footer {
+        height: 50px;
+        background-color: var(--bs-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: auto;
+      }
+
+      .container-fluid {
+        margin-bottom: 50px;
+      }
+
+      #addEditContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        display: none;
+      }
+
+      #addEditContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+      }
+    </style>
   </head>
   <body>
-    <div
-      class="offcanvas offcanvas-start show"
-      data-bs-backdrop="false"
-      id="adminPanelSideMenu"
-      style="width: 20%"
-    >
+    <div class="main-content">
+      <!-- OFF CANVAS -->
+
       <div
-        class="offcanvas-header d-flex justify-content-start"
-        style="margin-top: 2%"
+        class="offcanvas offcanvas-start show"
+        data-bs-backdrop="false"
+        id="adminPanelSideMenu"
       >
-        <div>
-          <img
-            src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
-            alt="profilResmi"
-            width="50px"
-            height="50px"
-            style="border-radius: 50px"
-          />
+        <div
+          class="offcanvas-header d-flex justify-content-start"
+          style="margin-top: 2%"
+        >
+          <div>
+            <img
+              src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
+              alt="profilResmi"
+              width="50px"
+              height="50px"
+              style="border-radius: 50px"
+            />
+          </div>
+          <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
         </div>
-        <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
+
+        <div
+          class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
+        >
+          <div class="list-group mb-auto p2">
+            <a
+              href="activity.html"
+              class="list-group-item list-group-item-action active"
+              aria-current="true"
+            >
+              Etkinlikler
+            </a>
+            <a
+              href="salooncontrol.html"
+              class="list-group-item list-group-item-action"
+              >Salon Takip</a
+            >
+            <a
+              href="announcement.html"
+              class="list-group-item list-group-item-action"
+              >Duyurular</a
+            >
+            <a href="news.html" class="list-group-item list-group-item-action"
+              >Haberler</a
+            >
+            <a
+              href="photoGalery.html"
+              class="list-group-item list-group-item-action"
+              >Foto Galeri</a
+            >
+            <a href="blog.html" class="list-group-item list-group-item-action"
+              >Blog</a
+            >
+            <a
+              href="library.html"
+              class="list-group-item list-group-item-action"
+              >Kütüphane</a
+            >
+            <a
+              href="costume.html"
+              class="list-group-item list-group-item-action"
+              >Kostüm</a
+            >
+          </div>
+
+          <div class="list-group">
+            <a href="users.html" class="list-group-item list-group-item-action">
+              Kullanıcılar
+            </a>
+            <button
+              class="list-group-item list-group-item-action bg-danger text-white"
+              id="logoutButton"
+            >
+              Çıkış Yap
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div
-        class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
-      >
-        <div class="list-group mb-auto p2">
-          <a
-            href="activity.html"
-            class="list-group-item list-group-item-action active"
-            aria-current="true"
-          >
-            Etkinlikler
-          </a>
-          <a
-            href="salooncontrol.html"
-            class="list-group-item list-group-item-action"
-            >Salon Takip</a
-          >
-          <a
-            href="announcement.html"
-            class="list-group-item list-group-item-action"
-            >Duyurular</a
-          >
-          <a href="news.html" class="list-group-item list-group-item-action"
-            >Haberler</a
-          >
-          <a
-            href="photoGalery.html"
-            class="list-group-item list-group-item-action"
-            >Foto Galeri</a
-          >
-          <a href="blog.html" class="list-group-item list-group-item-action"
-            >Blog</a
-          >
-          <a href="library.html" class="list-group-item list-group-item-action"
-            >Kütüphane</a
-          >
-          <a href="costume.html" class="list-group-item list-group-item-action"
-            >Kostüm</a
-          >
-        </div>
+      <!-- ETKİNLİKLER -->
 
-        <div class="list-group">
-          <a href="users.html" class="list-group-item list-group-item-action">
-            Kullanıcılar
-          </a>
-          <button
-            class="list-group-item list-group-item-action bg-danger text-white"
-            id="logoutButton"
-          >
-            Çıkış Yap
+      <div class="container-fluid shifted" id="mainContainer">
+        <div
+          class="containerTitle d-flex justify-content-between border-bottom border-primary"
+        >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton">
+            <i class="fas fa-times"></i>
+          </button>
+
+          <div class="h3 text-primary m-3 pb-0 flex-fill">Etkinlikler</div>
+
+          <button class="btn btn-primary m-3" id="activityaddButton">
+            Etkinlik Ekle
           </button>
         </div>
       </div>
-    </div>
 
-    <div
-      class="container"
-      id="mainContainer"
-      style="margin-left: 22%; margin-top: 1%"
-    >
+      <!-- ETKİNLİK EKLEME -->
+
       <div
-        class="containerTitle d-flex justify-content-between border-bottom border-primary"
+        class="container-fluid border-start shifted"
+        id="addEditContainer"
+        style="margin-top: 1%"
       >
-        <div class="h3 text-primary m-auto pb-0 flex-fill">Etkinlikler</div>
+        <div
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
+        >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton2">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">Etkinlik Ekle</div>
 
-        <button class="btn btn-primary m-3" id="activityaddButton">
-          Etkinlik Ekle
-        </button>
-      </div>
-    </div>
+          <button class="btn btn-danger m-3 me-0" id="activityaddCancelButton">
+            Vazgeç
+          </button>
 
-    <div
-      class="container border-start height"
-      id="addEditContainer"
-      style="margin-top: 1%; display: none"
-    >
-      <div
-        class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
-      >
-        <div class="h3 text-primary m-3 pb-0 flex-fill">Etkinlik Ekle</div>
-
-        <button class="btn btn-danger m-3 me-0" id="activityaddCancelButton">
-          Vazgeç
-        </button>
-
-        <button class="btn btn-success m-3" id="activityaddSuccessButton">
-          Onayla
-        </button>
-      </div>
-
-      <div class="container">
-        <div class="m-3">
-          <input
-            type="text"
-            class="form-control"
-            id="activityName"
-            placeholder="Etkinlik Adı"
-          />
+          <button class="btn btn-success m-3" id="activityaddSuccessButton">
+            Onayla
+          </button>
         </div>
 
-        <div class="container d-flex">
-          <select
-            class="form-select me-1 ms-1"
-            id="activityCategory"
-            aria-label="Default select example"
-          >
-            <option value="0" selected>Kategori</option>
-            <option value="1">Tiyatro</option>
-            <option value="2">Konser</option>
-            <option value="3">Sergi</option>
-          </select>
-
-          <select
-            class="form-select ms-1 me-1"
-            id="activitySaloon"
-            aria-label="Default select example"
-          >
-            <option selected>Salon</option>
-            <option value="1">İbrahim Erkal Dadaş Kültür Merkezi</option>
-            <option value="2">Necip Fazıl Kısakürek Kültür Merkezi</option>
-          </select>
-        </div>
-
-        <div class="m-3">
-          <textarea
-            class="form-control"
-            id="activityDescription"
-            rows="3"
-            placeholder="Etkinlik Hakkında"
-          ></textarea>
-        </div>
-
-        <div class="m-3 p-2 border rounded-2 d-flex">
-          <div class="container border-end">
-            <label class="mb-1 text">200x200 px Fotoğraf</label>
-            <input class="form-control" type="file" id="image1Input" />
-          </div>
-
-          <div class="container">
-            <label class="mb-1 text">200x200 px Fotoğraf</label>
-            <input class="form-control" type="file" id="image2Input" />
-          </div>
-        </div>
-
-        <div class="m-3">
-          <input
-            type="text"
-            class="form-control"
-            id="activityorganisation"
-            placeholder="Etkinliği Düzenleyen Kurum/Firma "
-          />
-        </div>
-
-        <div class="m-3">
-          <input
-            type="tel"
-            class="form-control"
-            id="activityTelephonenumber"
-            placeholder="İletişim Telefonu"
-          />
-        </div>
-
-        <div class="d-flex justify-content-between m-3 p-2 border rounded-2">
-          <div class="container" id="datecontainer">
-            <label class="mb-1 fs-6 text">Tarih</label>
+        <div class="container">
+          <div class="m-3">
             <input
-              type="datetime-local"
+              type="text"
               class="form-control"
-              id="activityDate"
+              id="activityName"
+              placeholder="Etkinlik Adı"
             />
           </div>
 
-          <div class="container" id="beginDateContainer">
-            <label class="mb-1 fs-6 text">Başlangıç Tarihi</label>
-            <input
-              type="datetime-local"
-              class="form-control"
-              id="activityBeginDate"
-            />
-          </div>
-
-          <div class="container" id="endDateContainer">
-            <label class="mb-1 fs-6 text">Bitiş Tarihi</label>
-            <input
-              type="datetime-local"
-              class="form-control"
-              id="activityEndDate"
-            />
-          </div>
-        </div>
-
-        <div class="container d-flex d-flex justify-content-between">
-          <div class="row">
-            <div
-              class="form-check d-flex align-items-center col border-end me-2"
+          <div class="container d-flex">
+            <select
+              class="form-select me-1 ms-1"
+              id="activityCategory"
+              aria-label="Default select example"
             >
+              <option value="0" selected>Kategori</option>
+              <option value="1">Tiyatro</option>
+              <option value="2">Konser</option>
+              <option value="3">Sergi</option>
+            </select>
+
+            <select
+              class="form-select ms-1 me-1"
+              id="activitySaloon"
+              aria-label="Default select example"
+            >
+              <option selected>Salon</option>
+              <option value="1">İbrahim Erkal Dadaş Kültür Merkezi</option>
+              <option value="2">Necip Fazıl Kısakürek Kültür Merkezi</option>
+            </select>
+          </div>
+
+          <div class="m-3">
+            <textarea
+              class="form-control"
+              id="activityDescription"
+              rows="3"
+              placeholder="Etkinlik Hakkında"
+            ></textarea>
+          </div>
+
+          <div class="m-3 p-2 border rounded-2 d-flex">
+            <div class="container border-end">
+              <label class="mb-1 text">200x200 px Fotoğraf</label>
+              <input class="form-control" type="file" id="image1Input" />
+            </div>
+
+            <div class="container">
+              <label class="mb-1 text">200x200 px Fotoğraf</label>
+              <input class="form-control" type="file" id="image2Input" />
+            </div>
+          </div>
+
+          <div class="m-3">
+            <input
+              type="text"
+              class="form-control"
+              id="activityorganisation"
+              placeholder="Etkinliği Düzenleyen Kurum/Firma "
+            />
+          </div>
+
+          <div class="m-3">
+            <input
+              type="tel"
+              class="form-control"
+              id="activityTelephonenumber"
+              placeholder="İletişim Telefonu"
+            />
+          </div>
+
+          <div class="d-flex justify-content-between m-3 p-2 border rounded-2">
+            <div class="container" id="datecontainer">
+              <label class="mb-1 fs-6 text">Tarih</label>
               <input
-                class="form-check-input me-2"
-                type="checkbox"
-                value=""
-                id="protocolCheckBox"
-              />
-              <label class="form-check-label me-2" for="flexCheckIndeterminate">
-                Protokol
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="3"
-                class="form-control me-2"
-                id="protocolSeatText"
-                placeholder="Sıra"
+                type="datetime-local"
+                class="form-control"
+                id="activityDate"
               />
             </div>
 
-            <select
-              class="form-select d-flex align-items-center col m-0"
-              id="activityticket"
-              aria-label="Default select example"
-            >
-              <option value="0" selected>Bilet Fiyatı</option>
-              <option value="1">Ücretsiz</option>
-              <option value="2">Tek Fiyat</option>
-              <option value="3">Tam - Öğrenci</option>
-              <option value="4">Özel Plan - 1 Seçenek</option>
-              <option value="5">Özel Plan - 2 Seçenek</option>
-              <option value="6">Özel Plan - 3 Seçenek</option>
-              <option value="7">Özel Plan - 4 Seçenek</option>
-            </select>
+            <div class="container" id="beginDateContainer">
+              <label class="mb-1 fs-6 text">Başlangıç Tarihi</label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                id="activityBeginDate"
+              />
+            </div>
+
+            <div class="container" id="endDateContainer">
+              <label class="mb-1 fs-6 text">Bitiş Tarihi</label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                id="activityEndDate"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="d-flex" id="ticketContainer1">
-          <input
-            type="text"
-            class="form-control ms-3 mt-3 me-1 mb-1"
-            id="ticketName1"
-            placeholder="Name"
-          />
+          <div class="container d-flex d-flex justify-content-between">
+            <div class="row">
+              <div
+                class="form-check d-flex align-items-center col border-end me-2"
+              >
+                <input
+                  class="form-check-input me-2"
+                  type="checkbox"
+                  value=""
+                  id="protocolCheckBox"
+                />
+                <label
+                  class="form-check-label me-2"
+                  for="flexCheckIndeterminate"
+                >
+                  Protokol
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="3"
+                  class="form-control me-2"
+                  id="protocolSeatText"
+                  placeholder="Sıra"
+                />
+              </div>
 
-          <input
-            type="number"
-            class="form-control ms-1 mt-3 me-3 mb-1"
-            id="ticketprice1"
-            placeholder="Fiyat"
-            value="0"
-          />
-        </div>
+              <select
+                class="form-select d-flex align-items-center col m-0"
+                id="activityticket"
+                aria-label="Default select example"
+              >
+                <option value="0" selected>Bilet Fiyatı</option>
+                <option value="1">Ücretsiz</option>
+                <option value="2">Tek Fiyat</option>
+                <option value="3">Tam - Öğrenci</option>
+                <option value="4">Özel Plan - 1 Seçenek</option>
+                <option value="5">Özel Plan - 2 Seçenek</option>
+                <option value="6">Özel Plan - 3 Seçenek</option>
+                <option value="7">Özel Plan - 4 Seçenek</option>
+              </select>
+            </div>
+          </div>
 
-        <div class="d-flex" id="ticketContainer2">
-          <input
-            type="text"
-            class="form-control ms-3 mt-1 me-1 mb-1"
-            id="ticketName2"
-            placeholder="Name"
-          />
+          <div class="d-flex" id="ticketContainer1">
+            <input
+              type="text"
+              class="form-control ms-3 mt-3 me-1 mb-1"
+              id="ticketName1"
+              placeholder="Name"
+            />
 
-          <input
-            type="number"
-            class="form-control ms-1 mt-1 me-3 mb-1"
-            id="ticketprice2"
-            placeholder="Fiyat"
-            value="0"
-          />
-        </div>
+            <input
+              type="number"
+              class="form-control ms-1 mt-3 me-3 mb-1"
+              id="ticketprice1"
+              placeholder="Fiyat"
+              value="0"
+            />
+          </div>
 
-        <div class="d-flex" id="ticketContainer3">
-          <input
-            type="text"
-            class="form-control ms-3 mt-1 me-1 mb-1"
-            id="ticketName3"
-            placeholder="Name"
-          />
+          <div class="d-flex" id="ticketContainer2">
+            <input
+              type="text"
+              class="form-control ms-3 mt-1 me-1 mb-1"
+              id="ticketName2"
+              placeholder="Name"
+            />
 
-          <input
-            type="number"
-            class="form-control ms-1 mt-1 me-3 mb-1"
-            id="ticketprice3"
-            placeholder="Fiyat"
-            value="0"
-          />
-        </div>
+            <input
+              type="number"
+              class="form-control ms-1 mt-1 me-3 mb-1"
+              id="ticketprice2"
+              placeholder="Fiyat"
+              value="0"
+            />
+          </div>
 
-        <div class="d-flex" id="ticketContainer4">
-          <input
-            type="text"
-            class="form-control ms-3 mt-1 me-1 mb-1"
-            id="ticketName4"
-            placeholder="Name"
-          />
+          <div class="d-flex" id="ticketContainer3">
+            <input
+              type="text"
+              class="form-control ms-3 mt-1 me-1 mb-1"
+              id="ticketName3"
+              placeholder="Name"
+            />
 
-          <input
-            type="number"
-            class="form-control ms-1 mt-1 me-3 mb-1"
-            id="ticketprice4"
-            placeholder="Fiyat"
-            value="0"
-          />
+            <input
+              type="number"
+              class="form-control ms-1 mt-1 me-3 mb-1"
+              id="ticketprice3"
+              placeholder="Fiyat"
+              value="0"
+            />
+          </div>
+
+          <div class="d-flex" id="ticketContainer4">
+            <input
+              type="text"
+              class="form-control ms-3 mt-1 me-1 mb-1"
+              id="ticketName4"
+              placeholder="Name"
+            />
+
+            <input
+              type="number"
+              class="form-control ms-1 mt-1 me-3 mb-1"
+              id="ticketprice4"
+              placeholder="Fiyat"
+              value="0"
+            />
+          </div>
         </div>
       </div>
     </div>
 
+    <footer>
+      <p style="margin: 0">© 2024 EBB Kültür Sanat. Tüm hakları saklıdır.</p>
+    </footer>
+
     <script src="js/main.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const menuButton = document.getElementById("menuButton");
+        const menuButton2 = document.getElementById("menuButton2");
+        const menuIcon = menuButton.querySelector("i");
+        const menuIcon2 = menuButton2.querySelector("i");
+        const adminPanel = document.getElementById("adminPanelSideMenu");
+        const programTable = document.getElementById("mainContainer");
+        const addEditContainer = document.getElementById("addEditContainer");
+
+        function toggleMenu(icon) {
+          adminPanel.classList.toggle("show");
+          programTable.classList.toggle("shifted");
+          addEditContainer.classList.toggle("shifted");
+
+          // İkon değişimi
+          if (icon.classList.contains("fa-bars")) {
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
+          } else {
+            icon.classList.remove("fa-times");
+            icon.classList.add("fa-bars");
+          }
+        }
+
+        menuButton.addEventListener("click", function () {
+          toggleMenu(menuIcon);
+        });
+
+        menuButton2.addEventListener("click", function () {
+          toggleMenu(menuIcon2);
+        });
+      });
+    </script>
   </body>
 </html>
