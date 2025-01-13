@@ -194,47 +194,117 @@
     <!-- //Etkinliklerimiz -->
     <section
       class="container-fluid"
-      style="background-color: #95c9e5; margin-top: 20px; padding-bottom: 20px"
+      style="
+        background-color: #95c9e5;
+        margin-top: 20px;
+        padding: 20px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      "
     >
-      <div class="container-lg">
-        <h2 style="color: #f4f8fb; padding-top: 30px">Etkinliklerimiz</h2>
+      <div
+        class="container-lg "
+        style="width: 100%"
+      >
+        <h2 style="color: #f4f8fb ; margin-left: 5px;">Etkinlik Takvimi</h2>
 
-        <div
-          class="rounded-4"
-          style="
-            width: 300px;
-            background-color: #f4f8fb;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 3px solid #95c9e5;
-            margin-bottom: 20px;
-            padding: 20px; /* İçerik aralığı */
-          "
-        >
-          <img
-            class="rounded-3"
-            src="https://via.placeholder.com/250x200"
-            alt="Placeholder"
-            style="width: 250px; height: 200px; background-color: #f4f8fb"
-          />
+        <div class="d-flex justify-content-between container-lg" style="width: 100%">
+        <div class="d-flex justify-content-between container-lg" style="width: 100%">
+          <div style="width: 58%;">
+            <div class="rounded-4" style="background-color: #f4f8fb; height: 100%;">
+              <div class="events-container">
+                <!-- Etkinlikler buraya gelecek -->
+              </div>
+            </div>
+          </div>
+  
+          <table id="calendar">
+            <thead>
+              <tr>
+                <th colspan="7" style="background-color: #3b94c4; color: white">
+                  <div class="d-flex justify-content-between align-items-center px-3">
+                    <button class="btn btn-bg" style="color: #f4f8fb" onclick="previousMonth()">&lt;</button>
+                    <span id="calendarTitle">Mart 2024</span>
+                    <button class="btn btn-bg" style="color: #f4f8fb" onclick="nextMonth()">&gt;</button>
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <th>Pzt</th>
+                <th>Sa</th>
+                <th>Çr</th>
+                <th>Pr</th>
+                <th>Cu</th>
+                <th>Ct</th>
+                <th>Pz</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="day1"></td>
+                <td id="day2"></td>
+                <td id="day3"></td>
+                <td id="day4"></td>
+                <td id="day5"></td>
+                <td id="day6"></td>
+                <td id="day7"></td>
+              </tr>
+              <tr>
+                <td id="day8"></td>
+                <td id="day9"></td>
+                <td id="day10"></td>
+                <td id="day11"></td>
+                <td id="day12"></td>
+                <td id="day13"></td>
+                <td id="day14"></td>
+              </tr>
+              <tr>
+                <td id="day15"></td>
+                <td id="day16"></td>
+                <td id="day17"></td>
+                <td id="day18"></td>
+                <td id="day19"></td>
+                <td id="day20"></td>
+                <td id="day21"></td>
+              </tr>
+              <tr>
+                <td id="day22"></td>
+                <td id="day23"></td>
+                <td id="day24"></td>
+                <td id="day25"></td>
+                <td id="day26"></td>
+                <td id="day27"></td>
+                <td id="day28"></td>
+              </tr>
+  
+              <tr>
+                <td id="day29"></td>
+                <td id="day30"></td>
+                <td id="day31"></td>
+                <td id="day32"></td>
+                <td id="day33"></td>
+                <td id="day34"></td>
+                <td id="day35"></td>
+              </tr>
+  
+              <tr>
+                <td id="day36"></td>
+                <td id="day37"></td>
+                <td id="day38"></td>
+                <td id="day39"></td>
+                <td id="day40"></td>
+                <td id="day41"></td>
+                <td id="day42"></td>
+              </tr>
+            </tbody>
+          </table>
 
-          <h2 style="margin-top: 10px; color: #3b94c4; text-align: center">
-            Title
-          </h2>
-
-          <p
-            style="
-              margin-top: 10px;
-              color: #3b94c4;
-              text-align: center;
-              word-break: break-word; /* Çok uzun kelimeleri kırar */
-            "
-          >
-            jaksdlkajdslkjalksdjlakşjdalkjsdlkajdlkaskljskajdaskjdkjasndkjasdjknaskjdnjkasdjkasdnkjas
-          </p>
+          
         </div>
+
+   
       </div>
     </section>
 

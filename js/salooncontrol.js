@@ -284,14 +284,7 @@ var daysInMonth = getDaysInMonth(year, month);
 
 var daysNumber = firstDayOfMonth + daysInMonth - 1;
 
-$("#goButton").prop("disabled", true);
-$("#warningTitleBack").css("display", "");
-$("#warningTitle").html("Salon takip yüklenirken lütfen bekleyin!");
-
 processDaysInMonth(firstDayOfMonth, daysNumber, month, year, saloonCode);
-
-$("#goButton").prop("disabled", false);
-$("#warningTitleBack").css("display", "none");
 
 $("body").on("click", ".morningButton", async function () {
   saloonCode = $("#saloonFormSelect").val();
@@ -1295,7 +1288,9 @@ $("#programCancelButton").on("click", async function () {
     $("#warningTitleBack").css("display", "none");
 
     alert("Program başarılı bir şekilde iptal edildi.");
-  } catch (error) {}
+  } catch (error) {
+    alert("Program iptal edilemedi. Lütfen yöneticisine bildiriniz.");
+  }
 });
 
 $("#programAddEditSuccessButton").on("click", async function () {
@@ -2480,6 +2475,11 @@ async function processDaysInMonth(
         rowElement.style.display = "";
       }
     }
+    console.log("processDaysInMonthassas111");
+
+    $("#goButton").prop("disabled", true);
+    $("#warningTitleBack").css("display", "none");
+    $("#warningTitle").html("Seçtiğiniz tarih yüklenirken lütfen bekleyin!");
 
     // Takvimi oluştur
     for (let i = firstDayOfMonth; i <= daysNumber; i++) {
@@ -2594,6 +2594,9 @@ async function processDaysInMonth(
         }
       }
     }
+
+    $("#goButton").prop("disabled", false);
+    $("#warningTitleBack").css("display", "none");
   } catch (error) {
     console.error("Genel hata:", error);
   }
