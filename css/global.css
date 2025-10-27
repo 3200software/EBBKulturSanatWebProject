@@ -1,57 +1,340 @@
-* {
+/* ===== GLOBAL RESET & BASE STYLES ===== */
+
+/* Modern CSS Reset */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-a {
-  text-decoration: none;
-}
-
-.offcanvas {
-  background: rgba(255, 255, 255, 0.275);
-}
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-.bottomLink {
-  color: black;
-  margin: 5px;
+html {
+  font-size: 16px; /* Base font size for rem calculations */
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%; /* Prevent iOS font scaling */
+  -ms-text-size-adjust: 100%; /* Prevent IE font scaling */
+  text-size-adjust: 100%; /* Standard property */
 }
 
 body {
-  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  line-height: 1.6;
+  color: #333;
   background-color: #ffffff;
-
-  height: 100vh; /* Sayfa yüksekliğini tam ekran yapmak için */
-  margin: 0; /* Sayfa kenar boşluklarını sıfırlama */
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  -webkit-font-smoothing: antialiased; /* Better font rendering on webkit */
+  -moz-osx-font-smoothing: grayscale; /* Better font rendering on Firefox */
+  text-rendering: optimizeLegibility; /* Better text rendering */
 }
 
+/* Link Styles */
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* ===== IMAGE OPTIMIZATION ===== */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-style: none; /* Remove border on images inside links in IE 10 */
+  vertical-align: middle; /* Align images properly */
+}
+
+/* Responsive Images */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Modern image loading */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded,
+img:not([loading="lazy"]) {
+  opacity: 1;
+}
+
+/* Offcanvas */
+.offcanvas {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Bottom Links */
+.bottomLink {
+  color: #333;
+  margin: 5px 0;
+  display: inline-block;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.bottomLink:hover {
+  color: #3b94c4;
+  transform: translateX(5px);
+}
+
+/* Logo */
 #EBBKültürSantLogo {
   width: auto;
   height: 100px;
   margin: 25px;
+  max-width: 100%;
 }
 
+/* Container Styles */
 .container-lg {
   padding: 0px;
+  max-width: 100%;
 }
 
+/* Navbar Styles */
 .navbar {
   padding: 0px;
   background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-toggler {
+  border: none;
+  padding: 4px 8px;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.navbar-nav {
+  align-items: center;
+}
+
+.nav-link {
+  color: #333 !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
 }
 
 .nav-link.active {
-  color: #8b63e1; /* Seçili metnin rengi */
-  background-color: #ffffff; /* Seçili öğenin arka plan rengi */
+  color: #3b94c4 !important;
+  background-color: transparent;
 }
 
-.nav-link:hover + {
-  color: #95c9e5; /* Hover metin rengi */
-  background-color: #ffffff; /* Hover arka plan rengi */
+.nav-link:hover {
+  color: #3b94c4 !important;
+  background-color: transparent;
+}
+
+/* Responsive Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+/* ===== BUTTON STYLES ===== */
+
+.btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  background-color: transparent;
+  line-height: 1.5;
+  -webkit-appearance: none; /* Remove iOS button styling */
+  -moz-appearance: none; /* Remove Firefox button styling */
+  appearance: none; /* Standard property */
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:focus {
+  outline: 2px solid #3b94c4;
+  outline-offset: 2px;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Utility Classes */
+.text-responsive {
+  font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+}
+
+.heading-responsive {
+  font-size: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+/* Focus States for Accessibility */
+*:focus {
+  outline: 2px solid #3b94c4;
+  outline-offset: 2px;
+}
+
+/* Skip Link for Accessibility */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 8px 16px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 6px;
+  top: 6px;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1200px) {
+  .container-lg {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 992px) {
+  body {
+    font-size: 14px;
+  }
+
+  .navbar-collapse {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .nav-link {
+    padding: 0.75rem 1rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-lg {
+    padding: 0 10px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+  h4 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 13px;
+  }
+
+  .container-lg {
+    padding: 0 8px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
+  h3 {
+    font-size: 1.15rem;
+  }
+  h4 {
+    font-size: 1rem;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .container-lg {
+    padding: 0 5px;
+  }
+
+  body {
+    font-size: 12px;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+  }
+  h3 {
+    font-size: 1rem;
+  }
+  h4 {
+    font-size: 0.9rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  .navbar,
+  .btn {
+    display: none;
+  }
 }

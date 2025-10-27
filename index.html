@@ -1,444 +1,1802 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EBB Kültür ve Sanat Merkezi | Erzurum'un Kültür Kalbi</title>
 
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="Erzurum Büyükşehir Belediyesi Kültür ve Sanat Merkezi - Şehrimizin kültürel yaşamının kalbi. Etkinlikler, sergiler, konserler ve daha fazlası."
+    />
+    <meta
+      name="keywords"
+      content="Erzurum, kültür, sanat, etkinlik, konser, sergi, tiyatro, belediye"
+    />
+    <meta name="author" content="Erzurum Büyükşehir Belediyesi" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="EBB Kültür ve Sanat Merkezi" />
+    <meta
+      property="og:description"
+      content="Erzurum'un kültürel yaşamının kalbi"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ebbsanatmerkezi.com" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/Asset 1.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
       rel="stylesheet"
-      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-      crossorigin="anonymous"
     />
 
-    <title>EBB Sanat Merkezi</title>
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
 
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/index.css" />
-    <link rel="stylesheet" href="css/indexMobile.css" />
+    <!-- Styles -->
+    <style>
+      :root {
+        --primary-color: #2c5aa0;
+        --secondary-color: #4a90c2;
+        --accent-color: #f39c12;
+        --text-dark: #2c3e50;
+        --text-light: #7f8c8d;
+        --bg-light: #f8f9fa;
+        --bg-white: #ffffff;
+        --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+        --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+        --shadow-heavy: 0 8px 30px rgba(0, 0, 0, 0.2);
+        --border-radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-    <script type="module" src="js/index.js"></script>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <!--Navbar-->
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
 
-    <section
-      class="container-lg d-flex justify-content-between"
-      style="background-color: #ffffff; margin-top: 1%"
-    >
-      <a href="index.html"
-        ><img
-          src="assets/Asset 1.png"
-          alt="SanatMerkeziLogo"
-          style="width: 100px; height: 100px"
-      /></a>
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+        background-color: var(--bg-white);
+        overflow-x: hidden;
+      }
 
-      <nav class="navbar navbar-expand-lg">
-        <div class="container-lg">
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a
-                  class="nav-link ms-4 me-4 active border-bottom"
-                  aria-current="page"
-                  href="index.html"
-                  >Ana Sayfa</a
-                >
-              </li>
-              <li class="nav-item">
-                <a class="nav-link ms-4 me-4" href="ourActivity.html"
-                  >Etkinliklerimiz</a
-                >
-                <div
-                  id="mainborder2"
-                  style="
-                    border-bottom: 2px solid #3b94c4;
-                    margin-left: 20px;
-                    margin-right: 20px;
-                    visibility: hidden;
-                  "
-                ></div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link ms-4 me-4" href="ourhalls.html"
-                  >Salonlarımız</a
-                >
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
 
-                <div
-                  id="mainborder3"
-                  style="
-                    border-bottom: 2px solid #3b94c4;
-                    margin-left: 20px;
-                    margin-right: 20px;
-                    visibility: hidden;
-                  "
-                ></div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link ms-4" href="contact.html">İletişim</a>
-                <div
-                  id="mainborder4"
-                  style="
-                    border-bottom: 2px solid #3b94c4;
-                    margin-left: 20px;
-                    margin-right: 20px;
-                    visibility: hidden;
-                  "
-                ></div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </section>
+      /* Header & Navigation */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(44, 90, 160, 0.1);
+        z-index: 1000;
+        transition: var(--transition);
+      }
 
-    <!-- //Banner -->
-    <section class="container-lg mt-4" style="background-color: #ffffff">
-      <div id="slider" class="container-lg">
-        <input type="radio" name="slider" id="slide1" checked />
-        <input type="radio" name="slider" id="slide2" />
-        <input type="radio" name="slider" id="slide3" />
-        <input type="radio" name="slider" id="slide4" />
-        <div id="slides">
-          <div id="overflow">
-            <div class="inner">
-              <div class="slide slide_1">
-                <div class="slide-content">
-                  <h2>görsel</h2>
-                  <p></p>
-                </div>
-              </div>
-              <div class="slide slide_2">
-                <div class="slide-content">
-                  <h2>Slide 2</h2>
-                  <p>Content for Slide 2</p>
-                </div>
-              </div>
-              <div class="slide slide_3">
-                <div class="slide-content">
-                  <h2>Slide 3</h2>
-                  <p>Content for Slide 3</p>
-                </div>
-              </div>
-              <div class="slide slide_4">
-                <div class="slide-content">
-                  <h2>Slide 4</h2>
-                  <p>Content for Slide 4</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="controls">
-          <label for="slide1"></label>
-          <label for="slide2"></label>
-          <label for="slide3"></label>
-          <label for="slide4"></label>
-        </div>
-        <div id="bullets">
-          <label for="slide1"></label>
-          <label for="slide2"></label>
-          <label for="slide3"></label>
-          <label for="slide4"></label>
-        </div>
-      </div>
-    </section>
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+      }
 
-    <!-- // AşıklıkGelenegi -->
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
 
-    <a href="asiklik.html">
-      <section
-        class="container-fluid"
-        style="
-          margin-top: 15px;
-          background-color: #ffffff;
-          background-image: url(assets/2e5c2117-d6fd-4c09-914e-500110230fee\ kopya.png);
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-        "
-      >
-        <div class="container-lg">
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              aspect-ratio: 6/1;
-            "
-          >
-            <h3
-              class="d-flex h1 align-self-center justify-content-around"
-              style="color: #3b94c4; margin-left: 2%"
-            >
-              Aşıklık Geleneği
-            </h3>
-          </div>
-        </div>
-      </section>
-    </a>
+      .logo img {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+      }
 
-    <!-- //Etkinliklerimiz -->
-    <section
-      class="container-fluid"
-      style="
-        background-color: #95c9e5;
-        margin-top: 20px;
-        padding: 20px;
+      .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+        align-items: center;
+      }
 
+      .nav-link {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 500;
+        position: relative;
+        transition: var(--transition);
+        padding: 0.5rem 0;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--primary-color);
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary-color);
+        transition: var(--transition);
+      }
+
+      .nav-link:hover::after,
+      .nav-link.active::after {
+        width: 100%;
+      }
+
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        cursor: pointer;
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color) 0%,
+          var(--secondary-color) 100%
+        );
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        color: white;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Hero Slider Styles */
+      .hero-slider-container {
+        margin: 3rem 0;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-cta {
+        margin-top: 2rem;
+      }
+
+      .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        animation: fadeInUp 1s ease forwards 0.5s;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0;
+        animation: fadeInUp 1s ease forwards 0.7s;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        opacity: 0;
+        animation: fadeInUp 1s ease forwards 0.9s;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: var(--accent-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #e67e22;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+      }
+
+      .btn-outline:hover {
+        background: white;
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      /* Featured Slider Section */
+      .featured-slider {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+      }
+
+      .section-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .slider-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .main-slider {
+        position: relative;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-heavy);
+      }
+
+      .slider-wrapper {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(100%);
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .slide.prev {
+        transform: translateX(-100%);
+      }
+
+      .slide-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .slide-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        color: white;
+        padding: 3rem 2rem 2rem;
+        z-index: 2;
+      }
+
+      .slide-category {
+        display: inline-block;
+        background: var(--accent-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .slide-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+
+      .slide-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+      }
+
+      .slide-meta {
+        display: flex;
+        gap: 2rem;
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .slide-date,
+      .slide-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .slider-controls {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1rem;
+        z-index: 3;
+      }
+
+      .slider-btn {
+        width: 50px;
+        height: 50px;
+        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        box-shadow: var(--shadow-light);
+      }
+
+      .slider-btn:hover {
+        background: white;
+        transform: scale(1.1);
+        box-shadow: var(--shadow-medium);
+      }
+
+      .slider-indicators {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        z-index: 3;
+      }
+
+      .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .indicator.active {
+        background: white;
+        transform: scale(1.2);
+      }
+
+      .thumbnail-slider {
+        margin-top: 1rem;
+      }
+
+      .thumbnail-wrapper {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding: 1rem 0;
+        scroll-behavior: smooth;
+      }
+
+      .thumbnail-wrapper::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      .thumbnail-wrapper::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+      }
+
+      .thumbnail-wrapper::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 3px;
+      }
+
+      .thumbnail {
+        flex: 0 0 120px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        border: 3px solid transparent;
+      }
+
+      .thumbnail.active {
+        border-color: var(--accent-color);
+        transform: scale(1.05);
+      }
+
+      .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .thumbnail::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        transition: var(--transition);
+      }
+
+      .thumbnail.active::after {
+        background: transparent;
+      }
+
+      /* Loading Animation */
+      .slide-loading {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-      "
-    >
-      <div
-        class="container-lg "
-        style="width: 100%"
-      >
-        <h2 style="color: #f4f8fb ; margin-left: 5px;">Etkinlik Takvimi</h2>
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-light);
+      }
 
-        <div class="d-flex justify-content-between container-lg" style="width: 100%">
-        <div class="d-flex justify-content-between container-lg" style="width: 100%">
-          <div style="width: 58%;">
-            <div class="rounded-4" style="background-color: #f4f8fb; height: 100%;">
-              <div class="events-container">
-                <!-- Etkinlikler buraya gelecek -->
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Heritage Section */
+      .heritage-section {
+        padding: 4rem 0;
+        background: var(--bg-white);
+      }
+
+      .heritage-link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .heritage-card {
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-heavy);
+        transition: var(--transition);
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+      }
+
+      .heritage-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(44, 90, 160, 0.3);
+      }
+
+      .heritage-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("assets/2e5c2117-d6fd-4c09-914e-500110230fee kopya.png");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.2;
+        z-index: 1;
+      }
+
+      .heritage-content {
+        position: relative;
+        z-index: 2;
+        color: white;
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        width: 100%;
+      }
+
+      .heritage-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .heritage-title {
+        font-family: "Playfair Display", serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .heritage-description {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+      }
+
+      .heritage-arrow {
+        margin-left: auto;
+        font-size: 1.5rem;
+        transition: var(--transition);
+      }
+
+      .heritage-card:hover .heritage-arrow {
+        transform: translateX(10px);
+      }
+
+      /* President Message Section */
+      .president-message {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .president-message::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23e9ecef" opacity="0.3"/><circle cx="75" cy="75" r="1" fill="%23e9ecef" opacity="0.3"/><circle cx="50" cy="10" r="0.5" fill="%23e9ecef" opacity="0.2"/><circle cx="10" cy="50" r="0.5" fill="%23e9ecef" opacity="0.2"/><circle cx="90" cy="30" r="0.5" fill="%23e9ecef" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.5;
+        z-index: 1;
+      }
+
+      .president-content {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 4rem;
+        align-items: center;
+      }
+
+      .president-text {
+        background: white;
+        padding: 3rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-medium);
+        position: relative;
+      }
+
+      .president-text::before {
+        content: '"';
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        font-size: 6rem;
+        color: var(--primary-color);
+        font-family: "Playfair Display", serif;
+        opacity: 0.3;
+        line-height: 1;
+      }
+
+      .president-title {
+        font-family: "Playfair Display", serif;
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        position: relative;
+      }
+
+      .president-title::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--accent-color);
+        border-radius: 2px;
+      }
+
+      .president-message-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--text-dark);
+        margin-bottom: 2rem;
+        text-align: justify;
+      }
+
+      .president-signature {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--bg-light);
+      }
+
+      .signature-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+      }
+
+      .signature-text {
+        flex: 1;
+      }
+
+      .signature-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .signature-title {
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      .president-image {
+        position: relative;
+      }
+
+      .president-photo {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-heavy);
+        transition: var(--transition);
+      }
+
+      .president-photo:hover {
+        transform: scale(1.02);
+        box-shadow: 0 20px 40px rgba(44, 90, 160, 0.2);
+      }
+
+      .president-frame {
+        position: absolute;
+        top: -15px;
+        left: -15px;
+        right: 15px;
+        bottom: 15px;
+        border: 3px solid var(--accent-color);
+        border-radius: var(--border-radius);
+        z-index: -1;
+        opacity: 0.7;
+      }
+
+      .president-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--accent-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: var(--shadow-medium);
+      }
+
+      /* Stats Section */
+      .stats {
+        padding: 4rem 0;
+        background: var(--bg-light);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        transition: var(--transition);
+      }
+
+      .stat-item:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+      }
+
+      .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 6rem 0;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        transition: var(--transition);
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-heavy);
+      }
+
+      .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+      }
+
+      .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+      }
+
+      .feature-description {
+        color: var(--text-light);
+        line-height: 1.6;
+      }
+
+      /* Footer */
+      .footer {
+        background: var(--text-dark);
+        color: white;
+        padding: 4rem 0 2rem;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+      }
+
+      .footer-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        color: white;
+      }
+
+      .footer-section p,
+      .footer-section a {
+        color: #bdc3c7;
+        text-decoration: none;
+        line-height: 1.8;
+        transition: var(--transition);
+      }
+
+      .footer-section a:hover {
+        color: var(--accent-color);
+      }
+
+      .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .social-link {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: var(--transition);
+      }
+
+      .social-link:hover {
+        background: var(--accent-color);
+        transform: translateY(-2px);
+      }
+
+      .footer-bottom {
+        border-top: 1px solid #34495e;
+        padding-top: 2rem;
+        text-align: center;
+        color: #bdc3c7;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* President Message Responsive */
+      @media (max-width: 992px) {
+        .president-content {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+
+        .president-photo {
+          height: 350px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .president-message {
+          padding: 4rem 0;
+        }
+
+        .president-text {
+          padding: 2rem;
+        }
+
+        .president-title {
+          font-size: 1.75rem;
+        }
+
+        .president-message-text {
+          font-size: 1rem;
+          text-align: left;
+        }
+
+        .president-photo {
+          height: 300px;
+        }
+
+        .president-text::before {
+          font-size: 4rem;
+          top: -10px;
+          left: 15px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .president-text {
+          padding: 1.5rem;
+        }
+
+        .president-signature {
+          flex-direction: column;
+          text-align: center;
+          gap: 1rem;
+        }
+
+        .president-photo {
+          height: 250px;
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .nav-menu {
+          position: fixed;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          flex-direction: column;
+          padding: 2rem;
+          box-shadow: var(--shadow-medium);
+          transform: translateY(-100%);
+          opacity: 0;
+          visibility: hidden;
+          transition: var(--transition);
+        }
+
+        .nav-menu.active {
+          transform: translateY(0);
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .mobile-menu-btn {
+          display: block;
+        }
+
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+
+        .hero-slider-container {
+          margin: 2rem 0;
+        }
+
+        .hero-cta {
+          margin-top: 1.5rem;
+        }
+
+        /* Slider Responsive */
+        .slider-wrapper {
+          height: 350px;
+        }
+
+        .slide-content {
+          padding: 2rem 1.5rem 1.5rem;
+        }
+
+        .slide-title {
+          font-size: 1.5rem;
+        }
+
+        .slide-description {
+          font-size: 1rem;
+        }
+
+        .slide-meta {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .thumbnail {
+          flex: 0 0 100px;
+          height: 70px;
+        }
+
+        .slider-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+        }
+
+        /* Heritage Responsive */
+        .heritage-content {
+          flex-direction: column;
+          text-align: center;
+          padding: 2rem;
+        }
+
+        .heritage-title {
+          font-size: 2rem;
+        }
+
+        .heritage-arrow {
+          margin: 1rem auto 0;
+        }
+
+        .container {
+          padding: 0 15px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero {
+          padding: 0 1rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .feature-card {
+          padding: 2rem;
+        }
+
+        .heritage-content {
+          padding: 1.5rem;
+        }
+
+        .heritage-title {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <nav class="nav container">
+        <a href="#" class="logo">
+          <img src="assets/Asset 1.png" alt="EBB Logo" />
+          <span>EBB Kültür Sanat</span>
+        </a>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#home" class="nav-link active">Ana Sayfa</a></li>
+          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="#contact" class="nav-link">İletişim</a></li>
+        </ul>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Hero Section with Slider -->
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Erzurum'un Kültür Kalbi</h1>
+
+          <!-- Slider Container -->
+          <div class="hero-slider-container">
+            <div class="main-slider">
+              <div class="slider-wrapper" id="mainSlider">
+                <!-- Slides will be loaded from Firebase -->
+                <div class="slide-loading">
+                  <div class="loading-spinner"></div>
+                  <p>Programlar yükleniyor...</p>
+                </div>
+              </div>
+
+              <div class="slider-controls">
+                <button class="slider-btn prev-btn" id="prevBtn">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="slider-btn next-btn" id="nextBtn">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+
+              <div class="slider-indicators" id="sliderIndicators">
+                <!-- Indicators will be generated dynamically -->
+              </div>
+            </div>
+
+            <div class="thumbnail-slider">
+              <div class="thumbnail-wrapper" id="thumbnailSlider">
+                <!-- Thumbnails will be loaded from Firebase -->
               </div>
             </div>
           </div>
-  
-          <table id="calendar">
-            <thead>
-              <tr>
-                <th colspan="7" style="background-color: #3b94c4; color: white">
-                  <div class="d-flex justify-content-between align-items-center px-3">
-                    <button class="btn btn-bg" style="color: #f4f8fb" onclick="previousMonth()">&lt;</button>
-                    <span id="calendarTitle">Mart 2024</span>
-                    <button class="btn btn-bg" style="color: #f4f8fb" onclick="nextMonth()">&gt;</button>
-                  </div>
-                </th>
-              </tr>
-              <tr>
-                <th>Pzt</th>
-                <th>Sa</th>
-                <th>Çr</th>
-                <th>Pr</th>
-                <th>Cu</th>
-                <th>Ct</th>
-                <th>Pz</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td id="day1"></td>
-                <td id="day2"></td>
-                <td id="day3"></td>
-                <td id="day4"></td>
-                <td id="day5"></td>
-                <td id="day6"></td>
-                <td id="day7"></td>
-              </tr>
-              <tr>
-                <td id="day8"></td>
-                <td id="day9"></td>
-                <td id="day10"></td>
-                <td id="day11"></td>
-                <td id="day12"></td>
-                <td id="day13"></td>
-                <td id="day14"></td>
-              </tr>
-              <tr>
-                <td id="day15"></td>
-                <td id="day16"></td>
-                <td id="day17"></td>
-                <td id="day18"></td>
-                <td id="day19"></td>
-                <td id="day20"></td>
-                <td id="day21"></td>
-              </tr>
-              <tr>
-                <td id="day22"></td>
-                <td id="day23"></td>
-                <td id="day24"></td>
-                <td id="day25"></td>
-                <td id="day26"></td>
-                <td id="day27"></td>
-                <td id="day28"></td>
-              </tr>
-  
-              <tr>
-                <td id="day29"></td>
-                <td id="day30"></td>
-                <td id="day31"></td>
-                <td id="day32"></td>
-                <td id="day33"></td>
-                <td id="day34"></td>
-                <td id="day35"></td>
-              </tr>
-  
-              <tr>
-                <td id="day36"></td>
-                <td id="day37"></td>
-                <td id="day38"></td>
-                <td id="day39"></td>
-                <td id="day40"></td>
-                <td id="day41"></td>
-                <td id="day42"></td>
-              </tr>
-            </tbody>
-          </table>
 
-          
-        </div>
-
-   
-      </div>
-    </section>
-
-    <!-- //Baskandan -->
-    <section
-      class="container-fluid"
-      style="
-        background: linear-gradient(15deg, #f4f8fb, #bcdcee);
-        margin-top: 20px;
-      "
-    >
-      <div
-        class="container-lg d-flex justify-content-between"
-        style="padding-top: 30px; padding-bottom: 30px"
-      >
-        <div
-          class=""
-          style="
-            margin: 10px;
-            padding-left: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-          "
-        >
-          <h1></h1>
-
-          <h2 style="color: #3b94c4; text-indent: 30px; margin-top: 30px">
-            Başkanın Mesajı
-          </h2>
-
-          <h4
-            style="
-              text-indent: 30px;
-              width: 750px;
-              color: #95c9e5;
-              text-align: justify;
-            "
-          >
-            Kültür ve sanat, bir milletin kimliğini koruyan, toplumsal bağlarını
-            güçlendiren ve gelecek nesillere ilham veren en değerli miraslardan
-            biridir. Bu alanlar, yalnızca bireylerin estetik duygularını
-            geliştirmekle kalmaz; aynı zamanda şehirlerin ve ülkelerin medeniyet
-            yolculuğunda yol gösterici bir rol üstlenir. Erzurum gibi tarihi ve
-            kültürel birikimiyle öne çıkan bir şehirde, bu değerleri koruyup
-            daha ileriye taşımak, bizim için hem bir sorumluluk hem de bir gurur
-            kaynağıdır.
-          </h4>
-        </div>
-
-        <img
-          class="rounded-5"
-          src="assets/MEHMET_SEKMEN_CERCEVEE kopyası.jpg"
-          alt=""
-          style="width: 30%; border: 10px #3b94c4"
-        />
-      </div>
-    </section>
-
-    <!-- // alt Bİlgi -->
-    <section
-      class="container-fluid rounded-3"
-      style="
-        padding-top: 100px;
-        padding-bottom: 100px;
-        margin-top: 25px;
-        background-image: url(assets/36d4e220-181b-4e07-8fe5-7ca9a82aa1e9\ kopya.png);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-color: #f6f9fb;
-        background-position: center;
-        margin-bottom: 20px;
-      "
-    >
-      <div class="container-lg d-flex justify-content-between">
-        <div class="ms-5">
-          <a
-            href="https://www.erzurum.bel.tr/"
-            target="_blank"
-            title="Erzurum Büyükşehir Belediyesi Resmi Stesi"
-          >
-            <img src="assets/EbbLogo@4x.png" alt="" style="height: 150px" />
-          </a>
-        </div>
-
-        <div class="d-flex flex-column justify-content-between">
-          <a href="index.html">
-            <img class="" src="assets/Asset 1.png" alt="" style="height: 150px"
-          /></a>
-        </div>
-
-        <div class="d-flex flex-column justify-content-between">
-          <h4>Kültür Sanat</h4>
-
-          <a class="bottomLink" href="ourActivity.html">Etkinliklerimiz</a>
-
-          <a class="bottomLink" href="ourhalls.html">Salonlarımız</a>
-
-          <a class="bottomLink" href="news.html">Haberler</a>
-
-          <a class="bottomLink" href="contact.html">İletişim</a>
-
-          <a class="bottomLink" href="activity.html">Yönetim Paneli</a>
-        </div>
-
-        <div class="d-flex flex-column justify-content-between me-5">
-          <h4>Sosyal Medya</h4>
-
-          <a
-            class="bottomLink"
-            href="https://www.instagram.com/ebbsanatmerkezi/"
-            target="_blank"
-            >İnstagram</a
-          >
-
-          <a
-            class="bottomLink"
-            href="https://www.facebook.com/EbbSanatMerkezi/?locale=tr_TR"
-            target="_blank"
-            >Facebook</a
-          >
-
-          <a class="bottomLink" href="h" target="_blank">X</a>
-
-          <a
-            class="bottomLink"
-            href="https://www.youtube.com/@erzurumbuyuksehirbelediyes2404"
-            target="_blank"
-            >Youtube</a
-          >
+          <!-- Programs Button -->
+          <div class="hero-cta">
+            <a href="calendar.html" class="btn btn-primary">
+              <i class="fas fa-calendar"></i>
+              Programları Keşfet
+            </a>
+          </div>
         </div>
       </div>
     </section>
 
-    <script src="js/main.js"></script>
+    <!-- Heritage Section -->
+    <section class="heritage-section">
+      <div class="container">
+        <a href="asiklik.html" class="heritage-link">
+          <div class="heritage-card">
+            <div class="heritage-background"></div>
+            <div class="heritage-content">
+              <div class="heritage-icon">
+                <i class="fas fa-music"></i>
+              </div>
+              <div>
+                <h2 class="heritage-title">Aşıklık Geleneği</h2>
+                <p class="heritage-description">
+                  Erzurum'un köklü kültürel mirasından aşıklık geleneğini
+                  keşfedin
+                </p>
+              </div>
+              <div class="heritage-arrow">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- President Message Section -->
+    <section class="president-message" id="president-message">
+      <div class="container">
+        <div class="president-content">
+          <div class="president-text">
+            <h2 class="president-title">Başkan Mesajı</h2>
+            <div class="president-message-text">
+              <p>
+                Değerli hemşehrilerim, kültür ve sanat şehrimizin en değerli
+                hazinelerindendir. Erzurum Büyükşehir Belediyesi Kültür ve Sanat
+                Merkezi olarak, bu kadim şehrin binlerce yıllık kültürel
+                mirasını korumak ve gelecek nesillere aktarmak için var
+                gücümüzle çalışıyoruz.
+              </p>
+              <p>
+                Sanatın ve kültürün toplumsal gelişimdeki rolünün farkında
+                olarak, şehrimizde yaşayan her bireyin kültürel etkinliklere
+                katılabileceği, sanatla buluşabileceği ve yeteneklerini
+                geliştirebileceği ortamlar sunuyoruz. Gelenekselden moderne,
+                yerelden evrensele uzanan geniş bir perspektifle hizmet
+                veriyoruz.
+              </p>
+              <p>
+                Kültür ve sanat merkezimizin kapıları tüm vatandaşlarımıza
+                açıktır. Birlikte daha güçlü, birlikte daha güzel bir Erzurum
+                inşa etmeye devam edeceğiz.
+              </p>
+            </div>
+            <div class="president-signature">
+              <div class="signature-icon">
+                <i class="fas fa-user-tie"></i>
+              </div>
+              <div class="signature-text">
+                <div class="signature-name">Mehmet Sekmen</div>
+                <div class="signature-title">
+                  Erzurum Büyükşehir Belediye Başkanı
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="president-image">
+            <div class="president-badge">Başkan</div>
+            <div class="president-frame"></div>
+            <img
+              src="assets/MEHMET_SEKMEN_CERCEVEE kopyası.jpg"
+              alt="Mehmet Sekmen - Erzurum Büyükşehir Belediye Başkanı"
+              class="president-photo"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number" data-count="150">0</div>
+            <div class="stat-label">Yıllık Etkinlik</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-count="50000">0</div>
+            <div class="stat-label">Ziyaretçi</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-count="25">0</div>
+            <div class="stat-label">Sanat Dalı</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-count="12">0</div>
+            <div class="stat-label">Salon</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Neler Sunuyoruz?</h2>
+          <p class="section-subtitle">
+            Kültür ve sanat dünyasında geniş bir yelpazede hizmet veriyoruz
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-theater-masks"></i>
+            </div>
+            <h3 class="feature-title">Tiyatro & Drama</h3>
+            <p class="feature-description">
+              Profesyonel tiyatro oyunları, drama atölyeleri ve sahne sanatları
+              eğitimleri ile sanatın büyülü dünyasına adım atın.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <h3 class="feature-title">Müzik & Konser</h3>
+            <p class="feature-description">
+              Klasik müzikten modern tarzlara, yerel sanatçılardan uluslararası
+              isimlere kadar geniş bir müzik yelpazesi.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <h3 class="feature-title">Resim & Sergi</h3>
+            <p class="feature-description">
+              Çağdaş sanat sergilerinden geleneksel el sanatlarına, görsel
+              sanatların her dalında zengin bir koleksiyon.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <h3 class="feature-title">Edebiyat & Söyleşi</h3>
+            <p class="feature-description">
+              Yazar söyleşileri, şiir dinletileri ve edebiyat atölyeleri ile
+              kelimelerin büyüsünü keşfedin.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-child"></i>
+            </div>
+            <h3 class="feature-title">Çocuk Etkinlikleri</h3>
+            <p class="feature-description">
+              Çocuklarımızın yaratıcılığını geliştiren özel atölyeler, oyunlar
+              ve eğitici etkinlikler.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3 class="feature-title">Eğitim & Atölye</h3>
+            <p class="feature-description">
+              Her yaştan katılımcı için düzenlenen sanat eğitimleri ve beceri
+              geliştirme atölyeleri.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>EBB Kültür Sanat Merkezi</h3>
+            <p>
+              Erzurum'un kültürel yaşamının kalbi olan merkezimizde, sanat ve
+              kültürün her dalında etkinlikler düzenliyoruz.
+            </p>
+            <div class="social-links">
+              <a
+                href="https://www.facebook.com/EbbSanatMerkezi"
+                class="social-link"
+                target="_blank"
+              >
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a
+                href="https://www.instagram.com/ebbsanatmerkezi"
+                class="social-link"
+                target="_blank"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="social-link" target="_blank">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-link" target="_blank">
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h3>Hızlı Linkler</h3>
+            <p><a href="#home">Ana Sayfa</a></p>
+            <p><a href="#slider">Programlar</a></p>
+            <p><a href="#features">Hizmetler</a></p>
+            <p><a href="ourhalls.html">Salonlarımız</a></p>
+            <p><a href="activity.html">Yönetim Paneli</a></p>
+          </div>
+
+          <div class="footer-section">
+            <h3>İletişim</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Erzurum Merkez</p>
+            <p><i class="fas fa-phone"></i> +90 (442) 123 45 67</p>
+            <p><i class="fas fa-envelope"></i> info@ebbsanatmerkezi.com</p>
+            <p><i class="fas fa-clock"></i> Pzt-Cum: 09:00-18:00</p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Bağlı Kuruluşlar</h3>
+            <p>
+              <a href="https://www.erzurum.bel.tr" target="_blank"
+                >Erzurum Büyükşehir Belediyesi</a
+              >
+            </p>
+            <p><a href="#" target="_blank">Kültür ve Turizm Bakanlığı</a></p>
+            <p><a href="#" target="_blank">Erzurum Valiliği</a></p>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2024 EBB Kültür ve Sanat Merkezi. Tüm hakları saklıdır.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Firebase -->
+    <script type="module">
+      // Firebase imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        query,
+        where,
+        orderBy,
+        limit,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // Slider functionality
+      let currentSlide = 0;
+      let slides = [];
+      let slideInterval;
+
+      // Load featured programs from Firebase
+      async function loadFeaturedPrograms() {
+        try {
+          const programsRef = collection(db, "activity");
+          const q = query(
+            programsRef,
+            where("showInSlider", "==", true),
+            orderBy("date", "desc"),
+            limit(6)
+          );
+          const querySnapshot = await getDocs(q);
+
+          slides = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            slides.push({
+              id: doc.id,
+              ...data,
+              date: data.date ? data.date.toDate() : new Date(),
+            });
+          });
+
+          if (slides.length > 0) {
+            renderSlider();
+            startAutoSlide();
+          } else {
+            showNoDataMessage();
+          }
+        } catch (error) {
+          console.error("Error loading programs:", error);
+          showErrorMessage();
+        }
+      }
+
+      function renderSlider() {
+        const mainSlider = document.getElementById("mainSlider");
+        const thumbnailSlider = document.getElementById("thumbnailSlider");
+        const indicators = document.getElementById("sliderIndicators");
+
+        // Clear loading
+        mainSlider.innerHTML = "";
+        thumbnailSlider.innerHTML = "";
+        indicators.innerHTML = "";
+
+        // Create main slides
+        slides.forEach((slide, index) => {
+          // Main slide
+          const slideElement = document.createElement("div");
+          slideElement.className = `slide ${index === 0 ? "active" : ""}`;
+          slideElement.innerHTML = `
+                    <img src="${
+                      slide.imageUrl || "assets/slider/slider1.jpg"
+                    }" alt="${slide.name}" class="slide-image">
+                    <div class="slide-content">
+                        <span class="slide-category">${
+                          slide.category || "Etkinlik"
+                        }</span>
+                        <h3 class="slide-title">${slide.name}</h3>
+                        <p class="slide-description">${
+                          slide.description || "Açıklama bulunmamaktadır."
+                        }</p>
+                        <div class="slide-meta">
+                            <div class="slide-date">
+                                <i class="fas fa-calendar"></i>
+                                <span>${
+                                  formatDate(slide.date) ||
+                                  "Tarih belirtilmemiş"
+                                }</span>
+        </div>
+                            <div class="slide-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${
+                                  slide.location || "Konum belirtilmemiş"
+                                }</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          mainSlider.appendChild(slideElement);
+
+          // Thumbnail
+          const thumbnailElement = document.createElement("div");
+          thumbnailElement.className = `thumbnail ${
+            index === 0 ? "active" : ""
+          }`;
+          thumbnailElement.innerHTML = `
+                    <img src="${
+                      slide.imageUrl || "assets/slider/slider1.jpg"
+                    }" alt="${slide.name}">
+                `;
+          thumbnailElement.addEventListener("click", () => goToSlide(index));
+          thumbnailSlider.appendChild(thumbnailElement);
+
+          // Indicator
+          const indicatorElement = document.createElement("div");
+          indicatorElement.className = `indicator ${
+            index === 0 ? "active" : ""
+          }`;
+          indicatorElement.addEventListener("click", () => goToSlide(index));
+          indicators.appendChild(indicatorElement);
+        });
+
+        // Add navigation event listeners
+        document.getElementById("prevBtn").addEventListener("click", prevSlide);
+        document.getElementById("nextBtn").addEventListener("click", nextSlide);
+      }
+
+      function goToSlide(index) {
+        if (index === currentSlide) return;
+
+        // Update slides
+        const allSlides = document.querySelectorAll(".slide");
+        const allThumbnails = document.querySelectorAll(".thumbnail");
+        const allIndicators = document.querySelectorAll(".indicator");
+
+        // Remove active classes
+        allSlides[currentSlide].classList.remove("active");
+        allThumbnails[currentSlide].classList.remove("active");
+        allIndicators[currentSlide].classList.remove("active");
+
+        // Add active classes
+        allSlides[index].classList.add("active");
+        allThumbnails[index].classList.add("active");
+        allIndicators[index].classList.add("active");
+
+        currentSlide = index;
+
+        // Scroll thumbnail into view
+        allThumbnails[index].scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }
+
+      function nextSlide() {
+        const nextIndex = (currentSlide + 1) % slides.length;
+        goToSlide(nextIndex);
+      }
+
+      function prevSlide() {
+        const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+        goToSlide(prevIndex);
+      }
+
+      function startAutoSlide() {
+        slideInterval = setInterval(nextSlide, 5000); // 5 seconds
+      }
+
+      function stopAutoSlide() {
+        if (slideInterval) {
+          clearInterval(slideInterval);
+        }
+      }
+
+      function formatDate(dateString) {
+        if (!dateString) return null;
+        try {
+          const date = new Date(dateString);
+          return date.toLocaleDateString("tr-TR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        } catch (error) {
+          return dateString;
+        }
+      }
+
+      function showNoDataMessage() {
+        const mainSlider = document.getElementById("mainSlider");
+        mainSlider.innerHTML = `
+                <div class="slide-loading">
+                    <i class="fas fa-info-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color);"></i>
+                    <p>Henüz öne çıkan program bulunmamaktadır.</p>
+        </div>
+            `;
+      }
+
+      function showErrorMessage() {
+        const mainSlider = document.getElementById("mainSlider");
+        mainSlider.innerHTML = `
+                <div class="slide-loading">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: #e74c3c;"></i>
+                    <p>Programlar yüklenirken bir hata oluştu.</p>
+      </div>
+            `;
+      }
+
+      // Pause auto-slide on hover
+      document.addEventListener("DOMContentLoaded", () => {
+        const sliderContainer = document.querySelector(".main-slider");
+        if (sliderContainer) {
+          sliderContainer.addEventListener("mouseenter", stopAutoSlide);
+          sliderContainer.addEventListener("mouseleave", startAutoSlide);
+        }
+
+        // Load programs
+        loadFeaturedPrograms();
+      });
+
+      // Make functions globally available
+      window.loadFeaturedPrograms = loadFeaturedPrograms;
+    </script>
+
+    <!-- JavaScript -->
+    <script>
+      // Mobile Menu Toggle
+      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+      const navMenu = document.getElementById("navMenu");
+
+      mobileMenuBtn.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
+        const icon = mobileMenuBtn.querySelector("i");
+        icon.classList.toggle("fa-bars");
+        icon.classList.toggle("fa-times");
+      });
+
+      // Smooth Scrolling for Navigation Links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+          // Close mobile menu if open
+          navMenu.classList.remove("active");
+          mobileMenuBtn.querySelector("i").classList.add("fa-bars");
+          mobileMenuBtn.querySelector("i").classList.remove("fa-times");
+        });
+      });
+
+      // Header Background on Scroll
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector(".header");
+        if (window.scrollY > 100) {
+          header.style.background = "rgba(255, 255, 255, 0.98)";
+        } else {
+          header.style.background = "rgba(255, 255, 255, 0.95)";
+        }
+      });
+
+      // Active Navigation Link
+      window.addEventListener("scroll", () => {
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        let current = "";
+        sections.forEach((section) => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (scrollY >= sectionTop - 200) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${current}`) {
+            link.classList.add("active");
+          }
+        });
+      });
+
+      // Counter Animation
+      function animateCounters() {
+        const counters = document.querySelectorAll(".stat-number");
+        counters.forEach((counter) => {
+          const target = parseInt(counter.getAttribute("data-count"));
+          const count = parseInt(counter.innerText);
+          const increment = target / 100;
+
+          if (count < target) {
+            counter.innerText = Math.ceil(count + increment);
+            setTimeout(() => animateCounters(), 20);
+          } else {
+            counter.innerText = target.toLocaleString();
+          }
+        });
+      }
+
+      // Intersection Observer for Animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (entry.target.classList.contains("stats")) {
+              animateCounters();
+            }
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+          }
+        });
+      }, observerOptions);
+
+      // Observe sections for animation
+      document.querySelectorAll(".stats, .features").forEach((section) => {
+        section.style.opacity = "0";
+        section.style.transform = "translateY(30px)";
+        section.style.transition = "all 0.6s ease";
+        observer.observe(section);
+      });
+    </script>
   </body>
 </html>

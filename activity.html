@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Etkinlikler</title>
+    <title>Etkinlik Yönetimi</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
@@ -21,13 +26,15 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <script type="module" src="js/activty.js"></script>
 
     <style>
       body {
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
       }
 
       .offcanvas {
@@ -52,6 +59,8 @@
         width: 100%;
         margin-left: 0;
         position: relative;
+        overflow-x: auto;
+        padding-bottom: 60px;
       }
 
       #mainContainer.shifted {
@@ -61,8 +70,11 @@
 
       .main-content {
         flex: 1;
-        position: relative;
-        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow-x: auto;
+        padding: 20px;
       }
 
       footer {
@@ -72,31 +84,91 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: auto;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
       }
 
       .container-fluid {
-        margin-bottom: 50px;
+        margin-bottom: 70px;
       }
 
-      #addEditContainer {
-        transition: all 0.3s ease;
-        width: 100%;
-        margin-left: 0;
-        position: relative;
-        display: none;
+      .stats-card {
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
       }
 
-      #addEditContainer.shifted {
-        margin-left: 400px;
-        width: calc(100% - 400px);
+      .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .stats-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .event-item {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #fff;
+      }
+
+      .slider-badge {
+        background-color: #28a745;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .form-control,
+      .form-select {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+
+      .btn {
+        border-radius: 6px;
+      }
+
+      @media (max-width: 768px) {
+        .offcanvas {
+          width: 300px;
+        }
+
+        #mainContainer.shifted {
+          margin-left: 300px;
+          width: calc(100% - 300px);
+        }
       }
     </style>
   </head>
   <body>
     <div class="main-content">
-      <!-- OFF CANVAS -->
-
       <div
         class="offcanvas offcanvas-start show"
         data-bs-backdrop="false"
@@ -125,9 +197,7 @@
             <a
               href="activity.html"
               class="list-group-item list-group-item-action active"
-              aria-current="true"
-            >
-              Etkinlikler
+              >Etkinlikler
             </a>
             <a
               href="salooncontrol.html"
@@ -176,259 +246,238 @@
         </div>
       </div>
 
-      <!-- ETKİNLİKLER -->
-
       <div class="container-fluid shifted" id="mainContainer">
         <div
-          class="containerTitle d-flex justify-content-between border-bottom border-primary"
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
         >
           <button class="btn btn-primary mb-3 mt-3" id="menuButton">
             <i class="fas fa-times"></i>
           </button>
-
-          <div class="h3 text-primary m-3 pb-0 flex-fill">Etkinlikler</div>
-
-          <button class="btn btn-primary m-3" id="activityaddButton">
-            Etkinlik Ekle
-          </button>
-        </div>
-      </div>
-
-      <!-- ETKİNLİK EKLEME -->
-
-      <div
-        class="container-fluid border-start shifted"
-        id="addEditContainer"
-        style="margin-top: 1%"
-      >
-        <div
-          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
-        >
-          <button class="btn btn-primary mb-3 mt-3" id="menuButton2">
-            <i class="fas fa-times"></i>
-          </button>
-          <div class="h3 text-primary m-3 pb-0 flex-fill">Etkinlik Ekle</div>
-
-          <button class="btn btn-danger m-3 me-0" id="activityaddCancelButton">
-            Vazgeç
-          </button>
-
-          <button class="btn btn-success m-3" id="activityaddSuccessButton">
-            Onayla
-          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">
+            Etkinlik Yönetimi
+          </div>
         </div>
 
-        <div class="container">
-          <div class="m-3">
-            <input
-              type="text"
-              class="form-control"
-              id="activityName"
-              placeholder="Etkinlik Adı"
-            />
-          </div>
-
-          <div class="container d-flex">
-            <select
-              class="form-select me-1 ms-1"
-              id="activityCategory"
-              aria-label="Default select example"
+        <!-- İstatistikler -->
+        <div class="row mt-4">
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #007bff, #0056b3)"
             >
-              <option value="0" selected>Kategori</option>
-              <option value="1">Tiyatro</option>
-              <option value="2">Konser</option>
-              <option value="3">Sergi</option>
-            </select>
-
-            <select
-              class="form-select ms-1 me-1"
-              id="activitySaloon"
-              aria-label="Default select example"
+              <div class="stats-number" id="totalEvents">0</div>
+              <div class="stats-label">Toplam Etkinlik</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #28a745, #20c997)"
             >
-              <option selected>Salon</option>
-              <option value="1">İbrahim Erkal Dadaş Kültür Merkezi</option>
-              <option value="2">Necip Fazıl Kısakürek Kültür Merkezi</option>
-            </select>
-          </div>
-
-          <div class="m-3">
-            <textarea
-              class="form-control"
-              id="activityDescription"
-              rows="3"
-              placeholder="Etkinlik Hakkında"
-            ></textarea>
-          </div>
-
-          <div class="m-3 p-2 border rounded-2 d-flex">
-            <div class="container border-end">
-              <label class="mb-1 text">200x200 px Fotoğraf</label>
-              <input class="form-control" type="file" id="image1Input" />
-            </div>
-
-            <div class="container">
-              <label class="mb-1 text">200x200 px Fotoğraf</label>
-              <input class="form-control" type="file" id="image2Input" />
+              <div class="stats-number" id="sliderEvents">0</div>
+              <div class="stats-label">Slider'da Gösterilen</div>
             </div>
           </div>
-
-          <div class="m-3">
-            <input
-              type="text"
-              class="form-control"
-              id="activityorganisation"
-              placeholder="Etkinliği Düzenleyen Kurum/Firma "
-            />
-          </div>
-
-          <div class="m-3">
-            <input
-              type="tel"
-              class="form-control"
-              id="activityTelephonenumber"
-              placeholder="İletişim Telefonu"
-            />
-          </div>
-
-          <div class="d-flex justify-content-between m-3 p-2 border rounded-2">
-            <div class="container" id="datecontainer">
-              <label class="mb-1 fs-6 text">Tarih</label>
-              <input
-                type="datetime-local"
-                class="form-control"
-                id="activityDate"
-              />
-            </div>
-
-            <div class="container" id="beginDateContainer">
-              <label class="mb-1 fs-6 text">Başlangıç Tarihi</label>
-              <input
-                type="datetime-local"
-                class="form-control"
-                id="activityBeginDate"
-              />
-            </div>
-
-            <div class="container" id="endDateContainer">
-              <label class="mb-1 fs-6 text">Bitiş Tarihi</label>
-              <input
-                type="datetime-local"
-                class="form-control"
-                id="activityEndDate"
-              />
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #ffc107, #fd7e14)"
+            >
+              <div class="stats-number" id="todayEvents">0</div>
+              <div class="stats-label">Bugünkü Etkinlikler</div>
             </div>
           </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #dc3545, #e83e8c)"
+            >
+              <div class="stats-number" id="upcomingEvents">0</div>
+              <div class="stats-label">Yaklaşan Etkinlikler</div>
+            </div>
+          </div>
+        </div>
 
-          <div class="container d-flex d-flex justify-content-between">
-            <div class="row">
-              <div
-                class="form-check d-flex align-items-center col border-end me-2"
-              >
-                <input
-                  class="form-check-input me-2"
-                  type="checkbox"
-                  value=""
-                  id="protocolCheckBox"
-                />
-                <label
-                  class="form-check-label me-2"
-                  for="flexCheckIndeterminate"
-                >
-                  Protokol
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="3"
-                  class="form-control me-2"
-                  id="protocolSeatText"
-                  placeholder="Sıra"
-                />
+        <!-- Ana İçerik -->
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="card">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                  <i class="fas fa-plus-circle me-2"></i>Yeni Etkinlik Ekle
+                </h5>
               </div>
+              <div class="card-body">
+                <form id="eventForm">
+                  <div class="mb-3">
+                    <label class="form-label">Etkinlik Adı *</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="eventName"
+                      required
+                    />
+                  </div>
 
-              <select
-                class="form-select d-flex align-items-center col m-0"
-                id="activityticket"
-                aria-label="Default select example"
-              >
-                <option value="0" selected>Bilet Fiyatı</option>
-                <option value="1">Ücretsiz</option>
-                <option value="2">Tek Fiyat</option>
-                <option value="3">Tam - Öğrenci</option>
-                <option value="4">Özel Plan - 1 Seçenek</option>
-                <option value="5">Özel Plan - 2 Seçenek</option>
-                <option value="6">Özel Plan - 3 Seçenek</option>
-                <option value="7">Özel Plan - 4 Seçenek</option>
-              </select>
+                  <div class="mb-3">
+                    <label class="form-label">Açıklama</label>
+                    <textarea
+                      class="form-control"
+                      id="eventDescription"
+                      rows="3"
+                    ></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Tarih *</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="eventDate"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Saat *</label>
+                    <input
+                      type="time"
+                      class="form-control"
+                      id="eventTime"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Konum</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="eventLocation"
+                      placeholder="Örn: Ana Salon"
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Kategori</label>
+                    <select class="form-select" id="eventCategory">
+                      <option value="Konser">Konser</option>
+                      <option value="Tiyatro">Tiyatro</option>
+                      <option value="Seminer">Seminer</option>
+                      <option value="Sergi">Sergi</option>
+                      <option value="Workshop">Workshop</option>
+                      <option value="Diğer">Diğer</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Yatay Afiş (Slider için)</label>
+                    <div class="input-group mb-2">
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="eventImageFile"
+                        accept="image/*"
+                      />
+                      <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="uploadImageBtn"
+                      >
+                        <i class="fas fa-upload"></i> Yükle
+                      </button>
+                    </div>
+                    <input
+                      type="url"
+                      class="form-control"
+                      id="eventImage"
+                      placeholder="Yüklenen görsel URL'si"
+                      readonly
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Dikey Afiş (Poster)</label>
+                    <div class="input-group mb-2">
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="eventPosterImageFile"
+                        accept="image/*"
+                      />
+                      <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="uploadPosterBtn"
+                      >
+                        <i class="fas fa-upload"></i> Yükle
+                      </button>
+                    </div>
+                    <input
+                      type="url"
+                      class="form-control"
+                      id="eventPosterImage"
+                      placeholder="Yüklenen poster URL'si"
+                      readonly
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Kayıt URL</label>
+                    <input
+                      type="url"
+                      class="form-control"
+                      id="registrationUrl"
+                      placeholder="https://..."
+                    />
+                  </div>
+
+                  <div class="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="showInSlider"
+                    />
+                    <label class="form-check-label" for="showInSlider">
+                      <strong>Slider'da Göster</strong>
+                      <small class="d-block text-muted"
+                        >Ana sayfada öne çıkarılsın</small
+                      >
+                    </label>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-save me-2"></i>Etkinlik Ekle
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
 
-          <div class="d-flex" id="ticketContainer1">
-            <input
-              type="text"
-              class="form-control ms-3 mt-3 me-1 mb-1"
-              id="ticketName1"
-              placeholder="Name"
-            />
-
-            <input
-              type="number"
-              class="form-control ms-1 mt-3 me-3 mb-1"
-              id="ticketprice1"
-              placeholder="Fiyat"
-              value="0"
-            />
-          </div>
-
-          <div class="d-flex" id="ticketContainer2">
-            <input
-              type="text"
-              class="form-control ms-3 mt-1 me-1 mb-1"
-              id="ticketName2"
-              placeholder="Name"
-            />
-
-            <input
-              type="number"
-              class="form-control ms-1 mt-1 me-3 mb-1"
-              id="ticketprice2"
-              placeholder="Fiyat"
-              value="0"
-            />
-          </div>
-
-          <div class="d-flex" id="ticketContainer3">
-            <input
-              type="text"
-              class="form-control ms-3 mt-1 me-1 mb-1"
-              id="ticketName3"
-              placeholder="Name"
-            />
-
-            <input
-              type="number"
-              class="form-control ms-1 mt-1 me-3 mb-1"
-              id="ticketprice3"
-              placeholder="Fiyat"
-              value="0"
-            />
-          </div>
-
-          <div class="d-flex" id="ticketContainer4">
-            <input
-              type="text"
-              class="form-control ms-3 mt-1 me-1 mb-1"
-              id="ticketName4"
-              placeholder="Name"
-            />
-
-            <input
-              type="number"
-              class="form-control ms-1 mt-1 me-3 mb-1"
-              id="ticketprice4"
-              placeholder="Fiyat"
-              value="0"
-            />
+          <div class="col-lg-8">
+            <div class="card">
+              <div
+                class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0">
+                  <i class="fas fa-list me-2"></i>Etkinlikler
+                </h5>
+                <button
+                  class="btn btn-outline-light btn-sm"
+                  onclick="loadEvents()"
+                >
+                  <i class="fas fa-sync-alt me-1"></i>Yenile
+                </button>
+              </div>
+              <div class="card-body">
+                <div id="eventsContainer">
+                  <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                    <p class="mt-2 text-muted">Etkinlikler yükleniyor...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -439,21 +488,63 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    <script>
+    <!-- Firebase -->
+    <script type="module">
+      // Firebase imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc,
+        updateDoc,
+        deleteDoc,
+        doc,
+        query,
+        orderBy,
+        where,
+        Timestamp,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      // Global variables
+      let events = [];
+      let editingEventId = null;
+
+      // Menu toggle functionality
       document.addEventListener("DOMContentLoaded", function () {
         const menuButton = document.getElementById("menuButton");
-        const menuButton2 = document.getElementById("menuButton2");
         const menuIcon = menuButton.querySelector("i");
-        const menuIcon2 = menuButton2.querySelector("i");
         const adminPanel = document.getElementById("adminPanelSideMenu");
-        const programTable = document.getElementById("mainContainer");
-        const addEditContainer = document.getElementById("addEditContainer");
+        const mainContainer = document.getElementById("mainContainer");
 
         function toggleMenu(icon) {
           adminPanel.classList.toggle("show");
-          programTable.classList.toggle("shifted");
-          addEditContainer.classList.toggle("shifted");
+          mainContainer.classList.toggle("shifted");
 
           // İkon değişimi
           if (icon.classList.contains("fa-bars")) {
@@ -469,10 +560,332 @@
           toggleMenu(menuIcon);
         });
 
-        menuButton2.addEventListener("click", function () {
-          toggleMenu(menuIcon2);
-        });
+        // Initialize
+        loadEvents();
+        setupEventForm();
       });
+
+      // Load events from Firebase
+      async function loadEvents() {
+        try {
+          const eventsRef = collection(db, "activity");
+          const q = query(eventsRef, orderBy("date", "desc"));
+          const querySnapshot = await getDocs(q);
+
+          events = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            events.push({
+              id: doc.id,
+              ...data,
+              date: data.date ? data.date.toDate() : new Date(),
+            });
+          });
+
+          renderEvents();
+          updateStats();
+        } catch (error) {
+          console.error("Error loading events:", error);
+          document.getElementById("eventsContainer").innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+              <p class="mt-2 text-danger">Etkinlikler yüklenirken hata oluştu!</p>
+            </div>
+          `;
+        }
+      }
+
+      // Render events list
+      function renderEvents() {
+        const container = document.getElementById("eventsContainer");
+
+        if (events.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-calendar-times fa-2x text-muted"></i>
+              <p class="mt-2 text-muted">Henüz etkinlik bulunmuyor.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = events
+          .map(
+            (event) => `
+          <div class="event-item">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h6 class="mb-0">${event.name}</h6>
+              ${
+                event.showInSlider
+                  ? '<span class="slider-badge">Slider\'da</span>'
+                  : ""
+              }
+            </div>
+            
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <small class="text-muted">
+                  <i class="fas fa-calendar me-1"></i>${event.date.toLocaleDateString(
+                    "tr-TR"
+                  )}
+                </small>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted">
+                  <i class="fas fa-clock me-1"></i>${event.time || "00:00"}
+                </small>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted">
+                  <i class="fas fa-map-marker-alt me-1"></i>${
+                    event.location || "Belirtilmemiş"
+                  }
+                </small>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted">
+                  <i class="fas fa-tag me-1"></i>${event.category || "Genel"}
+                </small>
+              </div>
+            </div>
+            
+            ${
+              event.description
+                ? `<p class="text-muted small mb-3">${event.description}</p>`
+                : ""
+            }
+            
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-warning btn-sm" onclick="editEvent('${
+                event.id
+              }')">
+                <i class="fas fa-edit me-1"></i>Düzenle
+              </button>
+              <button class="btn btn-${
+                event.showInSlider ? "secondary" : "success"
+              } btn-sm" 
+                      onclick="toggleSlider('${
+                        event.id
+                      }', ${!event.showInSlider})">
+                <i class="fas fa-${
+                  event.showInSlider ? "eye-slash" : "eye"
+                } me-1"></i>
+                ${event.showInSlider ? "Slider'dan Kaldır" : "Slider'a Ekle"}
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="deleteEvent('${
+                event.id
+              }')">
+                <i class="fas fa-trash me-1"></i>Sil
+              </button>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Update statistics
+      function updateStats() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const totalEvents = events.length;
+        const sliderEvents = events.filter((e) => e.showInSlider).length;
+        const todayEvents = events.filter((e) => {
+          const eventDate = new Date(e.date);
+          eventDate.setHours(0, 0, 0, 0);
+          return eventDate.getTime() === today.getTime();
+        }).length;
+        const upcomingEvents = events.filter((e) => e.date > new Date()).length;
+
+        document.getElementById("totalEvents").textContent = totalEvents;
+        document.getElementById("sliderEvents").textContent = sliderEvents;
+        document.getElementById("todayEvents").textContent = todayEvents;
+        document.getElementById("upcomingEvents").textContent = upcomingEvents;
+      }
+
+      // Upload image to Firebase Storage
+      async function uploadImage(file, folder) {
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
+        const storageRef = ref(storage, `${folder}/${fileName}`);
+
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      }
+
+      // Setup event form
+      function setupEventForm() {
+        const form = document.getElementById("eventForm");
+
+        // Image upload handlers
+        document
+          .getElementById("uploadImageBtn")
+          .addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventImageFile");
+            const urlInput = document.getElementById("eventImage");
+
+            if (fileInput.files[0]) {
+              try {
+                alert("Görsel yükleniyor...");
+                const downloadURL = await uploadImage(
+                  fileInput.files[0],
+                  "event-images"
+                );
+                urlInput.value = downloadURL;
+                alert("Görsel başarıyla yüklendi!");
+              } catch (error) {
+                alert("Görsel yüklenirken hata oluştu!");
+              }
+            } else {
+              alert("Lütfen bir görsel seçin!");
+            }
+          });
+
+        document
+          .getElementById("uploadPosterBtn")
+          .addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventPosterImageFile");
+            const urlInput = document.getElementById("eventPosterImage");
+
+            if (fileInput.files[0]) {
+              try {
+                alert("Poster yükleniyor...");
+                const downloadURL = await uploadImage(
+                  fileInput.files[0],
+                  "event-posters"
+                );
+                urlInput.value = downloadURL;
+                alert("Poster başarıyla yüklendi!");
+              } catch (error) {
+                alert("Poster yüklenirken hata oluştu!");
+              }
+            } else {
+              alert("Lütfen bir poster seçin!");
+            }
+          });
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            name: document.getElementById("eventName").value,
+            description: document.getElementById("eventDescription").value,
+            date: Timestamp.fromDate(
+              new Date(
+                document.getElementById("eventDate").value +
+                  "T" +
+                  document.getElementById("eventTime").value
+              )
+            ),
+            time: document.getElementById("eventTime").value,
+            location: document.getElementById("eventLocation").value,
+            category: document.getElementById("eventCategory").value,
+            imageUrl: document.getElementById("eventImage").value,
+            posterImageUrl: document.getElementById("eventPosterImage").value,
+            registrationUrl: document.getElementById("registrationUrl").value,
+            showInSlider: document.getElementById("showInSlider").checked,
+          };
+
+          try {
+            if (editingEventId) {
+              // Update existing event
+              const eventRef = doc(db, "activity", editingEventId);
+              await updateDoc(eventRef, formData);
+              alert("Etkinlik güncellendi!");
+            } else {
+              // Add new event
+              await addDoc(collection(db, "activity"), formData);
+              alert("Etkinlik eklendi!");
+            }
+
+            form.reset();
+            editingEventId = null;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML =
+              '<i class="fas fa-save me-2"></i>Etkinlik Ekle';
+            loadEvents();
+          } catch (error) {
+            console.error("Error saving event:", error);
+            alert("Etkinlik kaydedilirken hata oluştu!");
+          }
+        });
+      }
+
+      // Toggle slider visibility
+      window.toggleSlider = async function (eventId, showInSlider) {
+        try {
+          const eventRef = doc(db, "activity", eventId);
+          await updateDoc(eventRef, { showInSlider });
+
+          alert(
+            showInSlider
+              ? "Etkinlik slider'a eklendi!"
+              : "Etkinlik slider'dan kaldırıldı!"
+          );
+          loadEvents();
+        } catch (error) {
+          console.error("Error updating slider status:", error);
+          alert("İşlem sırasında hata oluştu!");
+        }
+      };
+
+      // Delete event
+      window.deleteEvent = async function (eventId) {
+        if (!confirm("Bu etkinliği silmek istediğinizden emin misiniz?"))
+          return;
+
+        try {
+          await deleteDoc(doc(db, "activity", eventId));
+          alert("Etkinlik silindi!");
+          loadEvents();
+        } catch (error) {
+          console.error("Error deleting event:", error);
+          alert("Etkinlik silinirken hata oluştu!");
+        }
+      };
+
+      // Edit event
+      window.editEvent = function (eventId) {
+        const event = events.find((e) => e.id === eventId);
+        if (!event) return;
+
+        // Fill form with event data
+        document.getElementById("eventName").value = event.name;
+        document.getElementById("eventDescription").value =
+          event.description || "";
+        document.getElementById("eventDate").value = event.date
+          .toISOString()
+          .split("T")[0];
+        document.getElementById("eventTime").value = event.time || "";
+        document.getElementById("eventLocation").value = event.location || "";
+        document.getElementById("eventCategory").value =
+          event.category || "Konser";
+        document.getElementById("eventImage").value = event.imageUrl || "";
+        document.getElementById("eventPosterImage").value =
+          event.posterImageUrl || "";
+        document.getElementById("registrationUrl").value =
+          event.registrationUrl || "";
+        document.getElementById("showInSlider").checked =
+          event.showInSlider || false;
+
+        // Change form to update mode
+        editingEventId = eventId;
+        const submitBtn = document.querySelector(
+          '#eventForm button[type="submit"]'
+        );
+        submitBtn.innerHTML =
+          '<i class="fas fa-save me-2"></i>Etkinlik Güncelle';
+
+        // Scroll to form
+        document
+          .getElementById("eventForm")
+          .scrollIntoView({ behavior: "smooth" });
+      };
+
+      // Make functions globally available
+      window.loadEvents = loadEvents;
     </script>
   </body>
 </html>

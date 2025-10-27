@@ -1,44 +1,221 @@
-/* Medya Sorguları */
+/* ===== MOBILE RESPONSIVE OPTIMIZATIONS ===== */
+
+/* Extra Small Mobile - 400px and below */
 @media (max-width: 400px) {
-  /* Navbar */
-  .navbar-toggler {
-    margin: 10px 0;
-  }
+  /* Remove conflicting rules - handled in index.css */
+  /* Focus on mobile-specific enhancements only */
 
-  .container-lg {
-    padding: 10px;
-  }
-
-  /* Başkanın Mesajı ve Görsel */
-  .container-lg.d-flex {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  section img {
-    max-width: 100%;
-    margin: 10px auto;
-  }
-
-  /* Alt Bilgi */
-  .container-lg.d-flex {
-    flex-wrap: wrap;
+  /* Touch-friendly navigation */
+  .nav-link {
+    min-height: 44px; /* iOS touch target minimum */
+    display: flex;
+    align-items: center;
     justify-content: center;
   }
 
-  .ms-5,
-  .me-5 {
-    margin: 0 auto;
+  /* Improved readability */
+  body {
+    line-height: 1.5;
+  }
+
+  /* Better spacing for small screens */
+  section {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  /* Optimize text for small screens */
+  p,
+  .event-details p {
+    line-height: 1.4;
+    word-spacing: 0.1em;
+  }
+
+  /* Ensure buttons are touch-friendly */
+  .btn,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improve form elements */
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevent iOS zoom */
   }
 }
 
+/* Mobile Devices - 576px and below */
 @media (max-width: 576px) {
-  h2,
-  h4 {
-    font-size: 1rem;
+  /* Mobile-specific enhancements */
+
+  /* Improved navbar for mobile */
+  .navbar-collapse {
+    margin-top: 10px;
+    background-color: rgba(255, 255, 255, 0.98);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
+  .navbar-nav {
+    gap: 8px;
+  }
+
+  .nav-item {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 5px 0;
+  }
+
+  .nav-item:last-child {
+    border-bottom: none;
+  }
+
+  /* Enhanced touch targets */
   .bottomLink {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    display: block;
+    margin: 8px 0;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+  }
+
+  .bottomLink:hover,
+  .bottomLink:focus {
+    background-color: rgba(59, 148, 196, 0.1);
+  }
+
+  /* Improved form accessibility */
+  input,
+  button,
+  select,
+  textarea {
+    font-size: 16px; /* Prevent iOS zoom */
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    padding: 12px;
+  }
+
+  /* Better image handling */
+  img {
+    border-radius: 8px;
+  }
+
+  /* Smooth scrolling for mobile */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Tablet Portrait - 768px and below */
+@media (max-width: 768px) {
+  /* Tablet-specific optimizations */
+
+  /* Enhanced button styles for tablets */
+  .btn {
+    min-height: 48px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Better spacing for tablet */
+  .container-lg {
+    padding: 20px;
+  }
+
+  /* Improved image presentation */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced typography for tablets */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+}
+
+/* Extra Small Devices - 360px and below */
+@media (max-width: 360px) {
+  /* Ultra-compact optimizations */
+
+  /* Minimal padding for very small screens */
+  .container-lg {
+    padding: 8px;
+  }
+
+  /* Compact navigation */
+  .nav-link {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+
+  /* Smaller images for tiny screens */
+  .container-lg > a img {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Tighter spacing */
+  section {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  /* Ensure readability on very small screens */
+  body {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* Compact headings */
+  h1 {
+    font-size: 1.25rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+  }
+  h3 {
+    font-size: 1rem;
+  }
+  h4 {
+    font-size: 0.9rem;
+  }
+
+  /* Better touch targets even on small screens */
+  .btn,
+  button {
+    min-height: 40px;
+    min-width: 40px;
+    font-size: 0.85rem;
   }
 }

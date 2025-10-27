@@ -1,0 +1,489 @@
+/* Genel stiller */
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: rgba(234, 152, 77, 1);
+  overflow-x: hidden;
+}
+
+/* Başlık kısmı için stiller */
+.ramazan-title {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 30px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Tüm başlık görselleri için temel stiller */
+.ramazan-title img {
+  height: 250px;
+  object-fit: contain;
+}
+
+/* Yıldız görselleri */
+.ramazan-title img:first-child,
+.ramazan-title img:last-child {
+  width: 150px;
+  transition: transform 0.3s ease;
+}
+
+/* Yıldızlara hover efekti */
+.ramazan-title img:first-child:hover,
+.ramazan-title img:last-child:hover {
+  transform: scale(1.05);
+}
+
+/* Ortadaki başlık görseli */
+.ramazan-title img:nth-child(2) {
+  width: 600px;
+  transition: transform 0.3s ease;
+}
+
+.ramazan-title img:nth-child(2):hover {
+  transform: scale(1.05);
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .ramazan-title {
+    padding: 20px 30px;
+  }
+
+  .ramazan-title img:first-child,
+  .ramazan-title img:last-child {
+    width: 120px;
+  }
+
+  .ramazan-title img:nth-child(2) {
+    width: 400px;
+  }
+
+  #back {
+    display: none;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .ramazan-title {
+    padding: 15px;
+  }
+
+  .ramazan-title img:first-child,
+  .ramazan-title img:last-child {
+    width: 80px;
+  }
+
+  .ramazan-title img:nth-child(2) {
+    width: 250px;
+  }
+}
+
+/* Küçük mobil ekranlar */
+@media screen and (max-width: 480px) {
+  .ramazan-title {
+    padding: 10px;
+  }
+
+  .ramazan-title img:first-child,
+  .ramazan-title img:last-child {
+    width: 60px;
+  }
+
+  .ramazan-title img:nth-child(2) {
+    width: 200px;
+  }
+}
+
+.satir1 {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 5px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tüm başlık görselleri için temel stiller */
+.satir1 img {
+  height: 300px;
+  object-fit: contain;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.satir1 img:hover {
+  transform: scale(1.05);
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .satir1 {
+    justify-content: center;
+  }
+
+  .satir1 img {
+    height: 250px;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .satir1 {
+    flex-direction: column;
+    padding: 0;
+    gap: 5px;
+  }
+
+  .satir1 img {
+    width: 95vw;
+    height: auto;
+    min-height: 200px;
+    max-width: none;
+    min-width: auto;
+    margin: 10px 0;
+  }
+
+  #back {
+    display: none;
+  }
+}
+
+/* Daha küçük ekranlar için ek düzenleme */
+@media screen and (max-width: 480px) {
+  .satir1 img {
+    width: 98vw;
+    min-height: 150px;
+  }
+}
+
+.satir2 {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 5px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tüm başlık görselleri için temel stiller */
+.satir2 img {
+  height: 300px;
+  object-fit: contain;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.satir2 img:hover {
+  transform: scale(1.05);
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .satir2 {
+    justify-content: center;
+  }
+
+  .satir2 img {
+    height: 250px;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .satir2 {
+    flex-direction: column;
+    padding: 0;
+    gap: 5px;
+  }
+
+  .satir2 img {
+    width: 95vw;
+    height: auto;
+    min-height: 200px;
+    max-width: none;
+    min-width: auto;
+    margin: 10px 0;
+  }
+}
+
+/* Daha küçük ekranlar için ek düzenleme */
+@media screen and (max-width: 480px) {
+  .satir2 img {
+    width: 98vw;
+    min-height: 150px;
+  }
+}
+
+.satir3 {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 5px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tüm başlık görselleri için temel stiller */
+.satir3 img {
+  height: 300px;
+  object-fit: contain;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.satir3 img:hover {
+  transform: scale(1.05);
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .satir3 {
+    justify-content: center;
+  }
+
+  .satir3 img {
+    height: 250px;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .satir3 {
+    flex-direction: column;
+    padding: 0;
+    gap: 5px;
+  }
+
+  .satir3 img {
+    width: 95vw;
+    height: auto;
+    min-height: 200px;
+    max-width: none;
+    min-width: auto;
+    margin: 10px 0;
+  }
+}
+
+/* Daha küçük ekranlar için ek düzenleme */
+@media screen and (max-width: 480px) {
+  .satir3 img {
+    width: 98vw;
+    min-height: 150px;
+  }
+}
+
+.satir4 {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 5px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tüm başlık görselleri için temel stiller */
+.satir4 img {
+  height: 300px;
+  object-fit: contain;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.satir4 img:hover {
+  transform: scale(1.05);
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .satir4 {
+    justify-content: center;
+  }
+
+  .satir4 img {
+    height: 250px;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .satir4 {
+    flex-direction: column;
+    padding: 0;
+    gap: 5px;
+  }
+
+  .satir4 img {
+    width: 95vw;
+    height: auto;
+    min-height: 200px;
+    max-width: none;
+    min-width: auto;
+    margin: 10px 0;
+  }
+}
+
+/* Daha küçük ekranlar için ek düzenleme */
+@media screen and (max-width: 480px) {
+  .satir4 img {
+    width: 98vw;
+    min-height: 150px;
+  }
+}
+
+.satir5 {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 5px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tüm başlık görselleri için temel stiller */
+.satir5 img {
+  height: 300px;
+  object-fit: contain;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.satir5 img:hover {
+  transform: scale(1.05);
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .satir5 {
+    justify-content: center;
+  }
+
+  .satir5 img {
+    height: 250px;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .satir5 {
+    flex-direction: column;
+    padding: 0;
+    gap: 5px;
+  }
+
+  .satir5 img {
+    width: 95vw;
+    height: auto;
+    min-height: 200px;
+    max-width: none;
+    min-width: auto;
+    margin: 10px 0;
+  }
+}
+
+/* Daha küçük ekranlar için ek düzenleme */
+@media screen and (max-width: 480px) {
+  .satir5 img {
+    width: 98vw;
+    min-height: 150px;
+  }
+}
+
+.satir6 {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 5px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tüm başlık görselleri için temel stiller */
+.satir6 img {
+  height: 300px;
+  object-fit: contain;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.satir6 img:hover {
+  transform: scale(1.05);
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .satir6 {
+    justify-content: center;
+  }
+
+  .satir6 img {
+    height: 250px;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .satir6 {
+    flex-direction: column;
+    padding: 0;
+    gap: 5px;
+  }
+
+  .satir6 img {
+    width: 95vw;
+    height: auto;
+    min-height: 200px;
+    max-width: none;
+    min-width: auto;
+    margin: 10px 0;
+  }
+}
+
+/* Daha küçük ekranlar için ek düzenleme */
+@media screen and (max-width: 480px) {
+  .satir6 img {
+    width: 98vw;
+    min-height: 150px;
+  }
+}

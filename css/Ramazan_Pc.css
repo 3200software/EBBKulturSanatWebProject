@@ -1,0 +1,58 @@
+/* Başlık kısmı için stil */
+.ramazan-title {
+  width: 100%;
+  max-width: 1920px;
+  padding: 20px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ramazan-title img {
+  height: auto;
+  object-fit: contain;
+}
+
+/* Yıldız görselleri */
+.ramazan-title img:first-child,
+.ramazan-title img:last-child {
+  width: 150px;
+}
+
+/* Ortadaki başlık görseli */
+.ramazan-title img:nth-child(2) {
+  width: 500px;
+}
+
+/* Tablet görünümü */
+@media screen and (max-width: 1024px) {
+  .ramazan-title {
+    padding: 15px;
+  }
+
+  .ramazan-title img:first-child,
+  .ramazan-title img:last-child {
+    width: 100px;
+  }
+
+  .ramazan-title img:nth-child(2) {
+    width: 350px;
+  }
+}
+
+/* Mobil görünüm */
+@media screen and (max-width: 768px) {
+  .ramazan-title {
+    padding: 10px;
+  }
+
+  .ramazan-title img:first-child,
+  .ramazan-title img:last-child {
+    width: 60px;
+  }
+
+  .ramazan-title img:nth-child(2) {
+    width: 200px;
+  }
+}
