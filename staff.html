@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ekip Yönetimi</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/tablet.css" />
+    <link rel="stylesheet" href="css/activity.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .offcanvas {
+        transform: translateX(-100%);
+        visibility: visible;
+        transition: transform 0.3s ease;
+        width: 400px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        height: 100vh;
+        background-color: white;
+      }
+
+      .offcanvas.show {
+        transform: translateX(0);
+      }
+
+      #mainContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        overflow-x: auto;
+        padding-bottom: 60px;
+      }
+
+      #mainContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow-x: auto;
+        padding: 20px;
+      }
+
+      footer {
+        height: 50px;
+        background-color: var(--bs-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+
+      .container-fluid {
+        margin-bottom: 70px;
+      }
+
+      .stats-card {
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .stats-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .staff-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .staff-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      .staff-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007bff;
+        margin-right: 20px;
+      }
+
+      .staff-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e9ecef, #dee2e6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        border: 3px solid #6c757d;
+      }
+
+      .role-badge {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+        margin-bottom: 8px;
+      }
+
+      .card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .form-control,
+      .form-select {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+
+      .btn {
+        border-radius: 6px;
+      }
+
+      @media (max-width: 768px) {
+        .offcanvas {
+          width: 300px;
+        }
+
+        #mainContainer.shifted {
+          margin-left: 300px;
+          width: calc(100% - 300px);
+        }
+
+        .staff-card {
+          text-align: center;
+        }
+
+        .staff-photo,
+        .staff-placeholder {
+          margin: 0 auto 15px auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div
+        class="offcanvas offcanvas-start show"
+        data-bs-backdrop="false"
+        id="adminPanelSideMenu"
+      >
+        <div
+          class="offcanvas-header d-flex justify-content-start"
+          style="margin-top: 2%"
+        >
+          <div>
+            <img
+              src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
+              alt="profilResmi"
+              width="50px"
+              height="50px"
+              style="border-radius: 50px"
+            />
+          </div>
+          <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
+        </div>
+
+        <div
+          class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
+        >
+          <div class="list-group mb-auto p2">
+            <a
+              href="activity.html"
+              class="list-group-item list-group-item-action"
+              >Etkinlikler
+            </a>
+            <a
+              href="staff.html"
+              class="list-group-item list-group-item-action active"
+              >Ekip</a
+            >
+            <a
+              href="salooncontrol.html"
+              class="list-group-item list-group-item-action"
+              >Salon Takip</a
+            >
+            <a
+              href="announcement.html"
+              class="list-group-item list-group-item-action"
+              >Duyurular</a
+            >
+            <a href="news.html" class="list-group-item list-group-item-action"
+              >Haberler</a
+            >
+            <a
+              href="photoGalery.html"
+              class="list-group-item list-group-item-action"
+              >Foto Galeri</a
+            >
+            <a href="blog.html" class="list-group-item list-group-item-action"
+              >Blog</a
+            >
+            <a
+              href="library.html"
+              class="list-group-item list-group-item-action"
+              >Kütüphane</a
+            >
+            <a
+              href="costume.html"
+              class="list-group-item list-group-item-action"
+              >Kostüm</a
+            >
+          </div>
+
+          <div class="list-group">
+            <a href="users.html" class="list-group-item list-group-item-action">
+              Kullanıcılar
+            </a>
+            <button
+              class="list-group-item list-group-item-action bg-danger text-white"
+              id="logoutButton"
+            >
+              Çıkış Yap
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid shifted" id="mainContainer">
+        <div
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
+        >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">Ekip Yönetimi</div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="row mt-4">
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #007bff, #0056b3)"
+            >
+              <div class="stats-number" id="totalStaff">0</div>
+              <div class="stats-label">Toplam Ekip Üyesi</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #28a745, #20c997)"
+            >
+              <div class="stats-number" id="totalDirectors">0</div>
+              <div class="stats-label">Yönetmen</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #ffc107, #fd7e14)"
+            >
+              <div class="stats-number" id="totalActors">0</div>
+              <div class="stats-label">Oyuncu</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #dc3545, #e83e8c)"
+            >
+              <div class="stats-number" id="totalTechnical">0</div>
+              <div class="stats-label">Teknik Ekip</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ana İçerik -->
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="card">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                  <i class="fas fa-user-plus me-2"></i>Yeni Ekip Üyesi Ekle
+                </h5>
+              </div>
+              <div class="card-body">
+                <form id="staffForm">
+                  <div class="mb-3">
+                    <label class="form-label">Ad Soyad *</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffName"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Görev *</label>
+                    <select class="form-select" id="staffRole" required>
+                      <option value="">Görev Seçin</option>
+                      <option value="Yönetmen">Yönetmen</option>
+                      <option value="Genel Sanat Yönetmeni">
+                        Genel Sanat Yönetmeni
+                      </option>
+                      <option value="Işık Tasarımcısı">Işık Tasarımcısı</option>
+                      <option value="Dekor Tasarımcısı">
+                        Dekor Tasarımcısı
+                      </option>
+                      <option value="Müzik Yönetmeni">Müzik Yönetmeni</option>
+                      <option value="Oyuncu">Oyuncu</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Telefon</label>
+                    <input
+                      type="tel"
+                      class="form-control"
+                      id="staffPhone"
+                      placeholder="0555 123 45 67"
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">E-posta</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="staffEmail"
+                      placeholder="ornek@email.com"
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Biyografi</label>
+                    <textarea
+                      class="form-control"
+                      id="staffBio"
+                      rows="3"
+                      placeholder="Kısa biyografi..."
+                    ></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Fotoğraf</label>
+                    <div class="input-group mb-2">
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="staffPhotoFile"
+                        accept="image/*"
+                      />
+                      <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="uploadPhotoBtn"
+                      >
+                        <i class="fas fa-upload"></i> Yükle
+                      </button>
+                    </div>
+                    <input
+                      type="url"
+                      class="form-control"
+                      id="staffPhotoUrl"
+                      placeholder="Fotoğraf URL'si"
+                      readonly
+                    />
+                  </div>
+
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-save me-2"></i>Ekip Üyesi Ekle
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-8">
+            <div class="card">
+              <div
+                class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0">
+                  <i class="fas fa-users me-2"></i>Ekip Üyeleri
+                </h5>
+                <button
+                  class="btn btn-outline-light btn-sm"
+                  onclick="loadStaff()"
+                >
+                  <i class="fas fa-sync-alt me-1"></i>Yenile
+                </button>
+              </div>
+              <div class="card-body">
+                <div id="staffContainer">
+                  <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                    <p class="mt-2 text-muted">Ekip üyeleri yükleniyor...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p style="margin: 0">© 2024 EBB Kültür Sanat. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Firebase -->
+    <script type="module">
+      // Firebase imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc,
+        updateDoc,
+        deleteDoc,
+        doc,
+        query,
+        orderBy,
+        where,
+        Timestamp,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      // Global variables
+      let staffMembers = [];
+      let editingStaffId = null;
+
+      // Menu toggle functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const menuButton = document.getElementById("menuButton");
+        const menuIcon = menuButton.querySelector("i");
+        const adminPanel = document.getElementById("adminPanelSideMenu");
+        const mainContainer = document.getElementById("mainContainer");
+
+        function toggleMenu(icon) {
+          adminPanel.classList.toggle("show");
+          mainContainer.classList.toggle("shifted");
+
+          // İkon değişimi
+          if (icon.classList.contains("fa-bars")) {
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
+          } else {
+            icon.classList.remove("fa-times");
+            icon.classList.add("fa-bars");
+          }
+        }
+
+        menuButton.addEventListener("click", function () {
+          toggleMenu(menuIcon);
+        });
+
+        // Initialize
+        loadStaff();
+        setupStaffForm();
+      });
+
+      // Load staff from Firebase
+      async function loadStaff() {
+        try {
+          const staffRef = collection(db, "staff");
+          const q = query(staffRef, orderBy("name", "asc"));
+          const querySnapshot = await getDocs(q);
+
+          staffMembers = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            staffMembers.push({
+              id: doc.id,
+              ...data,
+              createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
+            });
+          });
+
+          renderStaff();
+          updateStats();
+        } catch (error) {
+          console.error("Error loading staff:", error);
+          document.getElementById("staffContainer").innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+              <p class="mt-2 text-danger">Ekip üyeleri yüklenirken hata oluştu!</p>
+            </div>
+          `;
+        }
+      }
+
+      // Render staff list
+      function renderStaff() {
+        const container = document.getElementById("staffContainer");
+
+        if (staffMembers.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-users fa-2x text-muted"></i>
+              <p class="mt-2 text-muted">Henüz ekip üyesi bulunmuyor.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = staffMembers
+          .map(
+            (staff) => `
+          <div class="staff-card">
+            <div class="d-flex align-items-center">
+              ${
+                staff.photoUrl
+                  ? `
+                <img src="${staff.photoUrl}" alt="${staff.name}" class="staff-photo">
+              `
+                  : `
+                <div class="staff-placeholder">
+                  <i class="fas fa-user fa-2x text-muted"></i>
+                </div>
+              `
+              }
+              <div class="flex-grow-1">
+                <div class="role-badge">${staff.role}</div>
+                <h5 class="mb-1">${staff.name}</h5>
+                ${
+                  staff.phone
+                    ? `<p class="mb-1 text-muted"><i class="fas fa-phone me-1"></i>${staff.phone}</p>`
+                    : ""
+                }
+                ${
+                  staff.email
+                    ? `<p class="mb-1 text-muted"><i class="fas fa-envelope me-1"></i>${staff.email}</p>`
+                    : ""
+                }
+                ${
+                  staff.bio
+                    ? `<p class="mb-0 text-muted small">${staff.bio}</p>`
+                    : ""
+                }
+              </div>
+              <div class="ms-3">
+                <button class="btn btn-warning btn-sm me-2" onclick="editStaff('${
+                  staff.id
+                }')">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteStaff('${
+                  staff.id
+                }')">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Update statistics
+      function updateStats() {
+        const totalStaff = staffMembers.length;
+        const totalDirectors = staffMembers.filter(
+          (s) => s.role === "Yönetmen" || s.role === "Genel Sanat Yönetmeni"
+        ).length;
+        const totalActors = staffMembers.filter(
+          (s) => s.role === "Oyuncu"
+        ).length;
+        const totalTechnical = staffMembers.filter((s) =>
+          ["Işık Tasarımcısı", "Dekor Tasarımcısı", "Müzik Yönetmeni"].includes(
+            s.role
+          )
+        ).length;
+
+        document.getElementById("totalStaff").textContent = totalStaff;
+        document.getElementById("totalDirectors").textContent = totalDirectors;
+        document.getElementById("totalActors").textContent = totalActors;
+        document.getElementById("totalTechnical").textContent = totalTechnical;
+      }
+
+      // Upload image to Firebase Storage
+      async function uploadImage(file, folder) {
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
+        const storageRef = ref(storage, `${folder}/${fileName}`);
+
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      }
+
+      // Setup staff form
+      function setupStaffForm() {
+        const form = document.getElementById("staffForm");
+
+        // Photo upload handler
+        document
+          .getElementById("uploadPhotoBtn")
+          .addEventListener("click", async () => {
+            const fileInput = document.getElementById("staffPhotoFile");
+            const urlInput = document.getElementById("staffPhotoUrl");
+            const uploadBtn = document.getElementById("uploadPhotoBtn");
+
+            if (fileInput.files[0]) {
+              try {
+                uploadBtn.innerHTML =
+                  '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
+                uploadBtn.disabled = true;
+
+                const downloadURL = await uploadImage(
+                  fileInput.files[0],
+                  "staff-photos"
+                );
+                urlInput.value = downloadURL;
+
+                uploadBtn.innerHTML =
+                  '<i class="fas fa-check text-success"></i> Yüklendi';
+                setTimeout(() => {
+                  uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Yükle';
+                  uploadBtn.disabled = false;
+                }, 2000);
+              } catch (error) {
+                console.error("Error uploading photo:", error);
+                alert("Fotoğraf yüklenirken hata oluştu!");
+                uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Yükle';
+                uploadBtn.disabled = false;
+              }
+            } else {
+              alert("Lütfen bir fotoğraf seçin!");
+            }
+          });
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            name: document.getElementById("staffName").value,
+            role: document.getElementById("staffRole").value,
+            phone: document.getElementById("staffPhone").value,
+            email: document.getElementById("staffEmail").value,
+            bio: document.getElementById("staffBio").value,
+            photoUrl: document.getElementById("staffPhotoUrl").value,
+            createdAt: Timestamp.now(),
+          };
+
+          try {
+            if (editingStaffId) {
+              // Update existing staff
+              const staffRef = doc(db, "staff", editingStaffId);
+              await updateDoc(staffRef, formData);
+              alert("Ekip üyesi güncellendi!");
+            } else {
+              // Add new staff
+              await addDoc(collection(db, "staff"), formData);
+              alert("Ekip üyesi eklendi!");
+            }
+
+            form.reset();
+            editingStaffId = null;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML =
+              '<i class="fas fa-save me-2"></i>Ekip Üyesi Ekle';
+            loadStaff();
+          } catch (error) {
+            console.error("Error saving staff:", error);
+            alert("Ekip üyesi kaydedilirken hata oluştu!");
+          }
+        });
+      }
+
+      // Delete staff
+      window.deleteStaff = async function (staffId) {
+        if (!confirm("Bu ekip üyesini silmek istediğinizden emin misiniz?"))
+          return;
+
+        try {
+          await deleteDoc(doc(db, "staff", staffId));
+          alert("Ekip üyesi silindi!");
+          loadStaff();
+        } catch (error) {
+          console.error("Error deleting staff:", error);
+          alert("Ekip üyesi silinirken hata oluştu!");
+        }
+      };
+
+      // Edit staff
+      window.editStaff = function (staffId) {
+        const staff = staffMembers.find((s) => s.id === staffId);
+        if (!staff) return;
+
+        // Fill form with staff data
+        document.getElementById("staffName").value = staff.name;
+        document.getElementById("staffRole").value = staff.role;
+        document.getElementById("staffPhone").value = staff.phone || "";
+        document.getElementById("staffEmail").value = staff.email || "";
+        document.getElementById("staffBio").value = staff.bio || "";
+        document.getElementById("staffPhotoUrl").value = staff.photoUrl || "";
+
+        // Change form to update mode
+        editingStaffId = staffId;
+        const submitBtn = document.querySelector(
+          '#staffForm button[type="submit"]'
+        );
+        submitBtn.innerHTML =
+          '<i class="fas fa-save me-2"></i>Ekip Üyesi Güncelle';
+
+        // Scroll to form
+        document
+          .getElementById("staffForm")
+          .scrollIntoView({ behavior: "smooth" });
+      };
+
+      // Make functions globally available
+      window.loadStaff = loadStaff;
+    </script>
+  </body>
+</html>

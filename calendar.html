@@ -863,9 +863,8 @@
 
       // Global function for event details
       window.showEventDetails = function (eventId) {
-        // Bu fonksiyon etkinlik detaylarını gösterecek
-        // Şimdilik alert ile gösteriyoruz, daha sonra modal yapılabilir
-        alert(`Etkinlik detayları: ${eventId}`);
+        // Etkinlik detay sayfasına yönlendir
+        window.location.href = `event-detail.html?id=${eventId}`;
       };
 
       // Initialize calendar when page loads
