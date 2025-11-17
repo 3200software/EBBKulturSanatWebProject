@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Kullanıcı Oluştur</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/tablet.css" />
+
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+      }
+      .setup-card {
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      .setup-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+      .setup-body {
+        padding: 30px;
+        background: white;
+      }
+      .password-display {
+        background: #f8f9fa;
+        border: 2px dashed #667eea;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        text-align: center;
+      }
+      .password-display strong {
+        color: #667eea;
+        font-size: 1.2em;
+        word-break: break-all;
+      }
+      .alert-info {
+        border-left: 4px solid #667eea;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="setup-card">
+      <div class="setup-header">
+        <i class="fas fa-user-shield fa-3x mb-3"></i>
+        <h2>Admin Kullanıcı Oluştur</h2>
+        <p class="mb-0">Tam yetkili yönetici kullanıcısı oluşturun</p>
+      </div>
+      <div class="setup-body">
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Bilgi:</strong> Oluşturulan kullanıcı tüm sayfalara erişebilir ve tüm işlemleri yapabilir.
+          İlk girişte şifre değiştirmesi gerekecektir.
+        </div>
+
+        <form id="adminForm">
+          <div class="mb-3">
+            <label for="adminName" class="form-label">
+              <i class="fas fa-user me-2"></i>Ad Soyad *
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="adminName"
+              placeholder="Örn: Ahmet Yılmaz"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="adminEmail" class="form-label">
+              <i class="fas fa-envelope me-2"></i>Email *
+            </label>
+            <input
+              type="email"
+              class="form-control"
+              id="adminEmail"
+              placeholder="ornek@email.com"
+              required
+            />
+          </div>
+
+          <div id="passwordResult" style="display: none;">
+            <div class="password-display">
+              <p class="mb-2"><strong>Geçici Şifre:</strong></p>
+              <p class="mb-0">
+                <strong id="generatedPassword"></strong>
+              </p>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary mt-3"
+                onclick="copyPassword()"
+              >
+                <i class="fas fa-copy me-1"></i>Kopyala
+              </button>
+            </div>
+            <div class="alert alert-warning mt-3" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <strong>Önemli:</strong> Bu şifreyi güvenli bir şekilde saklayın ve kullanıcıyla paylaşın.
+              İlk girişte şifre değiştirmesi gerekecektir.
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary btn-lg" id="createBtn">
+              <i class="fas fa-user-plus me-2"></i>Admin Kullanıcı Oluştur
+            </button>
+            <a href="adminpanellogin.html" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left me-2"></i>Giriş Sayfasına Dön
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        query,
+        where,
+        limit,
+        getDocs,
+        Timestamp,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      function generateTemporaryPassword(length = 12) {
+        // Sadece harf ve sayılar (karışıklık yaratabilecek karakterler çıkarıldı: I, l, 1, O, 0)
+        const alphabet =
+          "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+        let password = "";
+        for (let i = 0; i < length; i += 1) {
+          const index = Math.floor(Math.random() * alphabet.length);
+          password += alphabet[index];
+        }
+        return password;
+      }
+
+      async function createFirebaseUser(email, password) {
+        try {
+          const response = await fetch(
+            `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email,
+                password,
+                returnSecureToken: false,
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (data.error) {
+            if (data.error.message === "EMAIL_EXISTS") {
+              throw new Error(
+                "Bu email adresi zaten kullanılıyor. Lütfen farklı bir email kullanın."
+              );
+            }
+            throw new Error(data.error.message);
+          }
+
+          return { uid: data.localId };
+        } catch (error) {
+          console.error("Firebase Auth kullanıcısı oluşturulamadı:", error);
+          throw error;
+        }
+      }
+
+      document.getElementById("adminForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("adminName").value.trim();
+        const email = document.getElementById("adminEmail").value.trim();
+        const createBtn = document.getElementById("createBtn");
+
+        if (!name || !email) {
+          alert("Lütfen tüm alanları doldurun!");
+          return;
+        }
+
+        // Check if user already exists in Firestore
+        try {
+          const usersRef = collection(db, "Users");
+          const userQuery = query(
+            usersRef,
+            where("userEmail", "==", email),
+            limit(1)
+          );
+          const snapshot = await getDocs(userQuery);
+
+          if (!snapshot.empty) {
+            alert("Bu email adresi zaten sistemde kayıtlı!");
+            return;
+          }
+        } catch (error) {
+          console.error("Error checking existing user:", error);
+          alert("Kullanıcı kontrolü sırasında hata oluştu!");
+          return;
+        }
+
+        // Disable button and show loading
+        createBtn.disabled = true;
+        createBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin me-2"></i>Oluşturuluyor...';
+
+        try {
+          // Generate temporary password
+          const temporaryPassword = generateTemporaryPassword(12);
+
+          // Create Firebase Auth user
+          await createFirebaseUser(email, temporaryPassword);
+
+          // Create Firestore user record with full permissions
+          await addDoc(collection(db, "Users"), {
+            userEmail: email,
+            userName: name,
+            userAuthority: ["1"], // Full permission code
+            passwordEdit: false, // Force password change on first login
+            status: "active",
+            createdAt: Timestamp.now(),
+            createdBy: "system",
+          });
+
+          // Show success message and password
+          document.getElementById("generatedPassword").textContent =
+            temporaryPassword;
+          document.getElementById("passwordResult").style.display = "block";
+          document.getElementById("adminForm").reset();
+
+          // Scroll to password result
+          document
+            .getElementById("passwordResult")
+            .scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+          alert("Admin kullanıcı başarıyla oluşturuldu!");
+        } catch (error) {
+          console.error("Error creating admin user:", error);
+          alert(
+            "Kullanıcı oluşturulurken hata oluştu: " +
+              (error.message || "Bilinmeyen hata")
+          );
+        } finally {
+          createBtn.disabled = false;
+          createBtn.innerHTML =
+            '<i class="fas fa-user-plus me-2"></i>Admin Kullanıcı Oluştur';
+        }
+      });
+
+      // Copy password to clipboard
+      window.copyPassword = function () {
+        const password = document.getElementById("generatedPassword").textContent;
+        navigator.clipboard
+          .writeText(password)
+          .then(() => {
+            alert("Şifre panoya kopyalandı!");
+          })
+          .catch((err) => {
+            console.error("Kopyalama hatası:", err);
+            // Fallback: select text
+            const range = document.createRange();
+            range.selectNode(document.getElementById("generatedPassword"));
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            alert("Şifre seçildi. Ctrl+C ile kopyalayabilirsiniz.");
+          });
+      };
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aşıklık Geleneği - Erzurumlu Halk Ozanları</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+
+    <style>
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .asik-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+      }
+      .asik-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .asik-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+        color: #2c3e50;
+      }
+      .asik-subtitle {
+        color: #6c757d;
+        max-width: 800px;
+        margin: 0.5rem auto 0;
+      }
+
+      .asik-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      .asik-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .asik-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+      }
+      .asik-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+      .asik-body {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .asik-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2c3e50;
+      }
+      .asik-meta {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+      }
+      .asik-desc {
+        font-size: 0.95rem;
+        color: #4b5563;
+        line-height: 1.55;
+      }
+      .asik-footer {
+        display: none;
+      }
+
+      .source-note {
+        display: none;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      @media (max-width: 480px) {
+        .asik-image {
+          height: 160px;
+        }
+        .container {
+          padding: 0 15px;
+        }
+      }
+    </style>
+  </head>
+  <body class="has-fixed-header">
+    <!-- Header -->
+    <header class="header">
+      <nav class="nav container">
+        <a href="#" class="logo">
+          <img src="assets/Asset 1.png" alt="EBB Logo" />
+          <span>EBB Kültür Sanat</span>
+        </a>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
+          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="news.html" class="nav-link">Haberler</a></li>
+          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
+        </ul>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </header>
+    <header class="header">
+      <nav class="nav container">
+        <a href="#" class="logo">
+          <img src="assets/Asset 1.png" alt="EBB Logo" />
+          <span>EBB Kültür Sanat</span>
+        </a>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
+          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="news.html" class="nav-link">Haberler</a></li>
+          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
+        </ul>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </header>
+    <section class="asik-section">
+      <div class="container">
+        <div class="asik-header">
+          <h1 class="asik-title">Erzurumlu Halk Ozanları</h1>
+          <p class="asik-subtitle">
+            Erzurum’un köklü aşıklık geleneğini yaşatan önemli isimler. Seçki,
+            kaynak sayfadaki bilgilerin derlenmiş özetidir.
+          </p>
+        </div>
+
+        <div class="asik-grid">
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/summani-2.jpg"
+              alt="Aşık Sümmani"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Sümmani</div>
+              <div class="asik-meta">1860 – 1915 · Narman, Samikale</div>
+              <p class="asik-desc">
+                Küçük yaşlarda aşıklık geleneğini öğrenmeye başladı. Erbabi’nin
+                etkisi büyüktür; pek çok genç aşığın yetişmesine katkı
+                sağlamıştır.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/reyhani.jpg"
+              alt="Aşık Reyhani"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Reyhani (Yaşar Yılmaz)</div>
+              <div class="asik-meta">1932 – 2006 · Hasankale, Alvar</div>
+              <p class="asik-desc">
+                Okuma yazmayı kendi çabasıyla öğrendi. Türkiye’nin pek çok
+                yerinde icra etti; şiir ve türküleriyle geniş kitlelere ulaştı.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/asiknuriciragi.gif"
+              alt="Aşık Nuri Çırağı"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Nuri Çırağı (Nuri Cihan Karataş)</div>
+              <div class="asik-meta">1948/49 · Şenkaya, Gaziler (Kaynak)</div>
+              <p class="asik-desc">
+                Âşıklar kültürünün yayılmasına dönük girişimleriyle bilinir.
+                Turneler düzenledi; “Âşıklar Kahvesi” ile geleneğe katkı sundu.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/brakt-gitti.jpg"
+              alt="Aşık Erol Ergani"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Erol Ergani (Erol Aydın)</div>
+              <div class="asik-meta">1954 · Şenkaya, Bardız</div>
+              <p class="asik-desc">
+                Genç yaşta bağlama çalmayı ve şiir söylemeyi öğrendi. Türkiye
+                içinde ve dışında yarışmalara katıldı; eserleri çeşitli
+                yayınlarda yer aldı.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/02.jpg"
+              alt="Aşık Mevlüt İhsani"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Mevlüt İhsani (Mevlüt Şafak)</div>
+              <div class="asik-meta">1928 (kendi beyanı) · Şenkaya, Çermik</div>
+              <p class="asik-desc">
+                Genç yaşta görme yetisini kaybetti; buna rağmen aşıklık
+                geleneğinde iz bıraktı. Şiir ve icralarıyla geniş bir etki
+                oluşturdu.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/ihsan.jpg"
+              alt="Aşık İhsan Yavuzer"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık İhsan Yavuzer</div>
+              <div class="asik-meta">1960 · Oltu, Aşağıçamlı</div>
+              <p class="asik-desc">
+                Âşıklığa küçük yaşlarda ilgi duydu; Mevlüt İhsani’den temel
+                bilgileri edindi. Birçok şenlik ve yarışmada eserlerini sundu.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/rs-p02.jpg"
+              alt="Aşık Rahim Sağlam"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Rahim Sağlam</div>
+              <div class="asik-meta">1961 · Aşkale, Dereköy</div>
+              <p class="asik-desc">
+                Erzurum yöresinde aşıklık geleneğini sürdüren önemli isimlerden;
+                çok sayıda icra ve derlemeye imza atmıştır.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/kul-nuri.jpg"
+              alt="Aşık Kul Nuri"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Kul Nuri</div>
+              <div class="asik-meta">Erzurum</div>
+              <p class="asik-desc">
+                Geleneğin güçlü temsilcilerinden; şiirleri ve hikâyeleriyle
+                Anadolu aşıklık kültüründe iz bırakmıştır.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/zeki-erdal.jpg"
+              alt="Aşık Zeki Erdali"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Zeki Erdali</div>
+              <div class="asik-meta">Erzurum</div>
+              <p class="asik-desc">
+                Sazı ve sözüyle Erzurum aşıklık geleneğine katkı sunan isimler
+                arasında anılır.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/orhan-ustundag.jpg"
+              alt="Aşık Orhan Üstündağ"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Orhan Üstündağ</div>
+              <div class="asik-meta">Erzurum</div>
+              <p class="asik-desc">
+                Usta-çırak geleneğinde yetişen sanatçılardandır; çeşitli
+                etkinlik ve programlarda icralarıyla tanınır.
+              </p>
+            </div>
+          </article>
+
+          <article class="asik-card">
+            <img
+              class="asik-image"
+              src="https://img.webme.com/pic/e/erzurumluhalkozanlari/nusret-summanioglu.jpg"
+              alt="Aşık Nusret Sümmanioğlu"
+              loading="lazy"
+              onerror="this.src='https://via.placeholder.com/600x400?text=G%C3%B6rsel+Yok'"
+            />
+            <div class="asik-body">
+              <div class="asik-name">Aşık Nusret Sümmanioğlu</div>
+              <div class="asik-meta">Erzurum</div>
+              <p class="asik-desc">
+                Sümmani kolundan gelen güçlü bir icracı olarak bilinir; Erzurum
+                aşıklık ikliminin yaşayan temsilcilerindendir.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <footer class="footer" id="contact">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>EBB Kültür Sanat Merkezi</h3>
+            <p>
+              Erzurum'un kültürel yaşamının kalbi olan merkezimizde, sanat ve
+              kültürün her dalında etkinlikler düzenliyoruz.
+            </p>
+            <div class="social-links">
+              <a
+                href="https://www.facebook.com/EbbSanatMerkezi"
+                class="social-link"
+                target="_blank"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                href="https://www.instagram.com/ebbsanatmerkezi"
+                class="social-link"
+                target="_blank"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-link" target="_blank"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="social-link" target="_blank"
+                ><i class="fab fa-youtube"></i
+              ></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h3>Hızlı Linkler</h3>
+            <p><a href="index.html#home">Ana Sayfa</a></p>
+            <p><a href="index.html#features">Hizmetler</a></p>
+            <p><a href="ourhalls.html">Salonlarımız</a></p>
+            <p><a href="activity.html">Yönetim Paneli</a></p>
+          </div>
+          <div class="footer-section">
+            <h3>İletişim</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Erzurum Merkez</p>
+            <p><i class="fas fa-phone"></i> +90 (442) 123 45 67</p>
+            <p><i class="fas fa-envelope"></i> info@ebbsanatmerkezi.com</p>
+            <p><i class="fas fa-clock"></i> Pzt-Cum: 09:00-18:00</p>
+          </div>
+          <div class="footer-section">
+            <h3>Bağlı Kuruluşlar</h3>
+            <p>
+              <a href="https://www.erzurum.bel.tr" target="_blank"
+                >Erzurum Büyükşehir Belediyesi</a
+              >
+            </p>
+            <p><a href="#" target="_blank">Kültür ve Turizm Bakanlığı</a></p>
+            <p><a href="#" target="_blank">Erzurum Valiliği</a></p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 EBB Kültür ve Sanat Merkezi. Tüm hakları saklıdır.</p>
+        </div>
+      </div>
+    </footer>
+    <script src="js/index.js"></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>

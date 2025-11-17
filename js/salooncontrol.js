@@ -1,8 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import {
+  initializeApp,
+  getApp,
+  getApps,
+} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
 import {
   getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
   signOut,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 import {
@@ -25,8 +27,15 @@ import {
   getDoc,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { ensureAuth, logActivity } from "./authGuard.js";
+import {
+  updateMessagesLinkVisibility,
+  enforceLinkPermissions,
+} from "./offcanvas.js";
 
-const firebaseapp = initializeApp({
+const firebaseapp = getApps().length
+  ? getApp()
+  : initializeApp({
   apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
   authDomain: "ebbkultursanatapp.firebaseapp.com",
   projectId: "ebbkultursanatapp",
@@ -40,42 +49,35 @@ const auth = getAuth(firebaseapp);
 const storage = getStorage(firebaseapp);
 const db = getFirestore(firebaseapp);
 
-var userAuthorityArray = [];
-var paswordEditStatus;
-
-var currentUser;
-
-onAuthStateChanged(auth, async (user) => {
-  if (user != null) {
-    currentUser = auth.currentUser;
-    const getData = query(
-      collection(db, "Users"),
-      where("userEmail", "==", user.email)
-    );
-    const querySnapshot = await getDocs(getData);
-
-    querySnapshot.forEach((doc) => {
-      const daysDocument = doc.id;
-
-      userAuthorityArray = doc.data().userAuthority;
-    });
-
-    if (userAuthorityArray.includes("22")) {
-      morningButton.disabled = true;
-      afternoonButton.disabled = true;
-      nightButton.disabled = true;
-      allDayButton.disabled = true;
-
-      programAddEditSuccessButton.disabled = true;
-      programCancelButton.disabled = true;
-      programAddEditSuccessButton.style.display = "none";
-
-      programAddEditCancelButton.innerHTML = "Geri Dön";
-    }
-  } else {
-    window.location.href = "adminpanellogin.html";
-  }
+const authContext = await ensureAuth({
+  app: firebaseapp,
+  auth,
+  db,
+  requiredAny: ["1", "1a", "3", "3a"],
+  writeCodes: ["1", "3"],
+  pageName: "Salon Takip",
+}).catch((error) => {
+  console.error("Yetkilendirme başarısız:", error);
+  return null;
 });
+
+if (!authContext) {
+  throw new Error("Authorisation failed");
+}
+
+const currentUser = authContext.user;
+const currentUserEmail = currentUser.email;
+const currentUserName =
+  authContext.profile?.userName || currentUser.displayName || "";
+const userAuthorityArray = authContext.permissions || [];
+updateMessagesLinkVisibility(userAuthorityArray);
+enforceLinkPermissions(userAuthorityArray);
+const canWrite = authContext.canWrite;
+
+window.currentUserEmail = currentUserEmail;
+window.currentUserName = currentUserName;
+window.saloonCanWrite = canWrite;
+window.saloonUserPermissions = userAuthorityArray;
 
 // Off Canvas
 
@@ -129,6 +131,23 @@ const programAddEditSuccessButton = document.getElementById(
 const freeRequestCheck = document.getElementById("freeRequestCheck");
 
 const programCancelButton = document.getElementById("programCancelButton");
+
+if (!canWrite) {
+  if (morningButton) morningButton.disabled = true;
+  if (afternoonButton) afternoonButton.disabled = true;
+  if (nightButton) nightButton.disabled = true;
+  if (allDayButton) allDayButton.disabled = true;
+  if (programAddEditSuccessButton) {
+    programAddEditSuccessButton.disabled = true;
+    programAddEditSuccessButton.style.display = "none";
+  }
+  if (programCancelButton) {
+    programCancelButton.disabled = true;
+  }
+  if (programAddEditCancelButton) {
+    programAddEditCancelButton.innerHTML = "Geri Dön";
+  }
+}
 
 const today = new Date();
 
@@ -341,7 +360,7 @@ $("body").on("click", ".morningButton", async function () {
     programEmailText.value = "";
     programNotesText.value = "";
     programTecnicalNotesText.value = "";
-    if (userAuthorityArray.includes("22")) {
+    if (!canWrite) {
       alert("Program oluşturma yetkiniz yok!");
     } else {
       if (programDate < new Date()) {
@@ -518,7 +537,7 @@ $("body").on("click", ".afternonButton", async function () {
     programEmailText.value = "";
     programNotesText.value = "";
     programTecnicalNotesText.value = "";
-    if (userAuthorityArray.includes("22")) {
+    if (!canWrite) {
       alert("Program oluşturma yetkiniz yok!");
     } else {
       if (programDate < new Date()) {
@@ -695,7 +714,7 @@ $("body").on("click", ".nightButton", async function () {
     programNotesText.value = "";
     programTecnicalNotesText.value = "";
 
-    if (userAuthorityArray.includes("22")) {
+    if (!canWrite) {
       alert("Program oluşturma yetkiniz yok!");
     } else {
       if (programDate < new Date()) {
@@ -1294,6 +1313,10 @@ $("#programCancelButton").on("click", async function () {
 });
 
 $("#programAddEditSuccessButton").on("click", async function () {
+  if (!canWrite) {
+    alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+    return;
+  }
   var dayAddAddDocument = "";
 
   const getData = query(
@@ -1705,6 +1728,34 @@ $("#programAddEditSuccessButton").on("click", async function () {
             $("#warningTitleBack").css("display", "none");
 
             alert("Program başarılı bir şekilde eklendi");
+            await logActivity(db, {
+              userEmail: currentUserEmail,
+              userName: currentUserName,
+              action: "saloon_program_create",
+              page: "salooncontrol",
+              targetId: docIdAdd,
+              targetType: "program",
+              meta: {
+                category: programCategorySelect.value,
+                corporation: programCorporationText.value,
+                saloon: saloonCode,
+                sessions: programSessionArrayList,
+              },
+            });
+            await logActivity(db, {
+              userEmail: currentUserEmail,
+              userName: currentUserName,
+              action: "saloon_program_create",
+              page: "salooncontrol",
+              targetId: docIdAdd,
+              targetType: "program",
+              meta: {
+                category: programCategorySelect.value,
+                corporation: programCorporationText.value,
+                saloon: saloonCode,
+                sessions: programSessionArrayList,
+              },
+            });
           } catch (e) {
             console.error("Error adding document: ", e);
           }
@@ -2127,6 +2178,20 @@ $("#programAddEditSuccessButton").on("click", async function () {
       editDate: new Date(),
     });
     alert("Program başarılı bir şekilde güncellendi");
+    await logActivity(db, {
+      userEmail: currentUserEmail,
+      userName: currentUserName,
+      action: "saloon_program_update",
+      page: "salooncontrol",
+      targetId: updateDocId,
+      targetType: "program",
+      meta: {
+        category: programCategorySelect.value,
+        corporation: programCorporationText.value,
+        saloon: saloonCode,
+        sessions: programSessionArrayList,
+      },
+    });
   }
 });
 

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mesaj Kutusu</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/tablet.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: #f7f9fc;
+      }
+
+      .offcanvas {
+        transform: translateX(-100%);
+        visibility: visible;
+        transition: transform 0.3s ease;
+        width: 400px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        height: 100vh;
+        background-color: white;
+      }
+
+      .offcanvas.show {
+        transform: translateX(0);
+      }
+
+      #mainContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        padding-bottom: 60px;
+      }
+
+      #mainContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+      }
+
+      #menuButton {
+        display: inline-block;
+      }
+
+      @media (max-width: 992px) {
+        .offcanvas {
+          transform: translateX(-100%);
+        }
+
+        .offcanvas.show {
+          transform: translateX(0);
+        }
+
+        #mainContainer.shifted {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        #menuButton {
+          display: inline-block;
+        }
+
+        .menu-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+
+        .menu-overlay.active {
+          display: block;
+        }
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 20px;
+      }
+
+      .stats-card {
+        padding: 20px;
+        border-radius: 16px;
+        color: white;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+      }
+
+      .stats-number {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stats-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+      }
+
+      .card {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+      }
+
+      .card-header {
+        border: none;
+        border-radius: 18px 18px 0 0 !important;
+        background: linear-gradient(135deg, #4338ca, #6366f1);
+        color: white;
+        padding: 24px;
+      }
+
+      .filter-chip {
+        border-radius: 999px;
+        padding: 6px 16px;
+        font-size: 0.9rem;
+        border: 1px solid #dee2e6;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .filter-chip.active {
+        background-color: #4338ca;
+        color: white;
+        border-color: #4338ca;
+      }
+
+      .status-badge {
+        padding: 0.35rem 0.9rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: capitalize;
+      }
+
+      .status-new {
+        background-color: rgba(14, 165, 233, 0.15);
+        color: #0ea5e9;
+      }
+
+      .status-in-progress {
+        background-color: rgba(247, 146, 30, 0.15);
+        color: #f77200;
+      }
+
+      .status-resolved {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+
+      .table-responsive {
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      table thead {
+        background-color: #f8fafc;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+      }
+
+      .message-body-preview {
+        max-width: 340px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #475569;
+      }
+
+      .no-data {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div
+        class="offcanvas offcanvas-start"
+        data-bs-backdrop="false"
+        id="adminPanelSideMenu"
+      >
+        <div
+          class="offcanvas-header d-flex justify-content-start"
+          style="margin-top: 2%"
+        >
+          <div>
+            <img
+              src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
+              alt="profilResmi"
+              width="50px"
+              height="50px"
+              style="border-radius: 50px"
+            />
+          </div>
+          <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
+        </div>
+
+        <div
+          class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
+        >
+          <div class="list-group mb-auto p2">
+            <a
+              href="activity.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,2,2a"
+              >Etkinlikler</a
+            >
+            <a
+              href="staff.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,10,10a"
+              >Ekip</a
+            >
+            <a
+              href="salooncontrol.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,3,3a"
+              >Salon Takip</a
+            >
+            <a href="news.html" class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,5,5a"
+              >Haberler</a
+            >
+            <a
+              href="costume.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,9,9a"
+              >Kostümler</a
+            >
+            <a
+              href="library.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,8,8a"
+              >Kütüphane</a
+            >
+            <a
+              href="messages.html"
+              class="list-group-item list-group-item-action active messages-link"
+              aria-current="true"
+              data-required-permissions="1,1a,2,2q"
+              >Mesajlar</a
+            >
+          </div>
+
+          <div class="list-group">
+            <a href="users.html" class="list-group-item list-group-item-action"
+              >Kullanıcılar</a
+            >
+            <button
+              class="list-group-item list-group-item-action bg-danger text-white"
+              id="logoutButton"
+            >
+              Çıkış Yap
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+      <div class="container-fluid" id="mainContainer">
+        <div
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
+        >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">Mesaj Kutusu</div>
+          <button class="btn btn-outline-primary h-50 mt-3" id="refreshMessages">
+            <i class="fas fa-rotate-right me-2"></i>Yenile
+          </button>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-md-4 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #6366f1, #4338ca)"
+            >
+              <div class="stats-number" id="totalMessages">0</div>
+              <div class="stats-label">Toplam Mesaj</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #f97316, #ea580c)"
+            >
+              <div class="stats-number" id="newMessages">0</div>
+              <div class="stats-label">Yeni Mesaj</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #0ea5e9, #0369a1)"
+            >
+              <div class="stats-number" id="todayMessages">0</div>
+              <div class="stats-label">Bugün Gelen</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+              <div class="flex-grow-1">
+                <div class="input-group">
+                  <span class="input-group-text bg-white border-0"
+                    ><i class="fas fa-search text-muted"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control border-0"
+                    id="messageSearch"
+                    placeholder="Ad, konu, e-posta veya mesaj içeriğinde ara"
+                  />
+                </div>
+              </div>
+              <div>
+                <select class="form-select" id="statusFilter">
+                  <option value="all">Tüm Durumlar</option>
+                  <option value="new">Yeni</option>
+                  <option value="in-progress">İşlemde</option>
+                  <option value="resolved">Tamamlandı</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th style="min-width: 140px">Gönderen</th>
+                    <th style="min-width: 160px">Konu</th>
+                    <th style="min-width: 140px">İletişim</th>
+                    <th>Özet</th>
+                    <th style="width: 130px">Durum</th>
+                    <th style="width: 150px">Tarih</th>
+                    <th style="width: 120px"></th>
+                  </tr>
+                </thead>
+                <tbody id="messagesTableBody">
+                  <tr>
+                    <td colspan="7" class="text-center py-5">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div
+      class="modal fade"
+      id="messageDetailModal"
+      tabindex="-1"
+      aria-labelledby="messageDetailLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageDetailLabel">Mesaj Detayı</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="fw-semibold text-muted small">Ad Soyad</label>
+                <p class="fs-5 mb-0" id="detailName">-</p>
+              </div>
+              <div class="col-md-3">
+                <label class="fw-semibold text-muted small">E-posta</label>
+                <p class="mb-0" id="detailEmail">-</p>
+              </div>
+              <div class="col-md-3">
+                <label class="fw-semibold text-muted small">Telefon</label>
+                <p class="mb-0" id="detailPhone">-</p>
+              </div>
+              <div class="col-md-8">
+                <label class="fw-semibold text-muted small">Konu</label>
+                <p class="mb-0" id="detailSubject">-</p>
+              </div>
+              <div class="col-md-4">
+                <label class="fw-semibold text-muted small">Durum</label>
+                <select class="form-select" id="detailStatusSelect">
+                  <option value="new">Yeni</option>
+                  <option value="in-progress">İşlemde</option>
+                  <option value="resolved">Tamamlandı</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="fw-semibold text-muted small">Mesaj</label>
+                <div
+                  class="border rounded p-3 bg-light"
+                  id="detailMessage"
+                  style="min-height: 120px"
+                >
+                  -
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-between">
+            <div class="text-muted small" id="detailMeta">-</div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-secondary" id="copyMessageButton">
+                <i class="fas fa-copy me-2"></i>Kopyala
+              </button>
+              <button class="btn btn-primary" id="saveStatusButton">
+                <i class="fas fa-save me-2"></i>Durumu Güncelle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script type="module">
+      import {
+        initializeApp,
+        getApp,
+        getApps,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        query,
+        orderBy,
+        updateDoc,
+        doc,
+        Timestamp,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import { ensureAuth } from "./js/authGuard.js";
+      import {
+        updateMessagesLinkVisibility,
+        enforceLinkPermissions,
+        MESSAGE_PERMISSION_CODES,
+      } from "./js/offcanvas.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const authContext = await ensureAuth({
+        app,
+        auth,
+        db,
+        requiredAny: MESSAGE_PERMISSION_CODES,
+        pageName: "Mesaj Kutusu",
+      }).catch((error) => {
+        console.error("Yetkilendirme başarısız:", error);
+        return null;
+      });
+
+      if (!authContext) {
+        throw new Error("Authorisation failed");
+      }
+
+      const currentPermissions = authContext.permissions || [];
+      updateMessagesLinkVisibility(currentPermissions);
+      enforceLinkPermissions(currentPermissions);
+
+      const allowedToUpdate = currentPermissions.some((code) =>
+        ["1", "2"].includes(code)
+      );
+
+      const statusBadgeClass = {
+        new: "status-new",
+        "in-progress": "status-in-progress",
+        resolved: "status-resolved",
+      };
+
+      let messages = [];
+      let filteredMessages = [];
+      let selectedMessageId = null;
+
+      const tableBody = document.getElementById("messagesTableBody");
+      const searchInput = document.getElementById("messageSearch");
+      const statusFilter = document.getElementById("statusFilter");
+      const refreshButton = document.getElementById("refreshMessages");
+      const detailModal = new bootstrap.Modal(
+        document.getElementById("messageDetailModal")
+      );
+      const detailStatusSelect = document.getElementById("detailStatusSelect");
+      const copyButton = document.getElementById("copyMessageButton");
+      const saveStatusButton = document.getElementById("saveStatusButton");
+
+      document
+        .getElementById("menuButton")
+        ?.addEventListener("click", (event) => {
+          event.stopPropagation();
+          toggleMenu();
+        });
+
+      // Menu toggle functionality (salooncontrol style)
+      function setupMenuToggle() {
+        const menuButton = document.getElementById("menuButton");
+        const adminPanel = document.getElementById("adminPanelSideMenu");
+        const mainContainer = document.getElementById("mainContainer");
+
+        if (!menuButton || !adminPanel || !mainContainer) {
+          return;
+        }
+
+        const menuIcon = menuButton.querySelector("i");
+
+        function toggleMenu() {
+          adminPanel.classList.toggle("show");
+          mainContainer.classList.toggle("shifted");
+          
+          // İkon değişimi
+          if (menuIcon) {
+            if (menuIcon.classList.contains("fa-bars")) {
+              menuIcon.classList.remove("fa-bars");
+              menuIcon.classList.add("fa-times");
+            } else {
+              menuIcon.classList.remove("fa-times");
+              menuIcon.classList.add("fa-bars");
+            }
+          }
+        }
+
+        menuButton.addEventListener("click", function (e) {
+          e.stopPropagation();
+          toggleMenu();
+        });
+
+        // Initialize: menu açık başla (salooncontrol gibi)
+        adminPanel.classList.add("show");
+        mainContainer.classList.add("shifted");
+        if (menuIcon) {
+          menuIcon.classList.remove("fa-bars");
+          menuIcon.classList.add("fa-times");
+        }
+      }
+
+      async function loadMessages() {
+        try {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+              </td>
+            </tr>
+          `;
+
+          const msgsRef = collection(db, "contactMessages");
+          const q = query(msgsRef, orderBy("createdAt", "desc"));
+          const snapshot = await getDocs(q);
+          messages = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data();
+            const createdAt = data.createdAt?.toDate
+              ? data.createdAt.toDate()
+              : data.createdAt
+              ? new Date(data.createdAt)
+              : null;
+            return {
+              id: docSnap.id,
+              ...data,
+              createdAt,
+            };
+          });
+
+          filteredMessages = [...messages];
+          renderMessages();
+          updateStats();
+        } catch (error) {
+          console.error("Mesajlar yüklenemedi:", error);
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="no-data">
+                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                <p>Mesajlar yüklenirken bir hata oluştu.</p>
+              </td>
+            </tr>
+          `;
+        }
+      }
+
+      function renderMessages() {
+        if (!filteredMessages.length) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="no-data">
+                <i class="fas fa-inbox fa-2x mb-2"></i>
+                <p>Gösterilecek mesaj bulunamadı.</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tableBody.innerHTML = filteredMessages
+          .map((message) => {
+            const badgeClass =
+              statusBadgeClass[message.status] || "status-new";
+            const createdText = formatDate(message.createdAt);
+            const contactLines = [
+              message.email ? `<i class="fas fa-envelope me-1"></i>${message.email}` : "",
+              message.phone ? `<i class="fas fa-phone me-1"></i>${message.phone}` : "",
+            ]
+              .filter(Boolean)
+              .join("<br>");
+
+            return `
+              <tr>
+                <td>
+                  <div class="fw-semibold">${message.name || "İsimsiz"}</div>
+                  ${
+                    message.subject
+                      ? `<small class="text-muted">${message.subject}</small>`
+                      : ""
+                  }
+                </td>
+                <td>${message.subject || "-"}</td>
+                <td class="small text-muted">${contactLines || "-"}</td>
+                <td>
+                  <div class="message-body-preview">
+                    ${message.message || "-"}
+                  </div>
+                </td>
+                <td>
+                  <span class="status-badge ${badgeClass}">
+                    ${translateStatus(message.status)}
+                  </span>
+                </td>
+                <td>
+                  <div class="fw-semibold">${createdText?.date || "-"}</div>
+                  <small class="text-muted">${createdText?.time || ""}</small>
+                </td>
+                <td class="text-end">
+                  <button
+                    class="btn btn-outline-primary btn-sm"
+                    data-message-id="${message.id}"
+                    data-action="detail"
+                  >
+                    Detay
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      function translateStatus(status = "new") {
+        switch (status) {
+          case "in-progress":
+            return "İşlemde";
+          case "resolved":
+            return "Tamamlandı";
+          default:
+            return "Yeni";
+        }
+      }
+
+      function updateStats() {
+        const total = messages.length;
+        const newCount = messages.filter((m) => m.status === "new").length;
+        const todayCount = messages.filter((m) => {
+          if (!m.createdAt) return false;
+          const today = new Date();
+          return (
+            m.createdAt.getDate?.() === today.getDate() &&
+            m.createdAt.getMonth?.() === today.getMonth() &&
+            m.createdAt.getFullYear?.() === today.getFullYear()
+          );
+        }).length;
+
+        document.getElementById("totalMessages").textContent = total;
+        document.getElementById("newMessages").textContent = newCount;
+        document.getElementById("todayMessages").textContent = todayCount;
+      }
+
+      function formatDate(date) {
+        if (!date) return null;
+        try {
+          return {
+            date: date.toLocaleDateString("tr-TR", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }),
+            time: date.toLocaleTimeString("tr-TR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          };
+        } catch {
+          return null;
+        }
+      }
+
+      function applyFilters() {
+        const term = searchInput.value.trim().toLowerCase();
+        const status = statusFilter.value;
+
+        filteredMessages = messages.filter((message) => {
+          const matchesStatus =
+            status === "all" ? true : message.status === status;
+          const haystack = [
+            message.name,
+            message.email,
+            message.phone,
+            message.subject,
+            message.message,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          const matchesTerm = term ? haystack.includes(term) : true;
+          return matchesStatus && matchesTerm;
+        });
+
+        renderMessages();
+      }
+
+      tableBody.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-action='detail']");
+        if (!button) return;
+        const messageId = button.dataset.messageId;
+        openMessageModal(messageId);
+      });
+
+      function openMessageModal(messageId) {
+        const message = messages.find((msg) => msg.id === messageId);
+        if (!message) return;
+
+        selectedMessageId = message.id;
+        document.getElementById("detailName").textContent =
+          message.name || "İsimsiz";
+        document.getElementById("detailEmail").textContent =
+          message.email || "-";
+        document.getElementById("detailPhone").textContent =
+          message.phone || "-";
+        document.getElementById("detailSubject").textContent =
+          message.subject || "-";
+        document.getElementById("detailMessage").textContent =
+          message.message || "-";
+        document.getElementById("detailMeta").textContent = message.createdAt
+          ? `${formatDate(message.createdAt)?.date} ${formatDate(
+              message.createdAt
+            )?.time}`
+          : "-";
+        detailStatusSelect.value = message.status || "new";
+
+        detailStatusSelect.disabled = !allowedToUpdate;
+        saveStatusButton.disabled = !allowedToUpdate;
+
+        detailModal.show();
+      }
+
+      copyButton.addEventListener("click", async () => {
+        const messageContainer = document.getElementById("detailMessage");
+        if (!messageContainer) return;
+        try {
+          await navigator.clipboard.writeText(messageContainer.textContent);
+          copyButton.innerHTML =
+            '<i class="fas fa-check me-2"></i>Kopyalandı';
+          setTimeout(() => {
+            copyButton.innerHTML =
+              '<i class="fas fa-copy me-2"></i>Kopyala';
+          }, 1500);
+        } catch (error) {
+          console.error("Mesaj kopyalanamadı:", error);
+        }
+      });
+
+      saveStatusButton.addEventListener("click", async () => {
+        if (!selectedMessageId || !allowedToUpdate) return;
+        const newStatus = detailStatusSelect.value;
+        try {
+          await updateDoc(doc(db, "contactMessages", selectedMessageId), {
+            status: newStatus,
+            updatedAt: Timestamp.now(),
+          });
+          const message = messages.find((msg) => msg.id === selectedMessageId);
+          if (message) {
+            message.status = newStatus;
+          }
+          applyFilters();
+          updateStats();
+          detailModal.hide();
+        } catch (error) {
+          console.error("Durum güncellenemedi:", error);
+          alert("Durum güncellenirken bir hata oluştu.");
+        }
+      });
+
+      ["input", "change"].forEach((eventName) => {
+        searchInput.addEventListener(eventName, () => {
+          applyFilters();
+        });
+      });
+
+      statusFilter.addEventListener("change", applyFilters);
+      refreshButton.addEventListener("click", loadMessages);
+
+      setupMenuToggle();
+      loadMessages();
+    </script>
+  </body>
+</html>
+

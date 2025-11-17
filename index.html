@@ -42,6 +42,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="css/global.css" />
+
     <!-- Styles -->
     <style>
       :root {
@@ -84,91 +87,10 @@
         padding: 0 20px;
       }
 
-      /* Header & Navigation */
-      .header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(44, 90, 160, 0.1);
-        z-index: 1000;
-        transition: var(--transition);
-      }
-
-      .nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem 0;
-      }
-
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-decoration: none;
-        color: var(--primary-color);
-        font-weight: 700;
-        font-size: 1.2rem;
-      }
-
-      .logo img {
-        width: 50px;
-        height: 50px;
-        border-radius: 8px;
-      }
-
-      .nav-menu {
-        display: flex;
-        list-style: none;
-        gap: 2rem;
-        align-items: center;
-      }
-
-      .nav-link {
-        text-decoration: none;
-        color: var(--text-dark);
-        font-weight: 500;
-        position: relative;
-        transition: var(--transition);
-        padding: 0.5rem 0;
-      }
-
-      .nav-link:hover,
-      .nav-link.active {
-        color: var(--primary-color);
-      }
-
-      .nav-link::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: var(--primary-color);
-        transition: var(--transition);
-      }
-
-      .nav-link:hover::after,
-      .nav-link.active::after {
-        width: 100%;
-      }
-
-      .mobile-menu-btn {
-        display: none;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        color: var(--primary-color);
-        cursor: pointer;
-      }
+      /* Header & Navigation styles are in css/global.css */
 
       /* Hero Section */
       .hero {
-        min-height: 100vh;
         background: linear-gradient(
           135deg,
           var(--primary-color) 0%,
@@ -178,7 +100,7 @@
         align-items: center;
         position: relative;
         overflow: hidden;
-        padding: 2rem 0;
+        padding: 3rem 0;
       }
 
       .hero-content {
@@ -198,6 +120,11 @@
       }
 
       .hero-cta {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+
         margin-top: 2rem;
       }
 
@@ -243,6 +170,9 @@
       .btn-primary {
         background: var(--accent-color);
         color: white;
+        text-align: center;
+        justify-content: center;
+        width: 100%;
       }
 
       .btn-primary:hover {
@@ -263,6 +193,211 @@
         transform: translateY(-2px);
       }
 
+      /* Contact CTA */
+      .contact-cta {
+        position: relative;
+        background: #f3f6ff;
+        padding: 5rem 0;
+        overflow: hidden;
+      }
+
+      .contact-cta::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at 10% 20%,
+            rgba(113, 144, 255, 0.25),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 90% 10%,
+            rgba(255, 190, 92, 0.2),
+            transparent 40%
+          );
+        opacity: 0.8;
+      }
+
+      .contact-cta-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      .contact-cta-card {
+        background: white;
+        border-radius: 30px;
+        padding: 3rem;
+        box-shadow: 0 35px 65px rgba(15, 23, 42, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.08);
+      }
+
+      .contact-cta-sections {
+        display: flex;
+        gap: 2.5rem;
+        align-items: stretch;
+      }
+
+      .contact-divider {
+        width: 1px;
+        background: linear-gradient(
+          180deg,
+          rgba(148, 163, 184, 0),
+          rgba(99, 102, 241, 0.35),
+          rgba(148, 163, 184, 0)
+        );
+      }
+
+      .contact-info-card,
+      .contact-form-card {
+        flex: 1;
+      }
+
+      .contact-info-card {
+        padding-right: 1.5rem;
+      }
+
+      .contact-form-card {
+        padding-left: 1.5rem;
+      }
+
+      .contact-card-separator {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          rgba(99, 102, 241, 0.08),
+          rgba(99, 102, 241, 0.25),
+          rgba(99, 102, 241, 0.08)
+        );
+        margin: 1.25rem 0 1.5rem;
+      }
+
+      .contact-info-card h3 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+      }
+
+      .contact-info-list {
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0 0;
+      }
+
+      .contact-info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(23, 24, 39, 0.08);
+      }
+
+      .contact-info-item:last-child {
+        border-bottom: none;
+      }
+
+      .contact-info-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(99, 102, 241, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+      }
+
+      .contact-form-card h4 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+      }
+
+      .contact-form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.25rem 1.5rem;
+      }
+
+      .contact-form-grid .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .contact-form-label {
+        font-weight: 600;
+        color: #1f2a44;
+        font-size: 0.95rem;
+      }
+
+      .contact-form .form-control {
+        background: #f8f9ff;
+        border: 1px solid rgba(99, 102, 241, 0.15);
+        color: var(--text-dark);
+        padding: 0.9rem 1rem;
+        border-radius: 12px;
+      }
+
+      .contact-form .form-control::placeholder {
+        color: rgba(46, 52, 81, 0.6);
+      }
+
+      .contact-form .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      }
+
+      .contact-form .btn-primary {
+        width: auto;
+        min-width: 200px;
+        background: linear-gradient(135deg, #f39c12, #f1c40f);
+        color: #2c3e50;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .contact-form .btn-primary:hover {
+        box-shadow: 0 20px 30px rgba(243, 156, 18, 0.3);
+        transform: translateY(-3px);
+      }
+
+      @media (max-width: 992px) {
+        .contact-cta-card {
+          padding: 2rem;
+        }
+        .contact-cta-sections {
+          flex-direction: column;
+        }
+        .contact-info-card,
+        .contact-form-card {
+          padding: 0;
+        }
+        .contact-divider {
+          width: 100%;
+          height: 1px;
+          margin: 1.5rem 0;
+          background: linear-gradient(
+            90deg,
+            rgba(148, 163, 184, 0),
+            rgba(99, 102, 241, 0.35),
+            rgba(148, 163, 184, 0)
+          );
+        }
+      }
+
+      @media (max-width: 576px) {
+        .contact-cta {
+          padding: 3.5rem 0;
+        }
+        .contact-form .btn-primary {
+          width: 100%;
+        }
+      }
+
+    
+
       /* Featured Slider Section */
       .featured-slider {
         padding: 6rem 0;
@@ -271,8 +406,9 @@
 
       .section-header {
         text-align: center;
-        margin-bottom: 4rem;
+        margin-bottom: 1rem;
       }
+
 
       .section-title {
         font-family: "Playfair Display", serif;
@@ -431,6 +567,7 @@
         display: flex;
         gap: 0.5rem;
         z-index: 3;
+        display: none;
       }
 
       .indicator {
@@ -629,6 +766,96 @@
 
       .heritage-card:hover .heritage-arrow {
         transform: translateX(10px);
+      }
+
+      /* News Section */
+      .news-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        align-items: stretch;
+      }
+
+      .news-grid-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .news-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .news-card { height: 100%; }
+
+      .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .news-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+
+      .news-card-body {
+        padding: 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .news-card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .news-card-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+      }
+
+      .news-meta {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+      }
+
+      .news-category {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
       }
 
       /* President Message Section */
@@ -1013,29 +1240,10 @@
 
       /* Responsive Design */
       @media (max-width: 768px) {
-        .nav-menu {
-          position: fixed;
-          top: 100%;
-          left: 0;
-          right: 0;
-          background: white;
-          flex-direction: column;
-          padding: 2rem;
-          box-shadow: var(--shadow-medium);
-          transform: translateY(-100%);
-          opacity: 0;
-          visibility: hidden;
-          transition: var(--transition);
-        }
+        /* Mobile nav styles are in css/global.css */
 
-        .nav-menu.active {
-          transform: translateY(0);
-          opacity: 1;
-          visibility: visible;
-        }
-
-        .mobile-menu-btn {
-          display: block;
+        .hero {
+          padding: 2rem 0;
         }
 
         .hero h1 {
@@ -1101,6 +1309,69 @@
         .container {
           padding: 0 15px;
         }
+
+        /* News Mobile - Liste Görünümü */
+        .news-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .news-card {
+          flex-direction: row;
+          align-items: center;
+          padding: 1rem;
+          height: auto;
+        }
+
+        .news-image {
+          display: none;
+        }
+
+        .news-card-body {
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0;
+          flex: 1;
+        }
+
+        .news-category {
+          display: none;
+        }
+
+        .news-card-text {
+          display: none;
+        }
+
+        .news-meta {
+          display: none;
+        }
+
+        .news-card-title {
+          margin-bottom: 0.75rem;
+          font-size: 1rem;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+        }
+
+        .news-card .btn {
+          margin-top: 0;
+          stroke-width: 4px;
+          stroke: #ffffff;
+          justify-content: flex-end;
+          width: auto;
+          padding: 0.5rem 1rem;
+          font-size: 0.875rem;
+          background: #ffffff;
+          color: #f39c12;
+          border: none;
+        }
+
+        .news-card .btn:hover {
+          background: #34495e;
+          color: #e67e22;
+        }
       }
 
       @media (max-width: 480px) {
@@ -1120,6 +1391,11 @@
           padding: 2rem;
         }
 
+        .slide-description {
+          display: none;
+        }
+        
+
         .heritage-content {
           padding: 1.5rem;
         }
@@ -1130,7 +1406,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="has-fixed-header">
     <!-- Header -->
     <header class="header">
       <nav class="nav container">
@@ -1142,6 +1418,7 @@
         <ul class="nav-menu" id="navMenu">
           <li><a href="#home" class="nav-link active">Ana Sayfa</a></li>
           <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="news-list.html" class="nav-link">Haberler</a></li>
           <li><a href="#contact" class="nav-link">İletişim</a></li>
         </ul>
 
@@ -1153,7 +1430,7 @@
 
     <!-- Hero Section with Slider -->
     <section class="hero" id="home">
-      <div class="container" style="width: 100%; margin-top: 10px">
+      <div class="container" style="width: 100%">
         <div class="hero-content">
           <!-- Slider Container -->
           <div class="hero-slider-container">
@@ -1227,15 +1504,34 @@
       </div>
     </section>
 
-    <section class="features" id="features">
+    <!-- Haberler Section -->
+    <section class="news-section" id="news">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Neler Sunuyoruz?</h2>
-          <p class="section-subtitle">
-            Kültür ve sanat dünyasında geniş bir yelpazede hizmet veriyoruz
-          </p>
+        <div class="section-header text-center d-flex justify-content-between">
+          <h2 class="section-title" style="font-size: 2rem; font-weight: 600; ">
+           </i>
+            Haberler
+          </h2>
         </div>
 
+        <div id="newsContainer" class="news-grid" style="margin-bottom: 2rem;">
+          <div class="news-grid-item text-center">
+            <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+            <p class="mt-2 text-muted">Haberler yükleniyor...</p>
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="news-list.html" class="btn btn-primary btn-lg">
+            <i class="fas fa-newspaper me-2"></i>
+            Tüm Haberleri Gör
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
         <div class="features-grid">
           <div class="feature-card">
             <div class="feature-icon">
@@ -1305,6 +1601,8 @@
         </div>
       </div>
     </section>
+
+
 
     <!-- President Message Section -->
     <section class="president-message" id="president-message">
@@ -1418,10 +1716,151 @@
       </div>
     </section>
 
+    <section class="contact-cta" id="contact">
+      <div class="container">
+        <div class="contact-cta-content">
+          <div class="contact-cta-card">
+            <div class="contact-cta-sections">
+              <div class="contact-info-card">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <span class="badge bg-warning text-dark px-3 py-2">
+                    <i class="fas fa-life-ring me-2"></i>Her Zaman Yanınızdayız
+                  </span>
+                  <span class="text-muted small text-uppercase">Bize Ulaşın</span>
+                </div>
+                <h3>Bize Ulaşın</h3>
+                <p class="text-muted">
+                  Etkinlikler hakkında bilgi almak, salon rezervasyonları yapmak veya
+                  önerilerinizi paylaşmak için bize ulaşabilirsiniz.
+                </p>
+                <div class="contact-card-separator"></div>
+                <ul class="contact-info-list">
+                  <li class="contact-info-item">
+                    <div class="contact-info-icon">
+                      <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                      <strong>Adres</strong>
+                      <p class="mb-0 text-muted">İbrahim Erkal Dadaş KSM, Erzurum</p>
+                    </div>
+                  </li>
+                  <li class="contact-info-item">
+                    <div class="contact-info-icon">
+                      <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                      <strong>Telefon</strong>
+                      <p class="mb-0 text-muted">+90 (442) 123 45 67</p>
+                    </div>
+                  </li>
+                  <li class="contact-info-item">
+                    <div class="contact-info-icon">
+                      <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                      <strong>E-posta</strong>
+                      <p class="mb-0 text-muted">info@ebbsanatmerkezi.com</p>
+                    </div>
+                  </li>
+                  <li class="contact-info-item">
+                    <div class="contact-info-icon">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                      <strong>Çalışma Saatleri</strong>
+                      <p class="mb-0 text-muted">Pazartesi - Cuma, 09:00 - 18:00</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="contact-divider"></div>
+
+              <div class="contact-form-card">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                      <h3>Bize Yazın</h3>
+                  </span>
+            
+                </div>
+              
+                <p class="text-muted">
+                  Sorularınızı, önerilerinizi veya iş birliklerinizi bize yazabilirsiniz.
+                </p>
+                <div class="contact-card-separator"></div>
+                <form class="contact-form" id="contactForm">
+                  <div class="contact-form-grid">
+                    <div class="form-group">
+                      <label class="contact-form-label">Ad Soyad *</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="contactName"
+                        placeholder="Adınızı soyadınızı girin"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="contact-form-label">E-posta *</label>
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="contactEmail"
+                        placeholder="ornek@email.com"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="contact-form-label">Telefon</label>
+                      <input
+                        type="tel"
+                        class="form-control"
+                        id="contactPhone"
+                        placeholder="+90 5XX XXX XX XX"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="contact-form-label">Konu *</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="contactSubject"
+                        placeholder="Mesaj konusunu girin"
+                        required
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="contact-form-label">Mesajınız *</label>
+                      <textarea
+                        class="form-control"
+                        id="contactMessage"
+                        rows="5"
+                        placeholder="Mesajınızı yazın..."
+                        required
+                      ></textarea>
+                      </div>
+
+                      <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Mesaj Gönder
+                      </button>
+                  </div>
+
+
+                
+                  
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Features Section -->
 
     <!-- Footer -->
-    <footer class="footer" id="contact">
+    <footer class="footer" id="siteFooter">
       <div class="container">
         <div class="footer-content">
           <div class="footer-section">
@@ -1497,10 +1936,12 @@
         getFirestore,
         collection,
         getDocs,
+        addDoc,
         query,
         where,
         orderBy,
         limit,
+        Timestamp,
       } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
       // Firebase configuration
@@ -1537,10 +1978,24 @@
           slides = [];
           querySnapshot.forEach((doc) => {
             const data = doc.data();
+            let slideDate = new Date();
+            if (data.date) {
+              if (typeof data.date.toDate === "function") {
+                slideDate = data.date.toDate();
+              } else if (
+                typeof data.date === "string" ||
+                typeof data.date === "number"
+              ) {
+                const parsed = new Date(data.date);
+                if (!isNaN(parsed.getTime())) {
+                  slideDate = parsed;
+                }
+              }
+            }
             slides.push({
               id: doc.id,
               ...data,
-              date: data.date ? data.date.toDate() : new Date(),
+              date: slideDate,
             });
           });
 
@@ -1571,6 +2026,7 @@
           // Main slide
           const slideElement = document.createElement("div");
           slideElement.className = `slide ${index === 0 ? "active" : ""}`;
+          slideElement.style.cursor = "pointer";
           slideElement.innerHTML = `
                     <img src="${
                       slide.imageUrl ||
@@ -1602,6 +2058,13 @@
                         </div>
                     </div>
                 `;
+          // Go to event detail on slide click
+          slideElement.addEventListener("click", (e) => {
+            // Prevent when clicking navigation controls
+            const control = e.target.closest('.slider-btn, .indicator, .thumbnail');
+            if (control) return;
+            window.location.href = `event-detail.html?id=${slide.id}`;
+          });
           mainSlider.appendChild(slideElement);
 
           // Thumbnail
@@ -1723,119 +2186,185 @@
           sliderContainer.addEventListener("mouseleave", startAutoSlide);
         }
 
-        // Load programs
+        // Load programs and news
         loadFeaturedPrograms();
-      });
+        loadLatestNews();
 
-      // Make functions globally available
-      window.loadFeaturedPrograms = loadFeaturedPrograms;
-    </script>
+        const contactForm = document.getElementById("contactForm");
+        if (contactForm) {
+          const submitButton = contactForm.querySelector("button[type='submit']");
+          contactForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
 
-    <!-- JavaScript -->
-    <script>
-      // Mobile Menu Toggle
-      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-      const navMenu = document.getElementById("navMenu");
+            if (submitButton) {
+              submitButton.disabled = true;
+              submitButton.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Gönderiliyor...
+              `;
+            }
 
-      mobileMenuBtn.addEventListener("click", () => {
-        navMenu.classList.toggle("active");
-        const icon = mobileMenuBtn.querySelector("i");
-        icon.classList.toggle("fa-bars");
-        icon.classList.toggle("fa-times");
-      });
+            const name = document.getElementById("contactName")?.value.trim() || "";
+            const email = document.getElementById("contactEmail")?.value.trim() || "";
+            const phone = document.getElementById("contactPhone")?.value.trim() || "";
+            const subject = document.getElementById("contactSubject")?.value.trim() || "";
+            const message = document.getElementById("contactMessage")?.value.trim() || "";
 
-      // Smooth Scrolling for Navigation Links
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-          // Close mobile menu if open
-          navMenu.classList.remove("active");
-          mobileMenuBtn.querySelector("i").classList.add("fa-bars");
-          mobileMenuBtn.querySelector("i").classList.remove("fa-times");
-        });
-      });
-
-      // Header Background on Scroll
-      window.addEventListener("scroll", () => {
-        const header = document.querySelector(".header");
-        if (window.scrollY > 100) {
-          header.style.background = "rgba(255, 255, 255, 0.98)";
-        } else {
-          header.style.background = "rgba(255, 255, 255, 0.95)";
+            try {
+              await addDoc(collection(db, "contactMessages"), {
+                name,
+                email,
+                phone,
+                subject,
+                message,
+                status: "new",
+                createdAt: Timestamp.now(),
+                source: "contact-form",
+              });
+              alert("Mesajınız için teşekkür ederiz. En kısa sürede dönüş yapacağız.");
+              contactForm.reset();
+            } catch (error) {
+              console.error("Mesaj gönderilemedi:", error);
+              alert(
+                "Mesajınız gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+              );
+            } finally {
+              if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = `<i class="fas fa-paper-plane me-2"></i>Mesaj Gönder`;
+              }
+            }
+          });
         }
       });
 
-      // Active Navigation Link
-      window.addEventListener("scroll", () => {
-        const sections = document.querySelectorAll("section[id]");
-        const navLinks = document.querySelectorAll(".nav-link");
+      // Load latest news from Firebase
+      async function loadLatestNews() {
+        try {
+          const newsRef = collection(db, "news");
+          const q = query(newsRef, orderBy("createdAt", "desc"), limit(3));
+          const querySnapshot = await getDocs(q);
 
-        let current = "";
-        sections.forEach((section) => {
-          const sectionTop = section.offsetTop;
-          const sectionHeight = section.clientHeight;
-          if (scrollY >= sectionTop - 200) {
-            current = section.getAttribute("id");
+          const newsContainer = document.getElementById("newsContainer");
+
+          if (querySnapshot.empty) {
+            newsContainer.innerHTML = `
+              <div class="col-12 text-center">
+                <p class="text-muted">Henüz haber bulunmuyor.</p>
+              </div>
+            `;
+            return;
           }
-        });
 
-        navLinks.forEach((link) => {
-          link.classList.remove("active");
-          if (link.getAttribute("href") === `#${current}`) {
-            link.classList.add("active");
-          }
-        });
-      });
+          let newsHTML = "";
+          querySnapshot.forEach((doc) => {
+            const news = doc.data();
+            const newsDate = news.createdAt.toDate();
+            const formattedDate = newsDate.toLocaleDateString("tr-TR", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            });
 
-      // Counter Animation
+            const firstPhoto =
+              news.photos && news.photos.length > 0
+                ? news.photos[0]
+                : "https://via.placeholder.com/400x200?text=Fotoğraf+Yok";
+            const excerpt =
+              news.content.length > 120
+                ? news.content.substring(0, 120) + "..."
+                : news.content;
+
+            newsHTML += `
+              <div class="news-grid-item">
+                <div class="news-card">
+                  <img src="${firstPhoto}" class="news-image" alt="${
+              news.title
+            }">
+                  <div class="news-card-body">
+                    <span class="news-category">${news.category}</span>
+                    <h5 class="news-card-title">${news.title}</h5>
+                    <p class="news-card-text">${excerpt}</p>
+                    <div class="news-meta" style="margin-top: auto;">
+                      <i class="fas fa-calendar me-1"></i>${formattedDate}
+                      <span class="ms-2">
+                        <i class="fas fa-images me-1"></i>${
+                          news.photos ? news.photos.length : 0
+                        } Fotoğraf
+                      </span>
+                    </div>
+                    <a href="news-detail.html?id=${
+                      doc.id
+                    }" class="btn btn-primary btn-sm" style="margin-top: auto;">
+                      <i class="fas fa-arrow-right me-1"></i>Devamını Oku
+                    </a>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+
+          newsContainer.innerHTML = newsHTML;
+        } catch (error) {
+          console.error("Error loading news:", error);
+          document.getElementById("newsContainer").innerHTML = `
+            <div class="news-grid-item text-center">
+              <p class="text-danger">Haberler yüklenirken hata oluştu.</p>
+            </div>
+          `;
+        }
+      }
+
+      // Make functions globally available
+      window.loadFeaturedPrograms = loadFeaturedPrograms;
+      window.loadLatestNews = loadLatestNews;
+    </script>
+
+    <!-- JavaScript -->
+    <script src="js/index.js"></script>
+    <script>
+      // Home-specific: Counter animation for .stats
       function animateCounters() {
-        const counters = document.querySelectorAll(".stat-number");
+        const counters = document.querySelectorAll('.stat-number');
         counters.forEach((counter) => {
-          const target = parseInt(counter.getAttribute("data-count"));
-          const count = parseInt(counter.innerText);
-          const increment = target / 100;
+          const target = parseInt(counter.getAttribute('data-count'));
+          const count = parseInt(counter.innerText || '0');
+          const increment = Math.max(1, Math.floor(target / 100));
 
           if (count < target) {
-            counter.innerText = Math.ceil(count + increment);
-            setTimeout(() => animateCounters(), 20);
+            counter.innerText = Math.min(target, count + increment).toString();
+            setTimeout(animateCounters, 20);
           } else {
-            counter.innerText = target.toLocaleString();
+            counter.innerText = target.toLocaleString('tr-TR');
           }
         });
       }
 
-      // Intersection Observer for Animations
-      const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px",
-      };
+      // Home-specific: Intersection Observer for .stats and .features
+      (function () {
+        const sections = document.querySelectorAll('.stats, .features');
+        if (!sections.length) return;
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (entry.target.classList.contains("stats")) {
-              animateCounters();
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (entry.target.classList.contains('stats')) {
+                animateCounters();
+              }
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+              observer.unobserve(entry.target);
             }
-            entry.target.style.opacity = "1";
-            entry.target.style.transform = "translateY(0)";
-          }
-        });
-      }, observerOptions);
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-      // Observe sections for animation
-      document.querySelectorAll(".stats, .features").forEach((section) => {
-        section.style.opacity = "0";
-        section.style.transform = "translateY(30px)";
-        section.style.transition = "all 0.6s ease";
-        observer.observe(section);
-      });
+        sections.forEach((section) => {
+          section.style.opacity = '0';
+          section.style.transform = 'translateY(30px)';
+          section.style.transition = 'all 0.6s ease';
+          observer.observe(section);
+        });
+      })();
     </script>
   </body>
 </html>

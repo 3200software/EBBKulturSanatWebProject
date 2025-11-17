@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Haberler - EBB Kültür Sanat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <style>
+      body {
+        background: #f4f6fb;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .news-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 0 120px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .news-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("assets/pattern.svg");
+        opacity: 0.15;
+        pointer-events: none;
+      }
+
+      .news-hero .container {
+        position: relative;
+        z-index: 2;
+      }
+
+      .news-hero h1 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        font-weight: 700;
+      }
+
+      .news-grid-section {
+        margin-top: -60px;
+        position: relative;
+        z-index: 5;
+      }
+
+      .news-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.1);
+        background: white;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .news-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15);
+      }
+
+      .news-card-image {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+      }
+
+      .news-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .news-card:hover .news-card-image img {
+        transform: scale(1.08);
+      }
+
+      .news-card-image .badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-weight: 600;
+      }
+
+      .badge-important {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+        color: #2f1c00;
+      }
+
+      .badge-video {
+        background: rgba(15, 23, 42, 0.75);
+        color: white;
+        right: 15px;
+        left: auto;
+      }
+
+      .news-card-body {
+        padding: 20px 24px;
+        flex: 1;
+      }
+
+      .news-card-body h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #1f2937;
+      }
+
+      .news-card-body p {
+        color: #6b7280;
+        font-size: 0.95rem;
+      }
+
+      .news-card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+      }
+
+      .news-card-meta i {
+        color: #6366f1;
+        margin-right: 6px;
+      }
+
+      .news-card-footer {
+        padding: 0 24px 24px;
+      }
+
+      .news-card-footer .btn {
+        border-radius: 12px;
+        font-weight: 600;
+      }
+
+      #loadingState,
+      #errorState {
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #errorState {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .news-hero {
+          padding: 60px 0 80px;
+        }
+      }
+    </style>
+  </head>
+  <body class="has-fixed-header">
+    <div id="loadingState" class="loading-spinner" style="background: none">
+      <div class="text-center text-primary">
+        <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+        <h4>Haberler yükleniyor...</h4>
+      </div>
+    </div>
+
+    <div id="errorState" class="container">
+      <div class="text-center py-5">
+        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+        <h3 class="text-danger">Haberler yüklenirken hata oluştu</h3>
+        <p class="text-muted">Lütfen daha sonra tekrar deneyin.</p>
+      </div>
+    </div>
+
+    <header class="header" id="mainHeader" style="display: none">
+      <nav class="nav container">
+        <a href="index.html" class="logo">
+          <img src="assets/Asset 1.png" alt="EBB Logo" />
+          <span>EBB Kültür Sanat</span>
+        </a>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
+          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="news-list.html" class="nav-link active">Haberler</a></li>
+          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
+        </ul>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </header>
+
+    <section class="news-hero">
+      <div class="container">
+        <span class="badge bg-warning text-dark mb-3 px-3 py-2"
+          ><i class="fas fa-bullhorn me-2"></i>Güncel Haberler</span
+        >
+        <h1 class="mb-3">EBB Kültür Sanat Haberleri</h1>
+        <p class="lead text-white-75">
+          Tiyatrodan konsere, eğitimden sergiye tüm duyuru ve haberleri buradan
+          takip edin.
+        </p>
+      </div>
+    </section>
+
+    <section class="news-grid-section">
+      <div class="container">
+        <div class="row g-4" id="newsGrid"></div>
+      </div>
+    </section>
+
+    <footer class="footer" id="contact">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>EBB Kültür Sanat Merkezi</h3>
+            <p>
+              Erzurum'un kültürel yaşamının kalbi olan merkezimizde, sanat ve
+              kültürün her dalında etkinlikler düzenliyoruz.
+            </p>
+            <div class="social-links">
+              <a
+                href="https://www.facebook.com/EbbSanatMerkezi"
+                class="social-link"
+                target="_blank"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                href="https://www.instagram.com/ebbsanatmerkezi"
+                class="social-link"
+                target="_blank"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-link" target="_blank"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="social-link" target="_blank"
+                ><i class="fab fa-youtube"></i
+              ></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h3>Hızlı Linkler</h3>
+            <p><a href="index.html#home">Ana Sayfa</a></p>
+            <p><a href="index.html#features">Hizmetler</a></p>
+            <p><a href="ourhalls.html">Salonlarımız</a></p>
+            <p><a href="activity.html">Yönetim Paneli</a></p>
+          </div>
+          <div class="footer-section">
+            <h3>İletişim</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Erzurum Merkez</p>
+            <p><i class="fas fa-phone"></i> +90 (442) 123 45 67</p>
+            <p><i class="fas fa-envelope"></i> info@ebbsanatmerkezi.com</p>
+            <p><i class="fas fa-clock"></i> Pzt-Cum: 09:00-18:00</p>
+          </div>
+          <div class="footer-section">
+            <h3>Bağlı Kuruluşlar</h3>
+            <p>
+              <a href="https://www.erzurum.bel.tr" target="_blank"
+                >Erzurum Büyükşehir Belediyesi</a
+              >
+            </p>
+            <p><a href="#" target="_blank">Kültür ve Turizm Bakanlığı</a></p>
+            <p><a href="#" target="_blank">Erzurum Valiliği</a></p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 EBB Kültür ve Sanat Merkezi. Tüm hakları saklıdır.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        query,
+        orderBy,
+        limit,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      const newsGrid = document.getElementById("newsGrid");
+      const loadingState = document.getElementById("loadingState");
+      const errorState = document.getElementById("errorState");
+      const mainHeader = document.getElementById("mainHeader");
+
+      document.addEventListener("DOMContentLoaded", () => {
+        setupMobileNav();
+        loadNewsList();
+      });
+
+      function setupMobileNav() {
+        const btn = document.getElementById("mobileMenuBtn");
+        const menu = document.getElementById("navMenu");
+        if (!btn || !menu) return;
+        btn.addEventListener("click", () => {
+          menu.classList.toggle("active");
+        });
+      }
+
+      async function loadNewsList() {
+        try {
+          const newsRef = collection(db, "news");
+          const q = query(newsRef, orderBy("createdAt", "desc"), limit(30));
+          const snapshot = await getDocs(q);
+
+          const items = [];
+          snapshot.forEach((doc) => {
+            items.push({ id: doc.id, ...doc.data() });
+          });
+
+          renderNewsCards(items);
+          loadingState.style.display = "none";
+          mainHeader.style.display = "block";
+        } catch (error) {
+          console.error("News load error:", error);
+          loadingState.style.display = "none";
+          errorState.style.display = "block";
+        }
+      }
+
+      function renderNewsCards(items) {
+        if (!items.length) {
+          newsGrid.innerHTML = `
+            <div class="col-12">
+              <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">Henüz haber eklenmemiş.</h4>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        newsGrid.innerHTML = items.map((news) => buildNewsCard(news)).join("");
+      }
+
+      function buildNewsCard(news) {
+        const image =
+          (news.photos && news.photos[0]) ||
+          news.imageUrl ||
+          "https://via.placeholder.com/800x500/667eea/ffffff?text=EBB+Haber";
+        const dateObj = toDateValue(news.createdAt);
+        const dateText = dateObj
+          ? dateObj.toLocaleDateString("tr-TR", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })
+          : "Tarih yok";
+        const excerpt = news.content
+          ? news.content.replace(/\n/g, " ").substring(0, 160) +
+            (news.content.length > 160 ? "..." : "")
+          : "İçerik yakında eklenecek.";
+
+        return `
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="news-card">
+              <div class="news-card-image">
+                <img src="${image}" alt="${news.title || "Haber"}" />
+                ${
+                  news.isImportant
+                    ? '<span class="badge badge-important"><i class="fas fa-star me-1"></i>Önemli</span>'
+                    : ""
+                }
+                ${
+                  news.videoUrl
+                    ? '<span class="badge badge-video"><i class="fas fa-video me-1"></i>Video</span>'
+                    : ""
+                }
+              </div>
+              <div class="news-card-body">
+                <div class="news-card-meta">
+                  <span><i class="fas fa-calendar"></i>${dateText}</span>
+                  <span><i class="fas fa-tag"></i>${
+                    news.category || "Genel"
+                  }</span>
+                </div>
+                <h3>${news.title || "Başlıksız Haber"}</h3>
+                <p>${excerpt}</p>
+              </div>
+              <div class="news-card-footer">
+                <a href="news-detail.html?id=${
+                  news.id
+                }" class="btn btn-outline-primary w-100">
+                  <i class="fas fa-arrow-right me-1"></i>Haberi Gör
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function toDateValue(value) {
+        if (!value) return null;
+        if (typeof value.toDate === "function") {
+          return value.toDate();
+        }
+        if (typeof value === "string" || typeof value === "number") {
+          const parsed = new Date(value);
+          if (!isNaN(parsed.getTime())) {
+            return parsed;
+          }
+        }
+        return null;
+      }
+    </script>
+  </body>
+</html>

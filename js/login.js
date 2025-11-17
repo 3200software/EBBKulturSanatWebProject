@@ -35,6 +35,18 @@ const firebaseapp = initializeApp({
 const auth = getAuth();
 const db = getFirestore(firebaseapp);
 
+const PAGE_PRIORITY = [
+  { url: "activity.html", codes: ["1", "1a", "2", "2a"] },
+  { url: "staff.html", codes: ["1", "1a", "10", "10a"] },
+  { url: "salooncontrol.html", codes: ["1", "1a", "3", "3a"] },
+  { url: "news.html", codes: ["1", "1a", "5", "5a"] },
+  { url: "costume.html", codes: ["1", "1a", "9", "9a"] },
+  { url: "library.html", codes: ["1", "1a", "8", "8a"] },
+  { url: "messages.html", codes: ["1", "1a", "2", "2a"] },
+];
+
+const GLOBAL_VIEW_CODES = new Set(["1", "1a"]);
+
 var myModal = new bootstrap.Modal(document.getElementById("newPasswordModal"));
 
 const noEditPasswordButton = document.getElementById("noEditPasswordButton");
@@ -42,6 +54,38 @@ const editPasswordButtonButton = document.getElementById("editPasswordButton");
 
 var passwordEditStatus;
 var userDoc;
+var userPermissions = [];
+
+function hasPageAccess(permissions = [], codes = []) {
+  if (!codes || codes.length === 0) return true;
+  if (!Array.isArray(permissions)) return false;
+  if (permissions.some((code) => GLOBAL_VIEW_CODES.has(code))) return true;
+  return codes.some((code) => permissions.includes(code));
+}
+
+function resolveLandingPage(permissions = []) {
+  for (const page of PAGE_PRIORITY) {
+    if (hasPageAccess(permissions, page.codes)) {
+      return page.url;
+    }
+  }
+  return null;
+}
+
+function redirectToAuthorisedPage(permissions = []) {
+  const target = resolveLandingPage(permissions);
+  if (target) {
+    window.location.href = target;
+    return;
+  }
+  alert(
+    "Hesabınız için erişebileceğiniz yönetim sayfası bulunamadı. Lütfen sistem yöneticinizle iletişime geçin."
+  );
+  signOut(auth).finally(() => {
+    window.location.href = "adminpanellogin.html";
+  });
+}
+
 onAuthStateChanged(auth, async (user) => {
   if (user != null) {
     const getData = query(
@@ -52,14 +96,17 @@ onAuthStateChanged(auth, async (user) => {
 
     querySnapshot.forEach((doc) => {
       userDoc = doc.id;
-      passwordEditStatus = doc.data().passwordEdit;
+      const data = doc.data();
+      passwordEditStatus = data.passwordEdit;
+      userPermissions = Array.isArray(data.userAuthority)
+        ? data.userAuthority
+        : [];
     });
 
     if (passwordEditStatus == false) {
       myModal.show();
     } else {
-      window.location.href = "activity.html";
-      const user = userCredential.user;
+      redirectToAuthorisedPage(userPermissions);
     }
   } else {
     console.log("no user");
@@ -83,7 +130,7 @@ $("#editPasswordButton").on("click", function () {
             passwordEdit: true,
           })
             .then(() => {
-              window.location.href = "activity.html";
+              redirectToAuthorisedPage(userPermissions);
             })
             .catch((error) => {
               console.error("Belge güncellenirken hata oluştu: ", error);

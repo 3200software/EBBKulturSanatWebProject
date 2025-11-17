@@ -168,36 +168,50 @@
           class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
         >
           <div class="list-group mb-auto p2">
-            <a href="activity.html" class="list-group-item list-group-item-action"
+            <a
+              href="activity.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,2,2a"
               >Etkinlikler
             </a>
+            <a
+              href="staff.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,10,10a"
+              >Ekip</a
+            >
             <a
               href="salooncontrol.html"
               class="list-group-item list-group-item-action active"
               aria-current="true"
+              data-required-permissions="1,1a,3,3a"
               >Salon Takip</a
             >
             <a
-              href="announcement.html"
+              href="news.html"
               class="list-group-item list-group-item-action"
-              >Duyurular</a
-            >
-            <a href="news.html" class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,5,5a"
               >Haberler</a
             >
+       
+        
             <a
-              href="photoGalery.html"
+              href="library.html"
               class="list-group-item list-group-item-action"
-              >Foto Galeri</a
-            >
-            <a href="blog.html" class="list-group-item list-group-item-action"
-              >Blog</a
-            >
-            <a href="library.html" class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,8,8a"
               >Kütüphane</a
             >
-            <a href="costume.html" class="list-group-item list-group-item-action"
+            <a
+              href="costume.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,9,9a"
               >Kostüm</a
+            >
+            <a
+              href="messages.html"
+              class="list-group-item list-group-item-action messages-link"
+              style="display: none"
+              >Mesajlar</a
             >
           </div>
 
@@ -205,6 +219,13 @@
             <a href="users.html" class="list-group-item list-group-item-action">
               Kullanıcılar
             </a>
+          <a
+            href="messages.html"
+            class="list-group-item list-group-item-action messages-link"
+            style="display: none"
+            data-required-permissions="1,1a,2,2a"
+            >Mesajlar</a
+          >
             <button
               class="list-group-item list-group-item-action bg-danger text-white"
               id="logoutButton"

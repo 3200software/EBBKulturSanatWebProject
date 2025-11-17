@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Haberler</title>
+    <title>Haber Yönetimi</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
@@ -16,90 +21,1802 @@
     <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/mobile.css" />
     <link rel="stylesheet" href="css/tablet.css" />
-    <link rel="stylesheet" href="css/activityAdd.css" />
+    <link rel="stylesheet" href="css/activity.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .offcanvas {
+        transform: translateX(-100%);
+        visibility: visible;
+        transition: transform 0.3s ease;
+        width: 400px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        height: 100vh;
+        background-color: white;
+      }
+
+      .offcanvas.show {
+        transform: translateX(0);
+      }
+
+      #mainContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        overflow-x: auto;
+        padding-bottom: 60px;
+      }
+
+      #mainContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+      }
+
+      #menuButton {
+        display: inline-block;
+      }
+
+      @media (max-width: 992px) {
+        /* Tablet and Mobile: Hide offcanvas by default */
+        .offcanvas {
+          transform: translateX(-100%);
+        }
+
+        .offcanvas.show {
+          transform: translateX(0);
+        }
+
+        #mainContainer.shifted {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        /* Show menu button on mobile and tablet */
+        #menuButton {
+          display: inline-block;
+        }
+
+        /* Mobile overlay */
+        .menu-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+
+        .menu-overlay.active {
+          display: block;
+        }
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow-x: auto;
+        padding: 20px;
+      }
+
+      footer {
+        height: 50px;
+        background-color: var(--bs-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+
+      .container-fluid {
+        margin-bottom: 70px;
+      }
+
+      .stats-card {
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .stats-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .event-item {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #fff;
+        transition: all 0.3s ease;
+      }
+
+      .event-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-color: #007bff;
+      }
+
+      /* Butonları her zaman görünür yap - Hover özelliklerini normal duruma taşı */
+      .event-item .btn {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
+        transform: none !important;
+        transition: all 0.3s ease !important;
+      }
+
+      /* Hover durumunu da aynı yap */
+      .event-item:hover .btn,
+      .event-item .btn:hover {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
+      }
+
+      .event-item .d-flex {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+      }
+
+      /* Hover durumunda da container görünür kalsın */
+      .event-item:hover .d-flex {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+      }
+
+      /* Buton container'ını her zaman görünür yap */
+      .event-item .d-flex.gap-2 {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+        transform: none !important;
+      }
+
+      /* Tüm buton türlerini zorla görünür yap */
+      .event-item .btn-warning,
+      .event-item .btn-success,
+      .event-item .btn-secondary,
+      .event-item .btn-danger,
+      .event-item .btn-outline-info {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
+        pointer-events: auto !important;
+      }
+
+      /* En güçlü kural - tüm durumlar için */
+      .event-item button,
+      .event-item .btn,
+      .event-item button.btn {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
+        pointer-events: auto !important;
+        position: static !important;
+        transform: none !important;
+      }
+
+      /* Hover durumunda da aynı */
+      .event-item:hover button,
+      .event-item:hover .btn,
+      .event-item button:hover,
+      .event-item .btn:hover {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
+      }
+
+      .slider-badge {
+        background-color: #28a745;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .form-control,
+      .form-select {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+
+      .btn {
+        border-radius: 6px;
+      }
+
+      #newsForm button[type="submit"] {
+        background: linear-gradient(135deg, #0abf64, #057a3f);
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        padding: 0.9rem 1.25rem;
+        box-shadow: 0 10px 25px rgba(5, 122, 63, 0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      }
+
+      #newsForm button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(5, 122, 63, 0.45);
+        filter: brightness(1.05);
+      }
+
+      #newsForm button[type="submit"]:active {
+        transform: translateY(0);
+        box-shadow: 0 8px 18px rgba(5, 122, 63, 0.4);
+      }
+
+      /* Haber fotoğraf önizleme */
+      .photo-preview {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin: 5px;
+        border: 2px solid #dee2e6;
+      }
+
+      .photo-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .offcanvas {
+          width: 300px;
+        }
+
+        #mainContainer.shifted {
+          margin-left: 300px;
+          width: calc(100% - 300px);
+        }
+
+        .event-item .btn {
+          font-size: 0.9rem;
+          padding: 8px 12px;
+          margin-bottom: 5px;
+        }
+
+        .event-item .d-flex {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .event-item .btn {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div
-      class="offcanvas offcanvas-start show"
-      data-bs-backdrop="false"
-      id="adminPanelSideMenu"
-      style="width: 20%"
-    >
+    <div class="main-content">
       <div
-        class="offcanvas-header d-flex justify-content-start"
-        style="margin-top: 2%"
+        class="offcanvas offcanvas-start"
+        data-bs-backdrop="false"
+        id="adminPanelSideMenu"
       >
-        <div>
-          <img
-            src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
-            alt="profilResmi"
-            width="50px"
-            height="50px"
-            style="border-radius: 50px"
-          />
+        <div
+          class="offcanvas-header d-flex justify-content-start"
+          style="margin-top: 2%"
+        >
+          <div>
+            <img
+              src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
+              alt="profilResmi"
+              width="50px"
+              height="50px"
+              style="border-radius: 50px"
+            />
+          </div>
+          <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
         </div>
-        <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
+
+        <div
+          class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
+        >
+          <div class="list-group mb-auto p2">
+            <a
+              href="activity.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,2,2a"
+              >Etkinlikler
+            </a>
+            <a
+              href="staff.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,10,10a"
+              >Ekip</a
+            >
+            <a
+              href="salooncontrol.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,3,3a"
+              >Salon Takip</a
+            >
+
+            <a
+              href="news.html"
+              class="list-group-item list-group-item-action active"
+              data-required-permissions="1,1a,5,5a"
+              >Haberler</a
+            >
+            <a
+              href="costume.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,9,9a"
+              >Kostümler</a
+            >
+            <a
+              href="library.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,8,8a"
+              >Kütüphane</a
+            >
+            <a
+              href="messages.html"
+              class="list-group-item list-group-item-action messages-link"
+              style="display: none"
+              data-required-permissions="1,1a,2,2a"
+              >Mesajlar</a
+            >
+          </div>
+
+          <div class="list-group">
+            <button
+              class="list-group-item list-group-item-action bg-danger text-white"
+              id="logoutButton"
+            >
+              Çıkış Yap
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div
-        class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
-      >
-        <div class="list-group mb-auto p2">
-          <a
-            href="activity.html"
-            class="list-group-item list-group-item-action"
-          >
-            Etkinlikler
-          </a>
+      <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
 
-          <a
-            href="salooncontrol.html"
-            class="list-group-item list-group-item-action"
-            aria-current="true"
-            >Salon Takip</a
-          >
-
-          <a
-            href="announcement.html"
-            class="list-group-item list-group-item-action"
-            >Duyurular</a
-          >
-
-          <a
-            href="news.html"
-            class="list-group-item list-group-item-action active"
-            >Haberler</a
-          >
-          <a
-            href="photoGalery.html"
-            class="list-group-item list-group-item-action"
-            >Foto Galeri</a
-          >
-          <a href="blog.html" class="list-group-item list-group-item-action"
-            >Blog</a
-          >
-          <a href="library.html" class="list-group-item list-group-item-action"
-            >Kütüphane</a
-          >
-          <a href="costume.html" class="list-group-item list-group-item-action"
-            >Kostüm</a
-          >
+      <div class="container-fluid" id="mainContainer">
+        <div
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
+        >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">Haber Yönetimi</div>
         </div>
 
-        <div class="list-group">
-          <a href="users.html" class="list-group-item list-group-item-action">
-            Kullanıcılar
-          </a>
-          <button
-            class="list-group-item list-group-item-action bg-danger text-white"
-            id="logoutButton"
-          >
-            Çıkış Yap
-          </button>
+        <!-- İstatistikler -->
+        <div class="row mt-4">
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #007bff, #0056b3)"
+            >
+              <div class="stats-number" id="totalNews">0</div>
+              <div class="stats-label">Toplam Haber</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #28a745, #20c997)"
+            >
+              <div class="stats-number" id="importantNews">0</div>
+              <div class="stats-label">Önemli Haberler</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #ffc107, #fd7e14)"
+            >
+              <div class="stats-number" id="todayNews">0</div>
+              <div class="stats-label">Bugünkü Haberler</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #dc3545, #e83e8c)"
+            >
+              <div class="stats-number" id="totalPhotos">0</div>
+              <div class="stats-label">Toplam Fotoğraf</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ana İçerik - Etkinlik Listesi -->
+        <div class="row" id="newsListContainer">
+          <div class="col-12">
+            <div class="card">
+              <div
+                class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0">
+                  <i class="fas fa-newspaper me-2"></i>Haberler
+                </h5>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-success" id="newEventBtn">
+                    <i class="fas fa-plus me-1"></i>Yeni Haber
+                  </button>
+                  <button
+                    class="btn btn-outline-light btn-sm"
+                    onclick="loadNews()"
+                  >
+                    <i class="fas fa-sync-alt me-1"></i>Yenile
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="newsContainer">
+                  <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                    <p class="mt-2 text-muted">Haberler yükleniyor...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Etkinlik Formu (Başlangıçta Gizli) -->
+        <div class="row mt-4" id="newsFormContainer" style="display: none">
+          <div class="col-12">
+            <div class="card">
+              <div
+                class="card-header bg-success text-white d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0" id="formTitle">
+                  <i class="fas fa-plus-circle me-2"></i>Yeni Haber Ekle
+                </h5>
+                <button class="btn btn-outline-light btn-sm" id="cancelFormBtn">
+                  <i class="fas fa-times me-1"></i>İptal
+                </button>
+              </div>
+              <div class="card-body">
+                <form id="newsForm">
+                  <div class="mb-3">
+                    <label class="form-label">Haber Başlığı *</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="newsTitle"
+                      required
+                      placeholder="Haber başlığını girin"
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Haber İçeriği *</label>
+                    <textarea
+                      class="form-control"
+                      id="newsContent"
+                      rows="8"
+                      required
+                      placeholder="Haber içeriğini yazın..."
+                    ></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Kategori</label>
+                    <select class="form-select" id="newsCategory">
+                      <option value="Genel">Genel</option>
+                      <option value="Etkinlik">Etkinlik</option>
+                      <option value="Tiyatro">Tiyatro</option>
+                      <option value="Konser">Konser</option>
+                      <option value="Sergi">Sergi</option>
+                      <option value="Eğitim">Eğitim</option>
+                      <option value="Duyuru">Duyuru</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Fotoğraflar (Maksimum 5)</label>
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="newsPhotos"
+                      accept="image/*"
+                      multiple
+                    />
+                    <small class="text-muted"
+                      >En fazla 5 fotoğraf seçebilirsiniz</small
+                    >
+                  </div>
+
+                  <div class="mb-3">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary w-100"
+                      id="uploadPhotosBtn"
+                    >
+                      <i class="fas fa-upload me-2"></i>Fotoğrafları Yükle
+                    </button>
+                  </div>
+
+                  <div class="photo-container" id="photoPreview"></div>
+
+                  <div class="mb-3">
+                    <label class="form-label"
+                      >Video Bağlantısı (Opsiyonel)</label
+                    >
+                    <input
+                      type="url"
+                      class="form-control"
+                      id="newsVideoUrl"
+                      placeholder="https://www.youtube.com/watch?v=..."
+                    />
+                    <small class="text-muted"
+                      >YouTube, Vimeo veya doğrudan video bağlantısı
+                      ekleyebilirsiniz. Bu alan boş bırakılabilir.</small
+                    >
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Haber Tarihi</label>
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="newsPublishDate"
+                    />
+                    <small class="text-muted">
+                      Boş bırakırsanız otomatik olarak bugünün tarihi
+                      kaydedilir.
+                    </small>
+                  </div>
+
+                  <div class="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="isImportant"
+                    />
+                    <label class="form-check-label" for="isImportant">
+                      Önemli haber (Ana sayfada öne çıkar)
+                    </label>
+                  </div>
+
+                  <!-- Tiyatro Ek Özellikleri -->
+                  <div id="theaterExtras" class="mb-3" style="display: none">
+                    <div class="card">
+                      <div class="card-header bg-secondary text-white">
+                        <h6 class="mb-0">
+                          <i class="fas fa-theater-masks me-2"></i>Tiyatro
+                          Kadrosu
+                        </h6>
+                      </div>
+                      <div class="card-body">
+                        <div class="row mb-3">
+                          <div class="col-md-4">
+                            <label class="form-label">Görev</label>
+                            <select class="form-select" id="staffRoleFilter">
+                              <option value="">Tüm Görevler</option>
+                              <optgroup label="Yönetim">
+                                <option value="Daire Başkanı">
+                                  Daire Başkanı
+                                </option>
+                                <option value="Şube Müdürü">Şube Müdürü</option>
+                                <option value="Genel Sanat Yönetmeni">
+                                  Genel Sanat Yönetmeni
+                                </option>
+                              </optgroup>
+                              <optgroup label="Sanat ve Prodüksiyon">
+                                <option value="Yönetmen">Yönetmen</option>
+                                <option value="Işık Tasarımcısı">
+                                  Işık Tasarımcısı
+                                </option>
+                                <option value="Dekor Tasarımcısı">
+                                  Dekor Tasarımcısı
+                                </option>
+                                <option value="Müzik Yönetmeni">
+                                  Müzik Yönetmeni
+                                </option>
+                                <option value="Oyuncu">Oyuncu</option>
+                              </optgroup>
+                              <optgroup label="İdari Personel">
+                                <option value="Memur">Memur</option>
+                                <option value="Teknik Görevli">
+                                  Teknik Görevli
+                                </option>
+                              </optgroup>
+                              <optgroup label="Destek Personeli">
+                                <option value="Çaycı">Çaycı</option>
+                                <option value="Temizlikçi">Temizlikçi</option>
+                              </optgroup>
+                            </select>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="form-label">Ekip Üyesi Ara</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="staffSearchInput"
+                              placeholder="İsim yazarak arayın..."
+                            />
+                          </div>
+                          <div class="col-md-2 d-flex align-items-end">
+                            <a
+                              href="staff.html"
+                              class="btn btn-outline-primary w-100"
+                            >
+                              <i class="fas fa-user-plus"></i> Yeni Ekip
+                            </a>
+                          </div>
+                        </div>
+
+                        <!-- Arama Sonuçları -->
+                        <div
+                          id="staffSearchResults"
+                          class="mb-3"
+                          style="display: none"
+                        >
+                          <h6 class="text-muted mb-2">Ekip Üyeleri:</h6>
+                          <div
+                            id="staffSearchContainer"
+                            class="border rounded p-2"
+                            style="
+                              max-height: 200px;
+                              overflow-y: auto;
+                              background-color: #f8f9fa;
+                            "
+                          >
+                            <!-- Arama sonuçları buraya gelecek -->
+                          </div>
+                        </div>
+
+                        <!-- Kadro Listesi -->
+                        <div id="staffList">
+                          <h6 class="text-muted mb-2">Kadro:</h6>
+                          <div
+                            id="staffContainer"
+                            class="border rounded p-2"
+                            style="min-height: 60px; background-color: #f8f9fa"
+                          >
+                            <small class="text-muted"
+                              >Henüz kadro eklenmedi.</small
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-success w-100">
+                    <i class="fas fa-save me-2"></i>Haber Kaydet
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                  <i class="fas fa-info-circle me-2"></i>Bilgilendirme
+                </h5>
+              </div>
+              <div class="card-body">
+                <div class="alert alert-info">
+                  <h6><i class="fas fa-lightbulb me-2"></i>İpuçları:</h6>
+                  <ul class="mb-0">
+                    <li>
+                      <strong>Tiyatro etkinlikleri</strong> için kadro
+                      ekleyebilirsiniz
+                    </li>
+                    <li>
+                      <strong>Slider'da göster</strong> seçeneği ana sayfada
+                      görünür
+                    </li>
+                    <li>
+                      <strong>Fotoğraf yükledikten</strong> sonra "Yükle"
+                      butonuna basın
+                    </li>
+                    <li>
+                      <strong>Yeni ekip üyesi</strong> eklemek için "Yeni Ekip"
+                      linkini kullanın
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="alert alert-warning">
+                  <h6>
+                    <i class="fas fa-exclamation-triangle me-2"></i>Dikkat:
+                  </h6>
+                  <p class="mb-0">
+                    Etkinlik silindikten sonra geri alınamaz. Silme işleminden
+                    önce emin olun.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Şablon Seçimi Modal -->
+    <div
+      class="modal fade"
+      id="templateModal"
+      tabindex="-1"
+      aria-labelledby="templateModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title" id="templateModalLabel">
+              <i class="fas fa-copy me-2"></i>Etkinlik Şablonları
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="templatesContainer">
+              <div class="text-center py-4">
+                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                <p class="mt-2 text-muted">Şablonlar yükleniyor...</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i>Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Şablondan Etkinlik Oluşturma Modal -->
+    <div
+      class="modal fade"
+      id="fromTemplateModal"
+      tabindex="-1"
+      aria-labelledby="fromTemplateModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title" id="fromTemplateModalLabel">
+              <i class="fas fa-magic me-2"></i>Şablondan Etkinlik Oluştur
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Tarih *</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="templateEventDate"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Saat *</label>
+                <input
+                  type="time"
+                  class="form-control"
+                  id="templateEventTime"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Şablon Seç *</label>
+              <select class="form-select" id="templateSelect" required>
+                <option value="">Şablon seçin...</option>
+              </select>
+            </div>
+            <div
+              id="selectedTemplatePreview"
+              class="border rounded p-3 bg-light"
+              style="display: none"
+            >
+              <h6 class="text-muted mb-2">Seçilen Şablon:</h6>
+              <div id="templatePreviewContent"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i>İptal
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              id="createFromTemplateBtn"
+            >
+              <i class="fas fa-magic me-1"></i>Etkinlik Oluştur
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p style="margin: 0">© 2024 EBB Kültür Sanat. Tüm hakları saklıdır.</p>
+    </footer>
+
     <script src="js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Firebase -->
+    <script type="module">
+      // Firebase imports
+      import {
+        initializeApp,
+        getApp,
+        getApps,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc,
+        updateDoc,
+        deleteDoc,
+        doc,
+        query,
+        orderBy,
+        where,
+        Timestamp,
+        setDoc,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+      import { ensureAuth, logActivity } from "./js/authGuard.js";
+      import {
+        updateMessagesLinkVisibility,
+        enforceLinkPermissions,
+      } from "./js/offcanvas.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      // Initialize Firebase
+      const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      const authContext = await ensureAuth({
+        app,
+        auth,
+        db,
+        requiredAny: ["1", "1a", "5", "5a"],
+        writeCodes: ["1", "5"],
+        pageName: "Haber Yönetimi",
+      }).catch((error) => {
+        console.error("Yetkilendirme başarısız:", error);
+        return null;
+      });
+
+      if (!authContext) {
+        throw new Error("Authorisation failed");
+      }
+
+      const currentUserEmail = authContext.user.email;
+      const currentUserName =
+        authContext.profile?.userName || authContext.user.displayName || "";
+      const currentUserPermissions = authContext.permissions || [];
+      const canWrite = authContext.canWrite;
+      updateMessagesLinkVisibility(currentUserPermissions);
+      enforceLinkPermissions(currentUserPermissions);
+
+      if (!canWrite) {
+        document.body.dataset.readOnly = "true";
+      }
+
+      window.currentUserEmail = currentUserEmail;
+      window.currentUserName = currentUserName;
+      window.newsCanWrite = canWrite;
+      window.newsUserPermissions = currentUserPermissions;
+
+      // Global variables
+      let newsData = [];
+      let editingNewsId = null;
+
+      // Menu toggle functionality (salooncontrol style)
+      function setupMenuToggle() {
+        const menuButton = document.getElementById("menuButton");
+        const adminPanel = document.getElementById("adminPanelSideMenu");
+        const mainContainer = document.getElementById("mainContainer");
+
+        if (!menuButton || !adminPanel || !mainContainer) {
+          return;
+        }
+
+        const menuIcon = menuButton.querySelector("i");
+
+        function toggleMenu() {
+          adminPanel.classList.toggle("show");
+          mainContainer.classList.toggle("shifted");
+
+          // İkon değişimi
+          if (menuIcon) {
+            if (menuIcon.classList.contains("fa-bars")) {
+              menuIcon.classList.remove("fa-bars");
+              menuIcon.classList.add("fa-times");
+            } else {
+              menuIcon.classList.remove("fa-times");
+              menuIcon.classList.add("fa-bars");
+            }
+          }
+        }
+
+        menuButton.addEventListener("click", function (e) {
+          e.stopPropagation();
+          toggleMenu();
+        });
+
+        // Initialize: menu açık başla (salooncontrol gibi)
+        adminPanel.classList.add("show");
+        mainContainer.classList.add("shifted");
+        if (menuIcon) {
+          menuIcon.classList.remove("fa-bars");
+          menuIcon.classList.add("fa-times");
+        }
+      }
+
+      function initializeNewsPage() {
+        setupMenuToggle();
+
+        // Template system removed for news
+
+        // Initialize
+        loadNews();
+        setupNewsForm();
+        // setupTheaterFeatures(); // Haber için gerekli değil
+        setupFormToggle();
+        setupUploadButtons();
+        setupModalCloseButtons();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeNewsPage);
+      } else {
+        initializeNewsPage();
+      }
+
+      // Load events from Firebase
+      async function loadNews() {
+        try {
+          const newsRef = collection(db, "news");
+          const q = query(newsRef, orderBy("createdAt", "desc"));
+          const querySnapshot = await getDocs(q);
+
+          newsData = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            newsData.push({
+              id: doc.id,
+              ...data,
+            });
+          });
+
+          renderNews();
+          updateStats();
+        } catch (error) {
+          console.error("Error loading news:", error);
+          document.getElementById("newsContainer").innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+              <p class="mt-2 text-danger">Haberler yüklenirken hata oluştu!</p>
+            </div>
+          `;
+        }
+      }
+
+      // Render events list
+      function renderNews() {
+        const container = document.getElementById("newsContainer");
+
+        if (newsData.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-newspaper fa-2x text-muted"></i>
+              <p class="mt-2 text-muted">Henüz haber bulunmuyor.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = newsData
+          .map(
+            (news) => `
+          <div class="event-item">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="mb-1">${news.title || "Başlıksız Haber"}</h6>
+                <div class="d-flex gap-2 flex-wrap">
+                  <span class="badge bg-secondary">${
+                    news.category || "Genel"
+                  }</span>
+                  ${
+                    news.isImportant
+                      ? '<span class="badge bg-danger"><i class="fas fa-star me-1"></i>Önemli</span>'
+                      : ""
+                  }
+                  ${
+                    news.videoUrl
+                      ? '<span class="badge bg-info text-dark"><i class="fas fa-video me-1"></i>Video</span>'
+                      : ""
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <small class="text-muted">
+                  <i class="fas fa-calendar me-1"></i>${
+                    formatNewsDate(getNewsDate(news)) || "Tarih yok"
+                  }
+                </small>
+              </div>
+            </div>
+
+            ${
+              news.content
+                ? `<p class="text-muted small mb-3">${news.content.substring(
+                    0,
+                    150
+                  )}${news.content.length > 150 ? "..." : ""}</p>`
+                : ""
+            }
+
+            ${
+              news.photos && news.photos.length > 0
+                ? `<div class="mb-2">
+                    <img src="${news.photos[0]}" class="img-fluid rounded" style="max-height: 150px; width: auto;" alt="Haber Görseli">
+                  </div>`
+                : ""
+            }
+
+            ${
+              canWrite
+                ? `<div class="d-flex gap-2 flex-wrap mt-3 pt-2 border-top" style="opacity: 1 !important; visibility: visible !important; display: flex !important;">
+                    <button class="btn btn-warning" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;" onclick="editNews('${news.id}')">
+                      <i class="fas fa-edit me-1"></i>Düzenle
+                    </button>
+                    <button class="btn btn-danger" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;" onclick="deleteNews('${news.id}')">
+                      <i class="fas fa-trash me-1"></i>Sil
+                    </button>
+                  </div>`
+                : `<div class="mt-3 pt-2 border-top text-muted small">
+                    <i class="fas fa-lock me-1"></i>Bu haber üzerinde değişiklik yapma yetkiniz yok.
+                  </div>`
+            }
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      function getNewsDate(news) {
+        if (!news || !news.createdAt) return null;
+        const value = news.createdAt;
+        if (typeof value.toDate === "function") {
+          return value.toDate();
+        }
+        if (typeof value === "string" || typeof value === "number") {
+          const parsed = new Date(value);
+          if (!isNaN(parsed.getTime())) {
+            return parsed;
+          }
+        }
+        return null;
+      }
+
+      function formatNewsDate(date) {
+        if (!date) return null;
+        return date.toLocaleDateString("tr-TR");
+      }
+
+      // Update statistics
+      function updateStats() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const totalNewsCount = newsData.length;
+        const importantNewsCount = newsData.filter((n) => n.isImportant).length;
+        const todayNewsCount = newsData.filter((n) => {
+          const newsDate = getNewsDate(n);
+          if (!newsDate) return false;
+          newsDate.setHours(0, 0, 0, 0);
+          return newsDate.getTime() === today.getTime();
+        }).length;
+        const totalPhotosCount = newsData.reduce(
+          (total, n) => total + (n.photos ? n.photos.length : 0),
+          0
+        );
+
+        document.getElementById("totalNews").textContent = totalNewsCount;
+        document.getElementById("importantNews").textContent =
+          importantNewsCount;
+        document.getElementById("todayNews").textContent = todayNewsCount;
+        document.getElementById("totalPhotos").textContent = totalPhotosCount;
+      }
+
+      // Upload image to Firebase Storage
+      async function uploadImage(file, folder) {
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
+        const storageRef = ref(storage, `${folder}/${fileName}`);
+
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      }
+
+      // Setup upload buttons
+      function setupUploadButtons() {
+        // Upload event image
+        const uploadImageBtn = document.getElementById("uploadImageBtn");
+        if (uploadImageBtn) {
+          uploadImageBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventImageFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              const downloadURL = await uploadImage(file, "events");
+              document.getElementById("eventImage").value = downloadURL;
+              alert("Görsel başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading image:", error);
+              alert("Görsel yüklenirken hata oluştu!");
+            }
+          });
+        }
+
+        // Upload poster image
+        const uploadPosterBtn = document.getElementById("uploadPosterBtn");
+        if (uploadPosterBtn) {
+          uploadPosterBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventPosterImageFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              const downloadURL = await uploadImage(file, "posters");
+              document.getElementById("eventPosterImage").value = downloadURL;
+              alert("Poster başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading poster:", error);
+              alert("Poster yüklenirken hata oluştu!");
+            }
+          });
+        }
+
+        // Upload staff event photo
+        const uploadStaffEventPhotoBtn = document.getElementById(
+          "uploadStaffEventPhoto"
+        );
+        if (uploadStaffEventPhotoBtn) {
+          uploadStaffEventPhotoBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("staffEventPhotoFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              const downloadURL = await uploadImage(file, "staff-event-photos");
+              document.getElementById("staffEventPhotoUrl").value = downloadURL;
+              alert("Fotoğraf başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading staff event photo:", error);
+              alert("Fotoğraf yüklenirken hata oluştu!");
+            }
+          });
+        }
+      }
+
+      // Setup modal close buttons
+      function setupModalCloseButtons() {
+        // Template modal close buttons
+        document
+          .querySelectorAll('#templateModal [data-bs-dismiss="modal"]')
+          .forEach((button) => {
+            button.addEventListener("click", function () {
+              const modal = bootstrap.Modal.getInstance(
+                document.getElementById("templateModal")
+              );
+              if (modal) modal.hide();
+            });
+          });
+
+        // From template modal close buttons
+        document
+          .querySelectorAll('#fromTemplateModal [data-bs-dismiss="modal"]')
+          .forEach((button) => {
+            button.addEventListener("click", function () {
+              const modal = bootstrap.Modal.getInstance(
+                document.getElementById("fromTemplateModal")
+              );
+              if (modal) modal.hide();
+            });
+          });
+
+        // News modal close buttons (if any)
+
+        // ESC key support for all modals
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            // Close any open modal
+            const modals = [
+              // News modals can be added here
+            ];
+            modals.forEach((modalId) => {
+              const modal = bootstrap.Modal.getInstance(
+                document.getElementById(modalId)
+              );
+              if (modal) modal.hide();
+            });
+          }
+        });
+      }
+
+      // Setup form toggle functionality
+      function setupFormToggle() {
+        const newEventBtn = document.getElementById("newEventBtn");
+        const cancelFormBtn = document.getElementById("cancelFormBtn");
+        const newsFormContainer = document.getElementById("newsFormContainer");
+        const newsListContainer = document.getElementById("newsListContainer");
+        const formTitle = document.getElementById("formTitle");
+
+        // Yeni etkinlik butonu
+        newEventBtn.addEventListener("click", function () {
+          if (!canWrite) {
+            alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            return;
+          }
+          showNewsForm("new");
+        });
+
+        // İptal butonu
+        cancelFormBtn.addEventListener("click", function () {
+          hideNewsForm();
+        });
+
+        // Form göster
+        function showNewsForm(mode = "new") {
+          // Liste gizle, form göster
+          newsListContainer.style.display = "none";
+          newsFormContainer.style.display = "block";
+
+          if (mode === "new") {
+            formTitle.innerHTML =
+              '<i class="fas fa-plus-circle me-2"></i>Yeni Haber Ekle';
+            document.getElementById("newsForm").reset();
+            editingNewsId = null;
+            // Clear photo preview
+            document.getElementById("photoPreview").innerHTML = "";
+            window.newsPhotos = [];
+          } else {
+            formTitle.innerHTML =
+              '<i class="fas fa-edit me-2"></i>Etkinlik Düzenle';
+          }
+
+          // Forma scroll
+          newsFormContainer.scrollIntoView({ behavior: "smooth" });
+        }
+
+        // Form gizle, liste göster
+        function hideNewsForm() {
+          // Form gizle, liste göster
+          newsFormContainer.style.display = "none";
+          newsListContainer.style.display = "block";
+
+          // Form temizle
+          document.getElementById("newsForm").reset();
+          editingNewsId = null;
+          // Clear photo preview
+          document.getElementById("photoPreview").innerHTML = "";
+          window.newsPhotos = [];
+          const videoInput = document.getElementById("newsVideoUrl");
+          if (videoInput) {
+            videoInput.value = "";
+          }
+
+          // Listeye scroll
+          newsListContainer.scrollIntoView({ behavior: "smooth" });
+        }
+
+        // Global olarak erişilebilir yap
+        if (!canWrite) {
+          newEventBtn.disabled = true;
+          newEventBtn.classList.add("disabled");
+        }
+
+        window.showNewsForm = function (mode) {
+          if (!canWrite) {
+            alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            return;
+          }
+          showNewsForm(mode);
+        };
+        window.hideNewsForm = hideNewsForm;
+      }
+
+      // Setup theater features
+      function setupTheaterFeatures() {
+        const categorySelect = document.getElementById("eventCategory");
+        const theaterExtras = document.getElementById("theaterExtras");
+        const staffSearchInput = document.getElementById("staffSearchInput");
+        const staffRoleFilter = document.getElementById("staffRoleFilter");
+        const staffSearchResults =
+          document.getElementById("staffSearchResults");
+
+        // Load all staff members
+        loadAllStaffMembers();
+
+        // Kategori değişikliğini dinle
+        categorySelect.addEventListener("change", function () {
+          if (this.value === "Tiyatro") {
+            theaterExtras.style.display = "block";
+            loadAllStaffMembers();
+          } else {
+            theaterExtras.style.display = "none";
+            currentStaff = [];
+            renderStaffList();
+            staffSearchResults.style.display = "none";
+          }
+        });
+
+        // Arama inputunu dinle
+        staffSearchInput.addEventListener("input", function () {
+          const searchTerm = this.value.trim();
+          if (searchTerm.length > 0) {
+            searchStaff(searchTerm);
+            staffSearchResults.style.display = "block";
+          } else {
+            staffSearchResults.style.display = "none";
+          }
+        });
+
+        // Rol filtresini dinle
+        staffRoleFilter.addEventListener("change", function () {
+          const searchTerm = staffSearchInput.value.trim();
+          if (searchTerm.length > 0) {
+            searchStaff(searchTerm);
+          }
+        });
+      }
+
+      // Load all staff members from Firebase
+      async function loadAllStaffMembers() {
+        try {
+          const staffRef = collection(db, "staff");
+          const q = query(staffRef, orderBy("name", "asc"));
+          const querySnapshot = await getDocs(q);
+
+          allStaffMembers = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            allStaffMembers.push({
+              id: doc.id,
+              ...data,
+            });
+          });
+        } catch (error) {
+          console.error("Error loading staff members:", error);
+        }
+      }
+
+      // Search staff members
+      function searchStaff(searchTerm) {
+        const roleFilter = document.getElementById("staffRoleFilter").value;
+
+        let filteredStaff = allStaffMembers.filter((staff) =>
+          staff.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        if (roleFilter) {
+          filteredStaff = filteredStaff.filter(
+            (staff) => staff.role === roleFilter
+          );
+        }
+
+        renderSearchResults(filteredStaff);
+      }
+
+      // Render search results
+      function renderSearchResults(staffList) {
+        const container = document.getElementById("staffSearchContainer");
+
+        if (staffList.length === 0) {
+          container.innerHTML =
+            '<small class="text-muted">Arama sonucu bulunamadı.</small>';
+          return;
+        }
+
+        container.innerHTML = staffList
+          .map(
+            (staff) => `
+          <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-white rounded border staff-search-item"
+               style="cursor: pointer;" onclick="selectStaff('${staff.id}')">
+            <div class="d-flex align-items-center">
+              ${
+                staff.photoUrl
+                  ? `
+                <img src="${staff.photoUrl}" alt="${staff.name}"
+                     style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
+              `
+                  : `
+                <div style="width: 30px; height: 30px; border-radius: 50%; background: #e9ecef;
+                           display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                  <i class="fas fa-user text-muted" style="font-size: 12px;"></i>
+                </div>
+              `
+              }
+              <div>
+                <strong>${staff.name}</strong>
+                <small class="d-block text-muted">${staff.role}</small>
+              </div>
+            </div>
+            <i class="fas fa-plus text-success"></i>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // News specific functions
+
+      // News utility functions
+      // Setup event form
+      function setupNewsForm() {
+        const form = document.getElementById("newsForm");
+
+        // News photo upload handler
+        const uploadPhotosBtn = document.getElementById("uploadPhotosBtn");
+        if (uploadPhotosBtn) {
+          uploadPhotosBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("newsPhotos");
+            const photoPreview = document.getElementById("photoPreview");
+
+            if (fileInput.files.length === 0) {
+              alert("Lütfen fotoğraf seçin!");
+              return;
+            }
+
+            if (fileInput.files.length > 5) {
+              alert("En fazla 5 fotoğraf seçebilirsiniz!");
+              return;
+            }
+
+            uploadPhotosBtn.disabled = true;
+            uploadPhotosBtn.innerHTML =
+              '<i class="fas fa-spinner fa-spin me-2"></i>Yükleniyor...';
+
+            try {
+              const uploadedPhotos = [];
+
+              for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
+                const downloadURL = await uploadImage(file, "news-photos");
+                uploadedPhotos.push(downloadURL);
+              }
+
+              // Show preview
+              photoPreview.innerHTML = uploadedPhotos
+                .map(
+                  (url) =>
+                    `<img src="${url}" class="photo-preview" alt="Fotoğraf">`
+                )
+                .join("");
+
+              // Store for form submission
+              window.newsPhotos = uploadedPhotos;
+
+              alert("Fotoğraflar başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading photos:", error);
+              alert("Fotoğraf yüklenirken hata oluştu!");
+            } finally {
+              uploadPhotosBtn.disabled = false;
+              uploadPhotosBtn.innerHTML =
+                '<i class="fas fa-upload me-2"></i>Fotoğrafları Yükle';
+            }
+          });
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          if (!canWrite) {
+            alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            return;
+          }
+
+          const now = Timestamp.now();
+          const publishInput = document.getElementById("newsPublishDate");
+          let publishTimestamp = now;
+
+          if (publishInput && publishInput.value) {
+            const parsedDate = new Date(publishInput.value);
+            if (!isNaN(parsedDate.getTime())) {
+              publishTimestamp = Timestamp.fromDate(parsedDate);
+            }
+          }
+
+          const formData = {
+            title: document.getElementById("newsTitle").value,
+            content: document.getElementById("newsContent").value,
+            category: document.getElementById("newsCategory").value,
+            isImportant: document.getElementById("isImportant").checked,
+            photos: window.newsPhotos || [],
+            videoUrl: document.getElementById("newsVideoUrl").value.trim(),
+            publishAt: publishTimestamp,
+          };
+
+          try {
+            let newsId;
+
+            if (editingNewsId) {
+              // Update existing news
+              const newsRef = doc(db, "news", editingNewsId);
+              await updateDoc(newsRef, {
+                ...formData,
+                updatedAt: now,
+              });
+              newsId = editingNewsId;
+
+              alert("Haber güncellendi!");
+              await logActivity(db, {
+                userEmail: currentUserEmail,
+                userName: currentUserName,
+                action: "news_update",
+                page: "news",
+                targetId: newsId,
+                targetType: "news",
+                meta: {
+                  title: formData.title,
+                  category: formData.category,
+                },
+              });
+            } else {
+              // Add new news
+              const docRef = await addDoc(collection(db, "news"), {
+                ...formData,
+                createdAt: now,
+              });
+              newsId = docRef.id;
+
+              alert("Haber eklendi!");
+              await logActivity(db, {
+                userEmail: currentUserEmail,
+                userName: currentUserName,
+                action: "news_create",
+                page: "news",
+                targetId: newsId,
+                targetType: "news",
+                meta: {
+                  title: formData.title,
+                  category: formData.category,
+                },
+              });
+            }
+
+            // Form'u gizle ve temizle
+            hideNewsForm();
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML =
+              '<i class="fas fa-save me-2"></i>Haber Kaydet';
+            loadNews();
+          } catch (error) {
+            console.error("Error saving news:", error);
+            alert("Haber kaydedilirken hata oluştu!");
+          }
+        });
+      }
+
+      // News specific functions can be added here
+
+      // Render preview thumbnails for already uploaded photos
+      function displayPhotoPreview() {
+        const photoPreview = document.getElementById("photoPreview");
+        const photos = Array.isArray(window.newsPhotos)
+          ? window.newsPhotos
+          : [];
+        if (!photoPreview) return;
+        photoPreview.innerHTML = photos
+          .map(
+            (url) => `<img src="${url}" class="photo-preview" alt="Fotoğraf">`
+          )
+          .join("");
+      }
+
+      // Delete news
+      window.deleteNews = async function (newsId) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        if (!confirm("Bu haberi silmek istediğinizden emin misiniz?")) return;
+
+        try {
+          await deleteDoc(doc(db, "news", newsId));
+          alert("Haber silindi!");
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "news_delete",
+            page: "news",
+            targetId: newsId,
+            targetType: "news",
+          });
+          loadNews();
+        } catch (error) {
+          console.error("Error deleting news:", error);
+          alert("Haber silinirken hata oluştu!");
+        }
+      };
+
+      // Edit news
+      window.editNews = async function (newsId) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        const news = newsData.find((n) => n.id === newsId);
+        if (!news) return;
+
+        // Fill form with news data
+        document.getElementById("newsTitle").value = news.title || "";
+        document.getElementById("newsContent").value = news.content || "";
+        document.getElementById("newsCategory").value =
+          news.category || "Genel";
+        document.getElementById("isImportant").checked =
+          news.isImportant || false;
+        document.getElementById("newsVideoUrl").value = news.videoUrl || "";
+
+        // Load photos if available
+        window.newsPhotos = Array.isArray(news.photos) ? news.photos : [];
+        displayPhotoPreview();
+
+        const publishInput = document.getElementById("newsPublishDate");
+        if (publishInput) {
+          const publishDate = getNewsDate(news);
+          publishInput.value = publishDate
+            ? new Date(publishDate).toISOString().slice(0, 16)
+            : "";
+        }
+
+        // Show form in edit mode
+        showNewsForm("edit");
+
+        // Change form to update mode
+        editingNewsId = newsId;
+        const submitBtn = document.querySelector(
+          '#newsForm button[type="submit"]'
+        );
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Haber Güncelle';
+      };
+
+      // News specific functions can be added here
+
+      // Make functions globally available
+      window.loadNews = loadNews;
+
+      // News utility functions
+
+      // Get category icon for news
+      function getCategoryIcon(category) {
+        const icons = {
+          Genel: "newspaper",
+          Etkinlik: "calendar",
+          Tiyatro: "theater-masks",
+          Konser: "music",
+          Sergi: "palette",
+          Eğitim: "graduation-cap",
+          Duyuru: "bullhorn",
+        };
+        return icons[category] || "newspaper";
+      }
+    </script>
   </body>
 </html>

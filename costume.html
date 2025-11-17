@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blog</title>
+    <title>Kostüm Yönetimi</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
@@ -16,86 +21,1454 @@
     <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/mobile.css" />
     <link rel="stylesheet" href="css/tablet.css" />
-    <link rel="stylesheet" href="css/activityAdd.css" />
+    <link rel="stylesheet" href="css/activity.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .offcanvas {
+        transform: translateX(-100%);
+        visibility: visible;
+        transition: transform 0.3s ease;
+        width: 400px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        height: 100vh;
+        background-color: white;
+      }
+
+      .offcanvas.show {
+        transform: translateX(0);
+      }
+
+      #mainContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        overflow-x: auto;
+        padding-bottom: 60px;
+      }
+
+      #mainContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+      }
+
+      #menuButton {
+        display: inline-block;
+      }
+
+      @media (max-width: 992px) {
+        .offcanvas {
+          transform: translateX(-100%);
+        }
+        .offcanvas.show {
+          transform: translateX(0);
+        }
+        #mainContainer.shifted {
+          margin-left: 0;
+          width: 100%;
+        }
+        #menuButton {
+          display: inline-block;
+        }
+        .menu-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+        .menu-overlay.active {
+          display: block;
+        }
+      }
+
+      .stats-card {
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .stats-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .card-header {
+        border-bottom: 1px solid #dee2e6;
+      }
+      .btn {
+        border-radius: 6px;
+      }
+
+      .search-input {
+        border-radius: 25px;
+        padding: 10px 20px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+      }
+      .search-input:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+      }
+
+      .costume-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 4px solid #6f42c1;
+        height: 100%;
+      }
+      .costume-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+      .costume-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px solid #e9ecef;
+      }
+
+      .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+      }
+      .table-success {
+        background-color: #d1e7dd !important;
+      }
+      .table-warning {
+        background-color: #fff3cd !important;
+      }
+      .table-secondary {
+        background-color: #e9ecef !important;
+      }
+
+      /* Ana Menü Butonları */
+      #mainMenuButtons .btn {
+        border: 2px solid !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        padding: 12px 24px !important;
+      }
+      #mainMenuButtons #showCostumesSection {
+        background-color: #6f42c1 !important;
+        border-color: #6139ab !important;
+        color: #fff !important;
+      }
+      #mainMenuButtons #showCostumesSection:hover {
+        background-color: #5a34a3 !important;
+        border-color: #4d2c8c !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(111, 66, 193, 0.4);
+      }
+      #mainMenuButtons #showLoansSection {
+        background-color: #0aa2c0 !important;
+        border-color: #087990 !important;
+        color: #fff !important;
+      }
+      #mainMenuButtons #showLoansSection:hover {
+        background-color: #087990 !important;
+        border-color: #066373 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(13, 202, 240, 0.4);
+      }
+
+      .qr-label {
+        display: none;
+      }
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #qrPrintArea,
+        #qrPrintArea * {
+          visibility: visible;
+        }
+        #qrPrintArea {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div
-      class="offcanvas offcanvas-start show"
-      data-bs-backdrop="false"
-      id="adminPanelSideMenu"
-      style="width: 20%"
-    >
+    <div class="main-content">
       <div
-        class="offcanvas-header d-flex justify-content-start"
-        style="margin-top: 2%"
+        class="offcanvas offcanvas-start"
+        data-bs-backdrop="false"
+        id="adminPanelSideMenu"
       >
-        <div>
-          <img
-            src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
-            alt="profilResmi"
-            width="50px"
-            height="50px"
-            style="border-radius: 50px"
-          />
+        <div
+          class="offcanvas-header d-flex justify-content-start"
+          style="margin-top: 2%"
+        >
+          <div>
+            <img
+              src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
+              alt="profilResmi"
+              width="50px"
+              height="50px"
+              style="border-radius: 50px"
+            />
+          </div>
+          <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
         </div>
-        <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
+        <div
+          class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
+        >
+          <div class="list-group mb-auto p2">
+            <a
+              href="activity.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,2,2a"
+              >Etkinlikler</a
+            >
+            <a
+              href="staff.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,10,10a"
+              >Ekip</a
+            >
+            <a
+              href="salooncontrol.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,3,3a"
+              >Salon Takip</a
+            >
+            <a
+              href="news.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,5,5a"
+              >Haberler</a
+            >
+            <a
+              href="library.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,8,8a"
+              >Kütüphane</a
+            >
+            <a
+              href="costume.html"
+              class="list-group-item list-group-item-action active"
+              data-required-permissions="1,1a,9,9a"
+              >Kostümler</a
+            >
+            <a
+              href="messages.html"
+              class="list-group-item list-group-item-action messages-link"
+              style="display: none"
+              data-required-permissions="1,1a,2,2a"
+              >Mesajlar</a
+            >
+          </div>
+          <div class="list-group">
+            <a href="users.html" class="list-group-item list-group-item-action"
+              >Kullanıcılar</a
+            >
+            <button
+              class="list-group-item list-group-item-action bg-danger text-white"
+              id="logoutButton"
+            >
+              Çıkış Yap
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div
-        class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
-      >
-        <div class="list-group mb-auto p2">
-          <a href="activity.html" class="list-group-item list-group-item-action"
-            >Etkinlikler</a
-          >
-          <a
-            href="salooncontrol.html"
-            class="list-group-item list-group-item-action"
-            aria-current="true"
-            >Salon Takip</a
-          >
-          <a
-            href="announcement.html"
-            class="list-group-item list-group-item-action"
-            >Duyurular</a
-          >
-          <a href="news.html" class="list-group-item list-group-item-action"
-            >Haberler</a
-          >
-          <a
-            href="photoGalery.html"
-            class="list-group-item list-group-item-action"
-            >Foto Galeri</a
-          >
-          <a href="blog.html" class="list-group-item list-group-item-action"
-            >Blog</a
-          >
-          <a href="library.html" class="list-group-item list-group-item-action"
-            >Kütüphane</a
-          >
-          <a
-            href="costume.html"
-            class="list-group-item list-group-item-action active"
-            aria-current="true"
-            >Kostüm</a
-          >
+      <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+      <div class="container-fluid" id="mainContainer">
+        <div
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
+        >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">Kostüm Yönetimi</div>
         </div>
 
-        <div class="list-group">
-          <a href="users.html" class="list-group-item list-group-item-action">
-            Kullanıcılar
-          </a>
+        <!-- İstatistikler -->
+        <div class="row mt-4">
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #6f42c1, #5a34a3)"
+            >
+              <div class="stats-number" id="totalCostumes">0</div>
+              <div class="stats-label">Toplam Kostüm</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #0dcaf0, #0aa2c0)"
+            >
+              <div class="stats-number" id="totalAvailable">0</div>
+              <div class="stats-label">Uygun Adet</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #ffc107, #fd7e14)"
+            >
+              <div class="stats-number" id="totalPeriods">0</div>
+              <div class="stats-label">Dönem</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #dc3545, #e83e8c)"
+            >
+              <div class="stats-number" id="totalLoans">0</div>
+              <div class="stats-label">Çıkışta</div>
+            </div>
+          </div>
+        </div>
 
-          <button
-            class="list-group-item list-group-item-action bg-danger text-white"
-            id="logoutButton"
+        <!-- Ana Menü Butonları -->
+        <div class="row mt-4" id="mainMenuButtons">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body text-center">
+                <div
+                  class="d-flex gap-3 justify-content-center flex-wrap align-items-center"
+                  style="min-height: 100px"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-lg"
+                    id="showCostumesSection"
+                    style="min-width: 250px"
+                  >
+                    <i class="fas fa-masks-theater me-2"></i>Kostümler
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-lg"
+                    id="showLoansSection"
+                    style="min-width: 250px"
+                  >
+                    <i class="fas fa-list me-2"></i>Kostüm Çıkış Kayıtları
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ana İçerik -->
+        <div class="row" id="mainContentSection" style="display: none">
+          <!-- Kostüm Formu -->
+          <div
+            class="col-12"
+            id="costumeFormContainer"
+            style="display: none"
           >
-            Çıkış Yap
-          </button>
+            <div class="card">
+              <div
+                class="card-header bg-success text-white d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0">
+                  <i class="fas fa-plus me-2"></i>Yeni Kostüm Ekle
+                </h5>
+                <button
+                  class="btn btn-sm btn-outline-light"
+                  id="hideFormButton"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="card-body">
+                <form id="costumeForm">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Kostüm Adı *</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="costumeName"
+                          required
+                          placeholder="Kostüm adı"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Beden *</label>
+                        <select class="form-select" id="costumeSize" required>
+                          <option value="">Seçiniz</option>
+                          <option>XS</option>
+                          <option>S</option>
+                          <option>M</option>
+                          <option>L</option>
+                          <option>XL</option>
+                          <option>XXL</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Dönem *</label>
+                        <div class="input-group">
+                          <select
+                            class="form-select"
+                            id="costumePeriod"
+                            required
+                          ></select>
+                          <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="addPeriodBtn"
+                          >
+                            <i class="fas fa-plus"></i> Yeni Dönem
+                          </button>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Adet</label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="costumeQuantity"
+                          min="1"
+                          value="1"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Künye Bilgileri</label>
+                        <textarea
+                          class="form-control"
+                          id="costumeNotes"
+                          rows="5"
+                          placeholder="Kumaş, aksesuar, notlar..."
+                        ></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Fotoğraf</label>
+                        <div class="input-group mb-2">
+                          <input
+                            type="file"
+                            class="form-control"
+                            id="costumePhotoFile"
+                            accept="image/*"
+                          />
+                          <button
+                            class="btn btn-outline-secondary"
+                            type="button"
+                            id="uploadCostumePhotoBtn"
+                          >
+                            <i class="fas fa-upload"></i> Yükle
+                          </button>
+                        </div>
+                        <input
+                          type="url"
+                          class="form-control"
+                          id="costumePhotoUrl"
+                          placeholder="Fotoğraf URL'si"
+                          readonly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success">
+                      <i class="fas fa-save me-2"></i>Kostüm Ekle
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      id="cancelFormButton"
+                    >
+                      <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                    </button>
+                  </div>
+                </form>
+                <!-- QR Çıktı Alanı -->
+                <div id="qrPrintArea" class="qr-label mt-4">
+                  <h6 class="mb-2">Karekod Etiketi</h6>
+                  <canvas
+                    id="qrCanvasPreview"
+                    style="border: 1px solid #e9ecef; border-radius: 6px"
+                  ></canvas>
+                  <div class="mt-2">
+                    <button class="btn btn-sm btn-primary" id="downloadQrBtn">
+                      <i class="fas fa-download me-1"></i>İndir
+                    </button>
+                    <button
+                      class="btn btn-sm btn-secondary"
+                      onclick="window.print()"
+                    >
+                      <i class="fas fa-print me-1"></i>Yazdır
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kostüm Listesi -->
+        <div class="row" id="costumesSection" style="display: none">
+          <div class="col-12" id="costumeListContainer">
+            <div class="card">
+              <div
+                class="card-header text-white d-flex justify-content-between align-items-center"
+                style="background: linear-gradient(135deg, #6f42c1, #5a34a3)"
+              >
+                <h5 class="mb-0">
+                  <i class="fas fa-masks-theater me-2"></i>Kostümler
+                </h5>
+                <div class="d-flex gap-2" id="addCostumeButtonContainer">
+                  <button
+                    type="button"
+                    class="btn text-white border-0"
+                    id="showAddCostumeForm"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      border-radius: 6px;
+                    "
+                  >
+                    <i class="fas fa-plus me-1"></i>Yeni Kostüm
+                  </button>
+                  <button
+                    type="button"
+                    class="btn text-white border-0"
+                    onclick="loadCostumes()"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      border-radius: 6px;
+                    "
+                  >
+                    <i class="fas fa-sync-alt me-1"></i>Yenile
+                  </button>
+                  <button
+                    type="button"
+                    class="btn text-white border-0"
+                    onclick="showMainMenu()"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      border-radius: 6px;
+                    "
+                  >
+                    <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="search-container mb-3">
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      ><i class="fas fa-search"></i></span
+                    ><input
+                      type="text"
+                      class="form-control search-input"
+                      id="searchCostumes"
+                      placeholder="Kostüm adı, dönem, beden veya not ile ara..."
+                    />
+                  </div>
+                </div>
+                <div id="costumeContainer">
+                  <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                    <p class="mt-2 text-muted">Kostümler yükleniyor...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kostüm Çıkış Kayıtları -->
+        <div class="row mt-4" id="loansSection" style="display: none">
+          <div class="col-12">
+            <div class="card">
+              <div
+                class="card-header bg-info text-white d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0">
+                  <i class="fas fa-list me-2"></i>Kostüm Çıkış Kayıtları
+                </h5>
+                <div class="d-flex gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-light"
+                    onclick="loadCostumeLoans()"
+                  >
+                    <i class="fas fa-sync-alt me-1"></i>Yenile
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-light"
+                    onclick="showMainMenu()"
+                  >
+                    <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="search-container mb-3">
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      ><i class="fas fa-search"></i></span
+                    ><input
+                      type="text"
+                      class="form-control search-input"
+                      id="searchLoans"
+                      placeholder="Kostüm, alan kişi, dönem veya not ile ara..."
+                    />
+                  </div>
+                </div>
+                <div id="costumeLoansContainer">
+                  <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                    <p class="mt-2 text-muted">Çıkış kayıtları yükleniyor...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+    <footer>
+      <p style="margin: 0">© 2024 EBB Kültür Sanat. Tüm hakları saklıdır.</p>
+    </footer>
+
     <script src="js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Firebase -->
+    <script type="module">
+      import {
+        initializeApp,
+        getApp,
+        getApps,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc,
+        updateDoc,
+        deleteDoc,
+        doc,
+        query,
+        orderBy,
+        where,
+        Timestamp,
+        setDoc,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+      import {
+        ensureAuth,
+        logActivity,
+      } from "./js/authGuard.js";
+      import {
+        updateMessagesLinkVisibility,
+        enforceLinkPermissions,
+      } from "./js/offcanvas.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      const authContext = await ensureAuth({
+        app,
+        auth,
+        db,
+        requiredAny: ["1", "1a", "9", "9a"],
+        writeCodes: ["1", "9"],
+        pageName: "Kostüm Yönetimi",
+      }).catch((error) => {
+        console.error("Yetkilendirme başarısız:", error);
+        return null;
+      });
+
+      if (!authContext) {
+        throw new Error("Authorisation failed");
+      }
+
+      const currentUserEmail = authContext.user.email;
+      const currentUserName =
+        authContext.profile?.userName ||
+        authContext.user.displayName ||
+        "";
+      const currentUserPermissions = authContext.permissions || [];
+      const canWrite = authContext.canWrite;
+      updateMessagesLinkVisibility(currentUserPermissions);
+      enforceLinkPermissions(currentUserPermissions);
+
+      if (!canWrite) {
+        document.body.dataset.readOnly = "true";
+      }
+
+      window.currentUserEmail = currentUserEmail;
+      window.currentUserName = currentUserName;
+      window.costumeCanWrite = canWrite;
+      window.costumeUserPermissions = currentUserPermissions;
+
+      let costumes = [];
+      let filteredCostumes = [];
+      let costumeLoans = [];
+      let filteredCostumeLoans = [];
+      let editingCostumeId = null;
+      let periods = [];
+
+      // Menu logic
+      // Menu toggle functionality (salooncontrol style)
+      function setupMenuToggle() {
+        const menuButton = document.getElementById("menuButton");
+        const adminPanel = document.getElementById("adminPanelSideMenu");
+        const mainContainer = document.getElementById("mainContainer");
+
+        if (!menuButton || !adminPanel || !mainContainer) {
+          return;
+        }
+
+        const menuIcon = menuButton.querySelector("i");
+
+        function toggleMenu() {
+          adminPanel.classList.toggle("show");
+          mainContainer.classList.toggle("shifted");
+          
+          // İkon değişimi
+          if (menuIcon) {
+            if (menuIcon.classList.contains("fa-bars")) {
+              menuIcon.classList.remove("fa-bars");
+              menuIcon.classList.add("fa-times");
+            } else {
+              menuIcon.classList.remove("fa-times");
+              menuIcon.classList.add("fa-bars");
+            }
+          }
+        }
+
+        menuButton.addEventListener("click", function (e) {
+          e.stopPropagation();
+          toggleMenu();
+        });
+
+        // Initialize: menu açık başla (salooncontrol gibi)
+        adminPanel.classList.add("show");
+        mainContainer.classList.add("shifted");
+        if (menuIcon) {
+          menuIcon.classList.remove("fa-bars");
+          menuIcon.classList.add("fa-times");
+        }
+      }
+
+      // Navigation functions - must be defined before initializeCostumePage
+      window.showMainMenu = function () {
+        document.getElementById("mainMenuButtons").style.display = "block";
+        document.getElementById("mainContentSection").style.display = "none";
+        document.getElementById("costumesSection").style.display = "none";
+        document.getElementById("loansSection").style.display = "none";
+      };
+      window.showCostumesSection = function () {
+        document.getElementById("mainMenuButtons").style.display = "none";
+        document.getElementById("mainContentSection").style.display = "block";
+        document.getElementById("costumesSection").style.display = "block";
+        document.getElementById("loansSection").style.display = "none";
+        document.getElementById("costumeFormContainer").style.display = "none";
+      };
+      window.showLoansSection = function () {
+        document.getElementById("mainMenuButtons").style.display = "none";
+        document.getElementById("mainContentSection").style.display = "block";
+        document.getElementById("costumesSection").style.display = "none";
+        document.getElementById("loansSection").style.display = "block";
+      };
+      window.showCostumeForm = function () {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        document.getElementById("addCostumeButtonContainer").style.display =
+          "none";
+        document.getElementById("costumeListContainer").style.display = "none";
+        const form = document.getElementById("costumeFormContainer");
+        form.style.display = "block";
+        form.scrollIntoView({ behavior: "smooth" });
+        editingCostumeId = null;
+        document.getElementById("qrPrintArea").style.display = "none";
+        document.getElementById("costumeForm").reset();
+        document.getElementById("costumeQuantity").value = "1";
+      };
+      window.hideCostumeForm = function () {
+        document.getElementById("addCostumeButtonContainer").style.display =
+          "flex";
+        document.getElementById("costumeListContainer").style.display = "block";
+        document.getElementById("costumeFormContainer").style.display = "none";
+      };
+
+      function initializeCostumePage() {
+        setupMenuToggle();
+
+        // Sections
+        const showCostumesButton = document.getElementById(
+          "showCostumesSection"
+        );
+        if (showCostumesButton) {
+          showCostumesButton.addEventListener("click", () =>
+            showCostumesSection()
+          );
+        }
+        const showLoansButton = document.getElementById("showLoansSection");
+        if (showLoansButton) {
+          showLoansButton.addEventListener("click", () => showLoansSection());
+        }
+
+        // Form events
+        const showAddCostumeFormBtn = document.getElementById(
+          "showAddCostumeForm"
+        );
+        if (showAddCostumeFormBtn) {
+          showAddCostumeFormBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (!canWrite) {
+              alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+              return;
+            }
+            showCostumeForm();
+          });
+        }
+        const hideFormButton = document.getElementById("hideFormButton");
+        if (hideFormButton) {
+          hideFormButton.addEventListener("click", hideCostumeForm);
+        }
+        const cancelFormButton = document.getElementById("cancelFormButton");
+        if (cancelFormButton) {
+          cancelFormButton.addEventListener("click", hideCostumeForm);
+        }
+        const uploadPhotoButton = document.getElementById("uploadCostumePhotoBtn");
+        if (uploadPhotoButton) {
+          uploadPhotoButton.addEventListener("click", uploadCostumePhoto);
+        }
+        const addPeriodButton = document.getElementById("addPeriodBtn");
+        if (addPeriodButton) {
+          addPeriodButton.addEventListener("click", addNewPeriod);
+        }
+        const searchCostumesInput = document.getElementById("searchCostumes");
+        if (searchCostumesInput) {
+          searchCostumesInput.addEventListener("input", (e) =>
+            filterCostumes(e.target.value.toLowerCase().trim())
+          );
+        }
+        const searchLoansInput = document.getElementById("searchLoans");
+        if (searchLoansInput) {
+          searchLoansInput.addEventListener("input", (e) =>
+            filterCostumeLoans(e.target.value.toLowerCase().trim())
+          );
+        }
+
+        // Init data
+        loadPeriods();
+        loadCostumes();
+        loadCostumeLoans();
+
+        if (!canWrite) {
+          const addButtonContainer = document.getElementById(
+            "addCostumeButtonContainer"
+          );
+          if (addButtonContainer) {
+            addButtonContainer.style.display = "none";
+          }
+          if (showAddCostumeFormBtn) {
+            showAddCostumeFormBtn.disabled = true;
+            showAddCostumeFormBtn.classList.add("disabled");
+          }
+          const formContainer = document.getElementById("costumeFormContainer");
+          if (formContainer) {
+            formContainer.classList.add("d-none");
+          }
+        }
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeCostumePage);
+      } else {
+        initializeCostumePage();
+      }
+
+      async function uploadImage(file, folder) {
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
+        const storageRef = ref(storage, `${folder}/${fileName}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        return await getDownloadURL(snapshot.ref);
+      }
+      async function uploadCostumePhoto() {
+        const fileInput = document.getElementById("costumePhotoFile");
+        const urlInput = document.getElementById("costumePhotoUrl");
+        const btn = document.getElementById("uploadCostumePhotoBtn");
+        if (!fileInput.files[0]) {
+          alert("Lütfen bir fotoğraf seçin!");
+          return;
+        }
+        try {
+          btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
+          btn.disabled = true;
+          const url = await uploadImage(fileInput.files[0], "costume-photos");
+          urlInput.value = url;
+          btn.innerHTML = '<i class="fas fa-check text-success"></i> Yüklendi';
+          setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-upload"></i> Yükle';
+            btn.disabled = false;
+          }, 1500);
+        } catch (e) {
+          console.error(e);
+          alert("Fotoğraf yüklenemedi");
+          btn.innerHTML = '<i class="fas fa-upload"></i> Yükle';
+          btn.disabled = false;
+        }
+      }
+
+      async function loadPeriods() {
+        try {
+          const qSnap = await getDocs(
+            query(collection(db, "costumePeriods"), orderBy("name", "asc"))
+          );
+          periods = qSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          renderPeriodsToSelect();
+          document.getElementById("totalPeriods").textContent = periods.length;
+        } catch (e) {
+          console.error("Dönemler yüklenemedi", e);
+        }
+      }
+      function renderPeriodsToSelect() {
+        const sel = document.getElementById("costumePeriod");
+        sel.innerHTML =
+          '<option value="">Dönem Seçin</option>' +
+          periods
+            .map((p) => `<option value="${p.name}">${p.name}</option>`)
+            .join("");
+      }
+      async function addNewPeriod() {
+        const name = prompt(
+          "Yeni dönem adı: (ör. Osmanlı, Selçuklu, Cumhuriyet)"
+        );
+        if (!name) return;
+        const exists = periods.some(
+          (p) => p.name.toLowerCase() === name.toLowerCase()
+        );
+        if (exists) {
+          alert("Bu dönem zaten var.");
+          return;
+        }
+        try {
+          await addDoc(collection(db, "costumePeriods"), { name });
+          await loadPeriods();
+          document.getElementById("costumePeriod").value = name;
+        } catch (e) {
+          console.error(e);
+          alert("Dönem eklenemedi");
+        }
+      }
+
+      async function loadCostumes() {
+        try {
+          const qSnap = await getDocs(
+            query(collection(db, "costumes"), orderBy("name", "asc"))
+          );
+          costumes = qSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          filteredCostumes = [...costumes];
+          renderCostumes();
+          updateStats();
+        } catch (e) {
+          console.error("Kostümler yüklenemedi", e);
+          document.getElementById(
+            "costumeContainer"
+          ).innerHTML = `<div class="text-center py-4"><i class="fas fa-exclamation-triangle fa-2x text-danger"></i><p class="mt-2 text-danger">Kostümler yüklenirken hata oluştu!</p></div>`;
+        }
+      }
+      function filterCostumes(term) {
+        if (!term) filteredCostumes = [...costumes];
+        else
+          filteredCostumes = costumes.filter(
+            (c) =>
+              (c.name || "").toLowerCase().includes(term) ||
+              (c.period || "").toLowerCase().includes(term) ||
+              (c.size || "").toLowerCase().includes(term) ||
+              (c.notes || "").toLowerCase().includes(term)
+          );
+        renderCostumes();
+      }
+      function renderCostumes() {
+        const container = document.getElementById("costumeContainer");
+        if (filteredCostumes.length === 0) {
+          container.innerHTML = `<div class="text-center py-4"><i class="fas fa-masks-theater fa-2x text-muted"></i><p class="mt-2 text-muted">Henüz kostüm bulunmuyor.</p></div>`;
+          return;
+        }
+        container.innerHTML = `<div class="row">${filteredCostumes
+          .map(
+            (c) => `
+          <div class="col-lg-6 col-xl-4 mb-3">
+            <div class="card h-100 costume-card">
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start mb-3">
+                  ${
+                    c.photoUrl
+                      ? `<img src="${c.photoUrl}" class="costume-photo me-3" alt="${c.name}">`
+                      : `<div class="costume-photo me-3 d-flex align-items-center justify-content-center" style="background:#f8f9fa;"><i class='fas fa-masks-theater text-muted'></i></div>`
+                  }
+                  <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">${
+                      c.name || "İsimsiz Kostüm"
+                    }</h5>
+                    <small class="text-muted">Beden: ${
+                      c.size || "-"
+                    } • Dönem: ${c.period || "-"}</small>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  ${
+                    c.quantity
+                      ? `<span class="badge bg-secondary me-1">Adet: ${c.quantity}</span>`
+                      : ""
+                  }
+                  ${
+                    c.qrCode
+                      ? `<span class="badge bg-info">QR: ${c.qrCode.substring(
+                          0,
+                          6
+                        )}...</span>`
+                      : ""
+                  }
+                </div>
+                ${
+                  c.notes
+                    ? `<p class="text-muted small mb-3">${c.notes}</p>`
+                    : ""
+                }
+                ${
+                  canWrite
+                    ? `<div class="mt-auto pt-2 border-top d-flex gap-2">
+                        <button class="btn btn-info btn-sm me-2" onclick="showCostumeLoanModal('${c.id}')"><i class="fas fa-sign-out-alt me-1"></i>Çıkış</button>
+                        <button class="btn btn-warning btn-sm me-2" onclick="editCostume('${c.id}')"><i class="fas fa-edit me-1"></i>Düzenle</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCostume('${c.id}')"><i class="fas fa-trash me-1"></i>Sil</button>
+                      </div>`
+                    : `<div class="mt-auto pt-2 border-top text-muted small">
+                        <i class="fas fa-lock me-1"></i>Bu kostüm üzerinde değişiklik yetkiniz yok.
+                      </div>`
+                }
+              </div>
+            </div>
+          </div>`
+          )
+          .join("")}</div>`;
+      }
+
+      function updateStats() {
+        const total = costumes.length;
+        const available = costumes.reduce(
+          (s, c) => s + (parseInt(c.quantity) || 0),
+          0
+        );
+        document.getElementById("totalCostumes").textContent = total;
+        document.getElementById("totalAvailable").textContent = available;
+      }
+
+      document
+        .getElementById("costumeForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!canWrite) {
+            alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            return;
+          }
+          const now = Timestamp.now();
+          const payload = {
+            name: document.getElementById("costumeName").value.trim(),
+            size: document.getElementById("costumeSize").value,
+            period: document.getElementById("costumePeriod").value,
+            quantity:
+              parseInt(document.getElementById("costumeQuantity").value) || 1,
+            notes: document.getElementById("costumeNotes").value.trim() || null,
+            photoUrl:
+              document.getElementById("costumePhotoUrl").value.trim() || null,
+          };
+          if (!payload.name || !payload.size || !payload.period) {
+            alert("Lütfen zorunlu alanları doldurun!");
+            return;
+          }
+          try {
+            if (editingCostumeId) {
+              const refDoc = doc(db, "costumes", editingCostumeId);
+              await updateDoc(refDoc, {
+                ...payload,
+                updatedAt: now,
+              });
+              await logActivity(db, {
+                userEmail: currentUserEmail,
+                userName: currentUserName,
+                action: "costume_update",
+                page: "costume",
+                targetId: editingCostumeId,
+                targetType: "costume",
+                meta: {
+                  name: payload.name,
+                  period: payload.period,
+                },
+              });
+              alert("Kostüm güncellendi!");
+            } else {
+              const docRef = await addDoc(collection(db, "costumes"), {
+                ...payload,
+                createdAt: now,
+                updatedAt: now,
+              });
+              const qrCode = docRef.id; // benzersiz
+              await updateDoc(doc(db, "costumes", docRef.id), { qrCode });
+              // QR görseli oluştur ve göster
+              await QRCode.toCanvas(
+                document.getElementById("qrCanvasPreview"),
+                qrCode,
+                { width: 220 }
+              );
+              document.getElementById("qrPrintArea").style.display = "block";
+              document.getElementById("downloadQrBtn").onclick = async () => {
+                const canvas = document.getElementById("qrCanvasPreview");
+                const url = canvas.toDataURL("image/png");
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `kostum_${qrCode}.png`;
+                a.click();
+              };
+              alert(
+                "Kostüm eklendi! Karekod oluşturuldu. İndirebilir veya yazdırabilirsiniz."
+              );
+              await logActivity(db, {
+                userEmail: currentUserEmail,
+                userName: currentUserName,
+                action: "costume_create",
+                page: "costume",
+                targetId: docRef.id,
+                targetType: "costume",
+                meta: {
+                  name: payload.name,
+                  period: payload.period,
+                },
+              });
+            }
+            hideCostumeForm();
+            loadCostumes();
+          } catch (e) {
+            console.error(e);
+            alert("Kayıt sırasında hata oluştu!");
+          }
+        });
+
+      // Loans
+      async function loadCostumeLoans() {
+        try {
+          const qSnap = await getDocs(
+            query(collection(db, "costumeLoans"), orderBy("createdAt", "desc"))
+          );
+          costumeLoans = qSnap.docs.map((d) => ({
+            id: d.id,
+            ...d.data(),
+            loanDate: d.data().loanDate?.toDate() || null,
+            returnDate: d.data().returnDate?.toDate() || null,
+            returnedDate: d.data().returnedDate?.toDate() || null,
+          }));
+          filteredCostumeLoans = [...costumeLoans];
+          renderCostumeLoans();
+          document.getElementById("totalLoans").textContent =
+            costumeLoans.filter((l) => !l.returned).length;
+        } catch (e) {
+          console.error("Çıkış kayıtları yüklenemedi", e);
+          document.getElementById(
+            "costumeLoansContainer"
+          ).innerHTML = `<div class="text-center py-4"><i class='fas fa-exclamation-triangle fa-2x text-danger'></i><p class='mt-2 text-danger'>Çıkış kayıtları yüklenirken hata oluştu!</p></div>`;
+        }
+      }
+      function filterCostumeLoans(term) {
+        if (!term) filteredCostumeLoans = [...costumeLoans];
+        else
+          filteredCostumeLoans = costumeLoans.filter(
+            (l) =>
+              (l.costumeName || "").toLowerCase().includes(term) ||
+              (l.borrower || "").toLowerCase().includes(term) ||
+              (l.period || "").toLowerCase().includes(term) ||
+              (l.notes || "").toLowerCase().includes(term)
+          );
+        renderCostumeLoans();
+      }
+      function renderCostumeLoans() {
+        const c = document.getElementById("costumeLoansContainer");
+        if (filteredCostumeLoans.length === 0) {
+          c.innerHTML = `<div class='text-center py-4'><i class='fas fa-list fa-2x text-muted'></i><p class='mt-2 text-muted'>${
+            costumeLoans.length === 0
+              ? "Henüz çıkış kaydı bulunmuyor."
+              : "Arama sonucu bulunamadı."
+          }</p></div>`;
+          return;
+        }
+        const fmt = (d) => (d ? new Date(d).toLocaleDateString("tr-TR") : "-");
+        c.innerHTML = `<div class='table-responsive'><table class='table table-hover'><thead><tr><th>Kostüm</th><th>Beden</th><th>Dönem</th><th>Teslim Alan</th><th>Adet</th><th>Çıkış</th><th>Geri Getirme</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>
+          ${filteredCostumeLoans
+            .map(
+              (l) => `
+            <tr class='${
+              l.returned
+                ? "table-success"
+                : l.willReturn === false
+                ? "table-secondary"
+                : "table-warning"
+            }'><td>${l.costumeName || "-"}</td><td>${l.size || "-"}</td><td>${
+                l.period || "-"
+              }</td><td>${l.borrower || "-"}</td><td>${
+                l.quantity || 1
+              }</td><td>${fmt(l.loanDate)}</td><td>${
+                l.willReturn === false
+                  ? '<span class="badge bg-secondary">Geri Gelmeyecek</span>'
+                  : l.returnDate
+                  ? fmt(l.returnDate)
+                  : "-"
+              }</td><td>${
+                l.returned
+                  ? '<span class="badge bg-success">İade Edildi</span>'
+                  : l.willReturn === false
+                  ? '<span class="badge bg-dark">Verdi</span>'
+                  : '<span class="badge bg-warning text-dark">Ödünçte</span>'
+              }</td><td>${
+                l.returned
+                  ? `<span class='text-muted small'>${
+                      l.returnedDate ? fmt(l.returnedDate) : ""
+                    }</span>`
+                  : l.willReturn === false
+                  ? `<button class='btn btn-sm btn-warning' onclick="returnCostume('${l.id}','${l.costumeId}',${l.quantity})"><i class='fas fa-undo me-1'></i>İade Et</button>`
+                  : `<button class='btn btn-sm btn-success' onclick="returnCostume('${l.id}','${l.costumeId}',${l.quantity})"><i class='fas fa-check me-1'></i>Teslim Al</button>`
+              } </td></tr>
+            ${
+              l.notes
+                ? `<tr class='${
+                    l.returned
+                      ? "table-success"
+                      : l.willReturn === false
+                      ? "table-secondary"
+                      : "table-warning"
+                  }'><td colspan='9' class='text-muted small'><i class='fas fa-sticky-note me-1'></i><strong>Not:</strong> ${
+                    l.notes
+                  }</td></tr>`
+                : ""
+            }
+          `
+            )
+            .join("")}</tbody></table></div>`;
+      }
+
+      // Add/Edit/Delete Costume
+      window.deleteCostume = async function (id) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        if (!confirm("Bu kostümü silmek istiyor musunuz?")) return;
+        try {
+          const costume = costumes.find((c) => c.id === id);
+          await deleteDoc(doc(db, "costumes", id));
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "costume_delete",
+            page: "costume",
+            targetId: id,
+            targetType: "costume",
+            meta: {
+              name: costume?.name || "",
+              period: costume?.period || "",
+            },
+          });
+          alert("Kostüm silindi!");
+          loadCostumes();
+        } catch (e) {
+          console.error(e);
+          alert("Silme hatası");
+        }
+      };
+      window.editCostume = function (id) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        const c = costumes.find((x) => x.id === id);
+        if (!c) return;
+        showCostumeForm();
+        editingCostumeId = id;
+        document.getElementById("costumeName").value = c.name || "";
+        document.getElementById("costumeSize").value = c.size || "";
+        document.getElementById("costumePeriod").value = c.period || "";
+        document.getElementById("costumeQuantity").value = c.quantity || 1;
+        document.getElementById("costumeNotes").value = c.notes || "";
+        document.getElementById("costumePhotoUrl").value = c.photoUrl || "";
+      };
+
+      // Loan modal simplified – reuse prompt
+      window.showCostumeLoanModal = async function (id) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        const c = costumes.find((x) => x.id === id);
+        if (!c) return;
+        const borrower = prompt("Teslim Alan (Kişi/Kurum):");
+        if (!borrower) return;
+        const quantity = parseInt(prompt("Teslim Edilen Adet:", "1")) || 1;
+        const willReturn = confirm(
+          "Bu kostüm geri gelecek mi? Tamam: Evet, İptal: Hayır"
+        );
+        let returnDate = null;
+        if (willReturn) {
+          const d = prompt("Geri Getirme Tarihi (YYYY-AA-GG):");
+          if (d) returnDate = new Date(d);
+        }
+        try {
+          const loanRef = await addDoc(collection(db, "costumeLoans"), {
+            costumeId: id,
+            costumeName: c.name,
+            size: c.size,
+            period: c.period,
+            borrower,
+            quantity,
+            willReturn,
+            loanDate: Timestamp.now(),
+            returnDate: returnDate ? Timestamp.fromDate(returnDate) : null,
+            returned: false,
+            returnedDate: null,
+            notes: null,
+            createdAt: Timestamp.now(),
+          });
+          // Stok düşme (sadece geri gelmeyecekse düşme yerine geri gelmeyecek mantığı kitapta vardı; burada da aynı)
+          if (!willReturn) {
+            const refDoc = doc(db, "costumes", id);
+            await updateDoc(refDoc, {
+              quantity: (parseInt(c.quantity) || 0) - quantity,
+              updatedAt: Timestamp.now(),
+            });
+          }
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "costume_loan_create",
+            page: "costume",
+            targetId: loanRef.id,
+            targetType: "costumeLoan",
+            meta: {
+              costumeName: c.name,
+              borrower,
+              quantity,
+              willReturn,
+            },
+          });
+          alert("Çıkış kaydedildi!");
+          loadCostumes();
+          loadCostumeLoans();
+        } catch (e) {
+          console.error(e);
+          alert("Çıkış kaydı hatası");
+        }
+      };
+
+      window.returnCostume = async function (loanId, costumeId, quantity) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        const l = costumeLoans.find((x) => x.id === loanId);
+        const isWillReturn =
+          l &&
+          (l.willReturn === true ||
+            (l.willReturn === undefined && l.returnDate));
+        const msg = isWillReturn
+          ? "Bu kostümü teslim almak istiyor musunuz?"
+          : "Bu kostümü iade etmek istiyor musunuz?";
+        if (!confirm(msg)) return;
+        try {
+          await updateDoc(doc(db, "costumeLoans", loanId), {
+            returned: true,
+            returnedDate: Timestamp.now(),
+          });
+          const costume = costumes.find((c) => c.id === costumeId);
+          if (costume) {
+            await updateDoc(doc(db, "costumes", costumeId), {
+              quantity: (parseInt(costume.quantity) || 0) + quantity,
+              updatedAt: Timestamp.now(),
+            });
+          }
+          alert(isWillReturn ? "Kostüm teslim alındı!" : "Kostüm iade edildi!");
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "costume_loan_return",
+            page: "costume",
+            targetId: loanId,
+            targetType: "costumeLoan",
+            meta: {
+              costumeName: l?.costumeName || "",
+              borrower: l?.borrower || "",
+              quantity,
+              isWillReturn,
+            },
+          });
+          loadCostumes();
+          loadCostumeLoans();
+        } catch (e) {
+          console.error(e);
+          alert("İade/teslim alma hatası");
+        }
+      };
+    </script>
   </body>
 </html>

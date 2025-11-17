@@ -68,6 +68,47 @@
         width: calc(100% - 400px);
       }
 
+      #menuButton {
+        display: inline-block;
+      }
+
+      @media (max-width: 992px) {
+        /* Tablet and Mobile: Hide offcanvas by default */
+        .offcanvas {
+          transform: translateX(-100%);
+        }
+
+        .offcanvas.show {
+          transform: translateX(0);
+        }
+
+        #mainContainer.shifted {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        /* Show menu button on mobile and tablet */
+        #menuButton {
+          display: inline-block;
+        }
+
+        /* Mobile overlay */
+        .menu-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+
+        .menu-overlay.active {
+          display: block;
+        }
+      }
+
       .main-content {
         flex: 1;
         display: flex;
@@ -264,7 +305,7 @@
   <body>
     <div class="main-content">
       <div
-        class="offcanvas offcanvas-start show"
+        class="offcanvas offcanvas-start"
         data-bs-backdrop="false"
         id="adminPanelSideMenu"
       >
@@ -291,48 +332,50 @@
             <a
               href="activity.html"
               class="list-group-item list-group-item-action active"
+              data-required-permissions="1,1a,2,2a"
               >Etkinlikler
             </a>
-            <a href="staff.html" class="list-group-item list-group-item-action"
+            <a
+              href="staff.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,10,10a"
               >Ekip</a
             >
             <a
               href="salooncontrol.html"
               class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,3,3a"
               >Salon Takip</a
             >
+
             <a
-              href="announcement.html"
+              href="news.html"
               class="list-group-item list-group-item-action"
-              >Duyurular</a
-            >
-            <a href="news.html" class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,5,5a"
               >Haberler</a
-            >
-            <a
-              href="photoGalery.html"
-              class="list-group-item list-group-item-action"
-              >Foto Galeri</a
-            >
-            <a href="blog.html" class="list-group-item list-group-item-action"
-              >Blog</a
-            >
-            <a
-              href="library.html"
-              class="list-group-item list-group-item-action"
-              >Kütüphane</a
             >
             <a
               href="costume.html"
               class="list-group-item list-group-item-action"
-              >Kostüm</a
+              data-required-permissions="1,1a,9,9a"
+              >Kostümler</a
+            >
+            <a
+              href="library.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,8,8a"
+              >Kütüphane</a
+            >
+            <a
+              href="messages.html"
+              class="list-group-item list-group-item-action messages-link"
+              style="display: none"
+              data-required-permissions="1,1a,2,2a"
+              >Mesajlar</a
             >
           </div>
 
           <div class="list-group">
-            <a href="users.html" class="list-group-item list-group-item-action">
-              Kullanıcılar
-            </a>
             <button
               class="list-group-item list-group-item-action bg-danger text-white"
               id="logoutButton"
@@ -343,7 +386,9 @@
         </div>
       </div>
 
-      <div class="container-fluid shifted" id="mainContainer">
+      <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+      <div class="container-fluid" id="mainContainer">
         <div
           class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
         >
@@ -405,9 +450,15 @@
                 <h5 class="mb-0">
                   <i class="fas fa-list me-2"></i>Etkinlikler
                 </h5>
-                <div>
-                  <button class="btn btn-success me-2" id="newEventBtn">
+                <div class="d-flex gap-2">
+                  <button class="btn btn-success" id="newEventBtn">
                     <i class="fas fa-plus me-1"></i>Yeni Etkinlik
+                  </button>
+                  <button class="btn btn-info" id="templatesBtn">
+                    <i class="fas fa-copy me-1"></i>Şablonlar
+                  </button>
+                  <button class="btn btn-warning" id="fromTemplateBtn">
+                    <i class="fas fa-magic me-1"></i>Şablondan Ekle
                   </button>
                   <button
                     class="btn btn-outline-light btn-sm"
@@ -431,7 +482,7 @@
 
         <!-- Etkinlik Formu (Başlangıçta Gizli) -->
         <div class="row mt-4" id="eventFormContainer" style="display: none">
-          <div class="col-lg-6">
+          <div class="col-12">
             <div class="card">
               <div
                 class="card-header bg-success text-white d-flex justify-content-between align-items-center"
@@ -485,13 +536,59 @@
                   </div>
 
                   <div class="mb-3">
-                    <label class="form-label">Konum</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="eventLocation"
-                      placeholder="Örn: Ana Salon"
-                    />
+                    <label class="form-label">Salon *</label>
+                    <select class="form-select" id="eventLocation" required>
+                      <option value="">Salon seçin...</option>
+                      <option
+                        value="İbrahim Erkal Dadaş KSM (Büyük Salon)"
+                        data-lat="39.9208"
+                        data-lng="41.2769"
+                      >
+                        İbrahim Erkal Dadaş KSM (Büyük Salon)
+                      </option>
+                      <option
+                        value="İbrahim Erkal Dadaş KSM (Küçük Salon)"
+                        data-lat="39.9210"
+                        data-lng="41.2771"
+                      >
+                        İbrahim Erkal Dadaş KSM (Küçük Salon)
+                      </option>
+                      <option
+                        value="İbrahim Erkal Dadaş KSM (Fuaye)"
+                        data-lat="39.9205"
+                        data-lng="41.2765"
+                      >
+                        İbrahim Erkal Dadaş KSM (Fuaye)
+                      </option>
+                      <option
+                        value="Necip Fazıl KSM (Büyük Salon)"
+                        data-lat="39.9212"
+                        data-lng="41.2773"
+                      >
+                        Necip Fazıl KSM (Büyük Salon)
+                      </option>
+                      <option
+                        value="Necip Fazıl KSM (Seminer Salonu 1)"
+                        data-lat="39.9207"
+                        data-lng="41.2767"
+                      >
+                        Necip Fazıl KSM (Seminer Salonu 1)
+                      </option>
+                      <option
+                        value="Necip Fazıl KSM (Seminer Salonu 2)"
+                        data-lat="39.9215"
+                        data-lng="41.2775"
+                      >
+                        Necip Fazıl KSM (Seminer Salonu 2)
+                      </option>
+                      <option
+                        value="Necip Fazıl KSM (Fuaye)"
+                        data-lat="39.9213"
+                        data-lng="41.2770"
+                      >
+                        Necip Fazıl KSM (Fuaye)
+                      </option>
+                    </select>
                   </div>
 
                   <div class="mb-3">
@@ -521,20 +618,43 @@
                             <label class="form-label">Görev</label>
                             <select class="form-select" id="staffRoleFilter">
                               <option value="">Tüm Görevler</option>
-                              <option value="Yönetmen">Yönetmen</option>
-                              <option value="Genel Sanat Yönetmeni">
-                                Genel Sanat Yönetmeni
-                              </option>
-                              <option value="Işık Tasarımcısı">
-                                Işık Tasarımcısı
-                              </option>
-                              <option value="Dekor Tasarımcısı">
-                                Dekor Tasarımcısı
-                              </option>
-                              <option value="Müzik Yönetmeni">
-                                Müzik Yönetmeni
-                              </option>
-                              <option value="Oyuncu">Oyuncu</option>
+                              <optgroup label="Yönetim">
+                                <option value="Daire Başkanı">
+                                  Daire Başkanı
+                                </option>
+                                <option value="Şube Müdürü">Şube Müdürü</option>
+                                <option value="Genel Sanat Yönetmeni">
+                                  Genel Sanat Yönetmeni
+                                </option>
+                              </optgroup>
+                              <optgroup label="Sanat ve Prodüksiyon">
+                                <option value="Yönetmen">Yönetmen</option>
+                                <option value="Işık Tasarımcısı">
+                                  Işık Tasarımcısı
+                                </option>
+                                <option value="Dekor Tasarımcısı">
+                                  Dekor Tasarımcısı
+                                </option>
+                                <option value="Grafik Tasarımcısı">
+                                  Grafik Tasarımcısı
+                                </option>
+                                <option value="Müzik Yönetmeni">
+                                  Müzik Yönetmeni
+                                </option>
+                                <option value="Senarist">Senarist</option>
+                                <option value="Fotoğrafçı">Fotoğrafçı</option>
+                                <option value="Oyuncu">Oyuncu</option>
+                              </optgroup>
+                              <optgroup label="İdari Personel">
+                                <option value="Memur">Memur</option>
+                                <option value="Teknik Görevli">
+                                  Teknik Görevli
+                                </option>
+                              </optgroup>
+                              <optgroup label="Destek Personeli">
+                                <option value="Çaycı">Çaycı</option>
+                                <option value="Temizlikçi">Temizlikçi</option>
+                              </optgroup>
                             </select>
                           </div>
                           <div class="col-md-6">
@@ -669,6 +789,20 @@
                     </label>
                   </div>
 
+                  <div class="mb-3">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="saveAsTemplate"
+                      />
+                      <label class="form-check-label" for="saveAsTemplate">
+                        <i class="fas fa-copy me-1"></i>Bu etkinliği şablon
+                        olarak da kaydet
+                      </label>
+                    </div>
+                  </div>
+
                   <button type="submit" class="btn btn-success w-100">
                     <i class="fas fa-save me-2"></i>Etkinlik Ekle
                   </button>
@@ -723,6 +857,332 @@
       </div>
     </div>
 
+    <!-- Şablon Seçimi Modal -->
+    <div
+      class="modal fade"
+      id="templateModal"
+      tabindex="-1"
+      aria-labelledby="templateModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title" id="templateModalLabel">
+              <i class="fas fa-copy me-2"></i>Etkinlik Şablonları
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="templatesContainer">
+              <div class="text-center py-4">
+                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                <p class="mt-2 text-muted">Şablonlar yükleniyor...</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i>Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Şablondan Etkinlik Oluşturma Modal -->
+    <div
+      class="modal fade"
+      id="fromTemplateModal"
+      tabindex="-1"
+      aria-labelledby="fromTemplateModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title" id="fromTemplateModalLabel">
+              <i class="fas fa-magic me-2"></i>Şablondan Etkinlik Oluştur
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Tarih *</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="templateEventDate"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Saat *</label>
+                <input
+                  type="time"
+                  class="form-control"
+                  id="templateEventTime"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Şablon Seç *</label>
+              <select class="form-select" id="templateSelect" required>
+                <option value="">Şablon seçin...</option>
+              </select>
+            </div>
+            <div
+              id="selectedTemplatePreview"
+              class="border rounded p-3 bg-light"
+              style="display: none"
+            >
+              <h6 class="text-muted mb-2">Seçilen Şablon:</h6>
+              <div id="templatePreviewContent"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i>İptal
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              id="createFromTemplateBtn"
+            >
+              <i class="fas fa-magic me-1"></i>Etkinlik Oluştur
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kadro Detay Modal -->
+    <div
+      class="modal fade"
+      id="eventStaffDetailsModal"
+      tabindex="-1"
+      aria-labelledby="eventStaffDetailsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="eventStaffDetailsModalLabel">
+              <i class="fas fa-user me-2"></i>Kadro Üyesi Detayları
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 text-center mb-3">
+                <div id="eventStaffDetailPhoto" class="mb-3"></div>
+                <h5 id="eventStaffDetailName" class="mb-1">-</h5>
+                <p id="eventStaffDetailRole" class="text-primary mb-1">-</p>
+                <p
+                  id="eventStaffDetailOriginalRole"
+                  class="text-muted small mb-0"
+                >
+                  Asıl Görev: -
+                </p>
+                <p id="eventStaffDetailCharacter" class="text-muted small mb-0">
+                  Karakter: -
+                </p>
+              </div>
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <label class="form-label fw-bold"
+                    ><i class="fas fa-info-circle me-2"></i>Özgeçmiş:</label
+                  >
+                  <p id="eventStaffDetailBio" class="mb-0 text-muted">-</p>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-bold"
+                    ><i class="fas fa-film me-2"></i>Geçmiş Projeler:</label
+                  >
+                  <div id="eventStaffDetailFilmography" class="text-muted">
+                    -
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kadro Ekleme Modal -->
+    <div
+      class="modal fade"
+      id="addStaffModal"
+      tabindex="-1"
+      aria-labelledby="addStaffModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="addStaffModalLabel">
+              <i class="fas fa-user-plus me-2"></i>Kadroya Ekle
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <img
+                  id="selectedStaffPhoto"
+                  src=""
+                  alt="Fotoğraf"
+                  class="img-fluid rounded"
+                  style="width: 80px; height: 80px; object-fit: cover"
+                />
+              </div>
+              <div class="col-md-8">
+                <h6 id="selectedStaffName" class="mb-1">-</h6>
+                <p id="selectedStaffOriginalRole" class="text-muted mb-0 small">
+                  Asıl Görev: -
+                </p>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Bu Etkinlikteki Görevi *</label>
+              <select class="form-select" id="staffEventRole" required>
+                <option value="">Görev seçin...</option>
+                <optgroup label="Yönetim">
+                  <option value="Yönetmen">Yönetmen</option>
+                  <option value="Genel Sanat Yönetmeni">
+                    Genel Sanat Yönetmeni
+                  </option>
+                  <option value="Yapımcı">Yapımcı</option>
+                </optgroup>
+                <optgroup label="Sanat ve Teknik">
+                  <option value="Işık Tasarımcısı">Işık Tasarımcısı</option>
+                  <option value="Dekor Tasarımcısı">Dekor Tasarımcısı</option>
+                  <option value="Kostüm Tasarımcısı">Kostüm Tasarımcısı</option>
+                  <option value="Müzik Yönetmeni">Müzik Yönetmeni</option>
+                  <option value="Ses Teknisyeni">Ses Teknisyeni</option>
+                  <option value="Grafik Tasarımcısı">Grafik Tasarımcısı</option>
+                  <option value="Senarist">Senarist</option>
+                  <option value="Fotoğrafçı">Fotoğrafçı</option>
+                </optgroup>
+                <optgroup label="Oyuncular">
+                  <option value="Başrol Oyuncusu">Başrol Oyuncusu</option>
+                  <option value="Oyuncu">Oyuncu</option>
+                  <option value="Figüran">Figüran</option>
+                </optgroup>
+                <optgroup label="Diğer">
+                  <option value="Asistan">Asistan</option>
+                  <option value="Koordinatör">Koordinatör</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Karakter/Rol Adı (Opsiyonel)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="staffCharacterName"
+                placeholder="Örn: Hamlet, Kral Lear, vb."
+              />
+              <small class="text-muted"
+                >Oyuncu ise hangi karakteri canlandıracağını yazın</small
+              >
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label"
+                >Bu Oyun İçin Özel Fotoğraf (Opsiyonel)</label
+              >
+              <div class="input-group mb-2">
+                <input
+                  type="file"
+                  class="form-control"
+                  id="staffEventPhotoFile"
+                  accept="image/*"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  id="uploadStaffEventPhoto"
+                >
+                  <i class="fas fa-upload"></i> Yükle
+                </button>
+              </div>
+              <input
+                type="url"
+                class="form-control"
+                id="staffEventPhotoUrl"
+                placeholder="Yüklenen fotoğraf URL'si"
+                readonly
+              />
+              <small class="text-muted"
+                >Bu fotoğraf sadece bu etkinlik için kullanılacak</small
+              >
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              data-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i>İptal
+            </button>
+            <button type="button" class="btn btn-success" id="confirmAddStaff">
+              <i class="fas fa-plus me-1"></i>Kadroya Ekle
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer>
       <p style="margin: 0">© 2024 EBB Kültür Sanat. Tüm hakları saklıdır.</p>
     </footer>
@@ -734,11 +1194,17 @@
     <!-- Firebase -->
     <script type="module">
       // Firebase imports
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        initializeApp,
+        getApp,
+        getApps,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
       import {
         getFirestore,
         collection,
         getDocs,
+        getDoc,
         addDoc,
         updateDoc,
         deleteDoc,
@@ -755,6 +1221,11 @@
         uploadBytes,
         getDownloadURL,
       } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+      import { ensureAuth, logActivity } from "./js/authGuard.js";
+      import {
+        updateMessagesLinkVisibility,
+        enforceLinkPermissions,
+      } from "./js/offcanvas.js";
 
       // Firebase configuration
       const firebaseConfig = {
@@ -768,9 +1239,43 @@
       };
 
       // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
+      const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+      const auth = getAuth(app);
       const db = getFirestore(app);
       const storage = getStorage(app);
+
+      const authContext = await ensureAuth({
+        app,
+        auth,
+        db,
+        requiredAny: ["1", "1a", "2", "2a"],
+        writeCodes: ["1", "2"],
+        pageName: "Etkinlik Yönetimi",
+      }).catch((error) => {
+        console.error("Yetkilendirme başarısız:", error);
+        return null;
+      });
+
+      if (!authContext) {
+        throw new Error("Authorisation failed");
+      }
+
+      const currentUserEmail = authContext.user.email;
+      const currentUserName =
+        authContext.profile?.userName || authContext.user.displayName || "";
+      const currentUserPermissions = authContext.permissions || [];
+      const canWrite = authContext.canWrite;
+      updateMessagesLinkVisibility(currentUserPermissions);
+      enforceLinkPermissions(currentUserPermissions);
+
+      if (!canWrite) {
+        document.body.dataset.readOnly = "true";
+      }
+
+      window.currentUserEmail = currentUserEmail;
+      window.currentUserName = currentUserName;
+      window.activityCanWrite = canWrite;
+      window.activityUserPermissions = currentUserPermissions;
 
       // Global variables
       let events = [];
@@ -778,37 +1283,103 @@
       let currentStaff = []; // Mevcut etkinlik için kadro listesi
       let allStaffMembers = []; // Tüm ekip üyeleri
 
-      // Menu toggle functionality
-      document.addEventListener("DOMContentLoaded", function () {
+      // Menu toggle functionality (salooncontrol style)
+      function setupMenuToggle() {
         const menuButton = document.getElementById("menuButton");
-        const menuIcon = menuButton.querySelector("i");
         const adminPanel = document.getElementById("adminPanelSideMenu");
         const mainContainer = document.getElementById("mainContainer");
 
-        function toggleMenu(icon) {
+        if (!menuButton || !adminPanel || !mainContainer) {
+          return;
+        }
+
+        const menuIcon = menuButton.querySelector("i");
+
+        function toggleMenu() {
           adminPanel.classList.toggle("show");
           mainContainer.classList.toggle("shifted");
 
           // İkon değişimi
-          if (icon.classList.contains("fa-bars")) {
-            icon.classList.remove("fa-bars");
-            icon.classList.add("fa-times");
-          } else {
-            icon.classList.remove("fa-times");
-            icon.classList.add("fa-bars");
+          if (menuIcon) {
+            if (menuIcon.classList.contains("fa-bars")) {
+              menuIcon.classList.remove("fa-bars");
+              menuIcon.classList.add("fa-times");
+            } else {
+              menuIcon.classList.remove("fa-times");
+              menuIcon.classList.add("fa-bars");
+            }
           }
         }
 
-        menuButton.addEventListener("click", function () {
-          toggleMenu(menuIcon);
+        menuButton.addEventListener("click", function (e) {
+          e.stopPropagation();
+          toggleMenu();
         });
+
+        // Initialize: menu açık başla (salooncontrol gibi)
+        adminPanel.classList.add("show");
+        mainContainer.classList.add("shifted");
+        if (menuIcon) {
+          menuIcon.classList.remove("fa-bars");
+          menuIcon.classList.add("fa-times");
+        }
+      }
+
+      function initializeActivityPage() {
+        setupMenuToggle();
+
+        const templatesBtn = document.getElementById("templatesBtn");
+        if (templatesBtn) {
+          templatesBtn.addEventListener("click", showTemplatesModal);
+        }
+
+        const fromTemplateBtn = document.getElementById("fromTemplateBtn");
+        if (fromTemplateBtn) {
+          fromTemplateBtn.addEventListener("click", showFromTemplateModal);
+        }
+
+        const createFromTemplateBtn = document.getElementById(
+          "createFromTemplateBtn"
+        );
+        if (createFromTemplateBtn) {
+          createFromTemplateBtn.addEventListener(
+            "click",
+            createEventFromTemplate
+          );
+        }
+
+        const templateSelect = document.getElementById("templateSelect");
+        if (templateSelect) {
+          templateSelect.addEventListener("change", previewSelectedTemplate);
+        }
+
+        if (!canWrite) {
+          if (fromTemplateBtn) {
+            fromTemplateBtn.classList.add("disabled");
+            fromTemplateBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            });
+          }
+          if (createFromTemplateBtn) {
+            createFromTemplateBtn.classList.add("disabled");
+          }
+        }
 
         // Initialize
         loadEvents();
         setupEventForm();
         setupTheaterFeatures();
         setupFormToggle();
-      });
+        setupUploadButtons();
+        setupModalCloseButtons();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeActivityPage);
+      } else {
+        initializeActivityPage();
+      }
 
       // Load events from Firebase
       async function loadEvents() {
@@ -820,10 +1391,24 @@
           events = [];
           querySnapshot.forEach((doc) => {
             const data = doc.data();
+            let eventDate = new Date();
+            if (data.date) {
+              if (typeof data.date.toDate === "function") {
+                eventDate = data.date.toDate();
+              } else if (
+                typeof data.date === "string" ||
+                typeof data.date === "number"
+              ) {
+                const parsedDate = new Date(data.date);
+                if (!isNaN(parsedDate.getTime())) {
+                  eventDate = parsedDate;
+                }
+              }
+            }
             events.push({
               id: doc.id,
               ...data,
-              date: data.date ? data.date.toDate() : new Date(),
+              date: eventDate,
             });
           });
 
@@ -866,7 +1451,7 @@
                   : ""
               }
             </div>
-            
+
             <div class="row mb-2">
               <div class="col-sm-6">
                 <small class="text-muted">
@@ -893,13 +1478,13 @@
                 </small>
               </div>
             </div>
-            
+
             ${
               event.description
                 ? `<p class="text-muted small mb-3">${event.description}</p>`
                 : ""
             }
-            
+
             ${
               event.category === "Tiyatro"
                 ? `
@@ -911,30 +1496,40 @@
             `
                 : ""
             }
-            
-            <div class="d-flex gap-2 flex-wrap mt-3 pt-2 border-top" style="opacity: 1 !important; visibility: visible !important; display: flex !important;">
-              <button class="btn btn-warning" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;" onclick="editEvent('${
-                event.id
-              }')">
-                <i class="fas fa-edit me-1"></i>Düzenle
-              </button>
-              <button class="btn btn-${
-                event.showInSlider ? "secondary" : "success"
-              }" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;"
-                      onclick="toggleSlider('${
-                        event.id
-                      }', ${!event.showInSlider})">
-                <i class="fas fa-${
-                  event.showInSlider ? "eye-slash" : "eye"
-                } me-1"></i>
-                ${event.showInSlider ? "Slider'dan Kaldır" : "Slider'a Ekle"}
-              </button>
-              <button class="btn btn-danger" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;" onclick="deleteEvent('${
-                event.id
-              }')">
-                <i class="fas fa-trash me-1"></i>Sil
-              </button>
-            </div>
+
+            ${
+              canWrite
+                ? `<div class="d-flex gap-2 flex-wrap mt-3 pt-2 border-top" style="opacity: 1 !important; visibility: visible !important; display: flex !important;">
+                    <button class="btn btn-warning" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;" onclick="editEvent('${
+                      event.id
+                    }')">
+                      <i class="fas fa-edit me-1"></i>Düzenle
+                    </button>
+                    <button class="btn btn-${
+                      event.showInSlider ? "secondary" : "success"
+                    }" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;"
+                            onclick="toggleSlider('${
+                              event.id
+                            }', ${!event.showInSlider})">
+                      <i class="fas fa-${
+                        event.showInSlider ? "eye-slash" : "eye"
+                      } me-1"></i>
+                      ${
+                        event.showInSlider
+                          ? "Slider'dan Kaldır"
+                          : "Slider'a Ekle"
+                      }
+                    </button>
+                    <button class="btn btn-danger" style="opacity: 1 !important; visibility: visible !important; display: inline-block !important;" onclick="deleteEvent('${
+                      event.id
+                    }')">
+                      <i class="fas fa-trash me-1"></i>Sil
+                    </button>
+                  </div>`
+                : `<div class="mt-3 pt-2 border-top text-muted small">
+                    <i class="fas fa-lock me-1"></i>Bu etkinlik üzerinde değişiklik yapma yetkiniz yok.
+                  </div>`
+            }
           </div>
         `
           )
@@ -972,6 +1567,151 @@
         return downloadURL;
       }
 
+      // Setup upload buttons
+      function setupUploadButtons() {
+        // Upload event image
+        const uploadImageBtn = document.getElementById("uploadImageBtn");
+        if (uploadImageBtn) {
+          uploadImageBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventImageFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              const downloadURL = await uploadImage(file, "events");
+              document.getElementById("eventImage").value = downloadURL;
+              alert("Görsel başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading image:", error);
+              alert("Görsel yüklenirken hata oluştu!");
+            }
+          });
+        }
+
+        // Upload poster image
+        const uploadPosterBtn = document.getElementById("uploadPosterBtn");
+        if (uploadPosterBtn) {
+          uploadPosterBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventPosterImageFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              const downloadURL = await uploadImage(file, "posters");
+              document.getElementById("eventPosterImage").value = downloadURL;
+              alert("Poster başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading poster:", error);
+              alert("Poster yüklenirken hata oluştu!");
+            }
+          });
+        }
+
+        // Upload staff event photo
+        const uploadStaffEventPhotoBtn = document.getElementById(
+          "uploadStaffEventPhoto"
+        );
+        if (uploadStaffEventPhotoBtn) {
+          uploadStaffEventPhotoBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("staffEventPhotoFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              const downloadURL = await uploadImage(file, "staff-event-photos");
+              document.getElementById("staffEventPhotoUrl").value = downloadURL;
+              alert("Fotoğraf başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading staff event photo:", error);
+              alert("Fotoğraf yüklenirken hata oluştu!");
+            }
+          });
+        }
+      }
+
+      // Setup modal close buttons
+      function setupModalCloseButtons() {
+        // Helper: Hide modal compat (BS5/BS4)
+        function hideModalById(modalId) {
+          const el = document.getElementById(modalId);
+          if (!el) return;
+          try {
+            if (window.bootstrap && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getInstance
+                ? bootstrap.Modal.getInstance(el)
+                : null;
+              if (inst) {
+                inst.hide();
+                return;
+              }
+              // Fallback: create instance then hide
+              const created = new bootstrap.Modal(el);
+              created.hide();
+              return;
+            }
+          } catch (e) {}
+          // Bootstrap 4 fallback via jQuery
+          if (window.$ && window.$.fn && window.$.fn.modal) {
+            window.$(el).modal("hide");
+            return;
+          }
+          // Last resort
+          el.classList.remove("show");
+          el.style.display = "none";
+        }
+        // Template modal close buttons
+        document
+          .querySelectorAll('#templateModal [data-bs-dismiss="modal"]')
+          .forEach((button) => {
+            button.addEventListener("click", function () {
+              hideModalById("templateModal");
+            });
+          });
+
+        // From template modal close buttons
+        document
+          .querySelectorAll('#fromTemplateModal [data-bs-dismiss="modal"]')
+          .forEach((button) => {
+            button.addEventListener("click", function () {
+              hideModalById("fromTemplateModal");
+            });
+          });
+
+        // Add staff modal close buttons
+        document
+          .querySelectorAll('#addStaffModal [data-bs-dismiss="modal"]')
+          .forEach((button) => {
+            button.addEventListener("click", function () {
+              hideModalById("addStaffModal");
+            });
+          });
+
+        // ESC key support for all modals
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            // Close any open modal
+            const modals = [
+              "templateModal",
+              "fromTemplateModal",
+              "addStaffModal",
+            ];
+            modals.forEach((modalId) => hideModalById(modalId));
+          }
+        });
+      }
+
       // Setup form toggle functionality
       function setupFormToggle() {
         const newEventBtn = document.getElementById("newEventBtn");
@@ -985,6 +1725,10 @@
 
         // Yeni etkinlik butonu
         newEventBtn.addEventListener("click", function () {
+          if (!canWrite) {
+            alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            return;
+          }
           showEventForm("new");
         });
 
@@ -1034,7 +1778,18 @@
         }
 
         // Global olarak erişilebilir yap
-        window.showEventForm = showEventForm;
+        if (!canWrite) {
+          newEventBtn.disabled = true;
+          newEventBtn.classList.add("disabled");
+        }
+
+        window.showEventForm = function (mode) {
+          if (!canWrite) {
+            alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            return;
+          }
+          showEventForm(mode);
+        };
         window.hideEventForm = hideEventForm;
       }
 
@@ -1133,17 +1888,17 @@
         container.innerHTML = staffList
           .map(
             (staff) => `
-          <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-white rounded border staff-search-item" 
+          <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-white rounded border staff-search-item"
                style="cursor: pointer;" onclick="selectStaff('${staff.id}')">
             <div class="d-flex align-items-center">
               ${
                 staff.photoUrl
                   ? `
-                <img src="${staff.photoUrl}" alt="${staff.name}" 
+                <img src="${staff.photoUrl}" alt="${staff.name}"
                      style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
               `
                   : `
-                <div style="width: 30px; height: 30px; border-radius: 50%; background: #e9ecef; 
+                <div style="width: 30px; height: 30px; border-radius: 50%; background: #e9ecef;
                            display: flex; align-items: center; justify-content: center; margin-right: 10px;">
                   <i class="fas fa-user text-muted" style="font-size: 12px;"></i>
                 </div>
@@ -1166,33 +1921,165 @@
         const staff = allStaffMembers.find((s) => s.id === staffId);
         if (!staff) return;
 
-        // Check if already added
-        const alreadyAdded = currentStaff.find((s) => s.staffId === staffId);
-        if (alreadyAdded) {
-          alert("Bu ekip üyesi zaten kadroye eklenmiş!");
+        // Kategori kontrolü
+        const category = document.getElementById("eventCategory").value;
+        if (category !== "Tiyatro") {
+          alert(
+            "Kadro ekleme sadece Tiyatro etkinlikleri için kullanılabilir!\nLütfen önce kategoriyi 'Tiyatro' olarak seçin."
+          );
           return;
         }
 
-        // Add to current staff
-        currentStaff.push({
-          staffId: staffId,
+        // Aynı kişi farklı görevlerde yer alabilir; bu aşamada engelleme yok.
+
+        // Modal'daki bilgileri doldur
+        document.getElementById("selectedStaffPhoto").src =
+          staff.photoUrl || "https://via.placeholder.com/80";
+        document.getElementById("selectedStaffName").textContent = staff.name;
+        document.getElementById(
+          "selectedStaffOriginalRole"
+        ).textContent = `Asıl Görev: ${staff.role}`;
+
+        // Seçilen staff'ı geçici olarak sakla
+        window.selectedStaffForEvent = {
+          id: staffId,
           name: staff.name,
-          role: staff.role,
-          photoUrl: staff.photoUrl || "",
-          id: Date.now(), // Geçici ID
-        });
+          originalRole: staff.role,
+          photoUrl: staff.photoUrl,
+          bio: staff.bio || "",
+          filmography: staff.filmography || "",
+        };
+
+        // Modal form'unu temizle
+        document.getElementById("staffEventRole").value = "";
+        document.getElementById("staffCharacterName").value = "";
+        document.getElementById("staffEventPhotoFile").value = "";
+        document.getElementById("staffEventPhotoUrl").value = "";
+
+        // Modal'ı aç
+        const modal = new bootstrap.Modal(
+          document.getElementById("addStaffModal")
+        );
+        modal.show();
 
         // Clear search
         document.getElementById("staffSearchInput").value = "";
         document.getElementById("staffSearchResults").style.display = "none";
-
-        // Update list
-        renderStaffList();
       };
+
+      // Kadro ekleme onayı
+      document
+        .getElementById("confirmAddStaff")
+        .addEventListener("click", async function () {
+          const eventRole = document.getElementById("staffEventRole").value;
+          const characterName =
+            document.getElementById("staffCharacterName").value;
+          const eventPhotoUrl =
+            document.getElementById("staffEventPhotoUrl").value;
+
+          if (!eventRole) {
+            alert("Lütfen bu etkinlikteki görevini seçin!");
+            return;
+          }
+
+          // Kategori kontrolü
+          const category = document.getElementById("eventCategory").value;
+          if (category !== "Tiyatro") {
+            alert(
+              "Kadro ekleme sadece Tiyatro etkinlikleri için kullanılabilir!"
+            );
+            return;
+          }
+
+          const staffData = window.selectedStaffForEvent;
+
+          // Aynı kişi-aynı görev kombinasyonunu engelle
+          const existsSameCombo = currentStaff.some(
+            (s) => s.staffId === staffData.id && s.role === eventRole
+          );
+          if (existsSameCombo) {
+            alert(`${staffData.name} zaten '${eventRole}' olarak eklenmiş!`);
+            return;
+          }
+
+          // Add to current staff with event-specific role
+          const newStaffMember = {
+            staffId: staffData.id,
+            name: staffData.name,
+            role: eventRole, // Bu etkinlikteki görevi
+            originalRole: staffData.originalRole, // Asıl görevi
+            characterName: characterName || "", // Karakter adı
+            photoUrl: staffData.photoUrl || "", // Asıl fotoğraf
+            eventPhotoUrl: eventPhotoUrl || "", // Bu oyun için özel fotoğraf
+            bio: staffData.bio || "",
+            filmography: staffData.filmography || "",
+            id: Date.now(), // Geçici ID
+          };
+
+          currentStaff.push(newStaffMember);
+
+          // Başarı uyarısı göster
+          alert(`${staffData.name} kadroya başarıyla eklendi!`);
+
+          // Eğer düzenleme modundaysa otomatik kaydet
+          if (editingEventId) {
+            try {
+              await saveStaffToFirebase(editingEventId);
+              console.log("Staff otomatik olarak kaydedildi");
+            } catch (error) {
+              console.error("Otomatik kaydetme hatası:", error);
+              alert("Kadro kaydedilirken hata oluştu!");
+            }
+          } else {
+            // Yeni etkinlik oluşturuyorsa uyarı ver
+            console.log(
+              "Yeni etkinlik - kadro geçici olarak eklendi, etkinliği kaydetmeyi unutmayın!"
+            );
+          }
+
+          // Modal'ı kapat ve formu temizle
+          // Close modal (compat with BS4/BS5)
+          (function () {
+            const el = document.getElementById("addStaffModal");
+            if (!el) return;
+            try {
+              if (window.bootstrap && bootstrap.Modal) {
+                const inst = bootstrap.Modal.getInstance
+                  ? bootstrap.Modal.getInstance(el)
+                  : null;
+                if (inst) {
+                  inst.hide();
+                  return;
+                }
+                const created = new bootstrap.Modal(el);
+                created.hide();
+                return;
+              }
+            } catch (e) {}
+            if (window.$ && window.$.fn && window.$.fn.modal) {
+              window.$(el).modal("hide");
+              return;
+            }
+            el.classList.remove("show");
+            el.style.display = "none";
+          })();
+          document.getElementById("staffEventRole").value = "";
+          document.getElementById("staffCharacterName").value = "";
+          document.getElementById("staffEventPhotoFile").value = "";
+          document.getElementById("staffEventPhotoUrl").value = "";
+
+          // Update list
+          renderStaffList();
+        });
 
       // Kadro listesini render et
       function renderStaffList() {
         const container = document.getElementById("staffContainer");
+
+        if (!container) {
+          console.error("staffContainer not found!");
+          return;
+        }
 
         if (currentStaff.length === 0) {
           container.innerHTML =
@@ -1203,56 +2090,204 @@
         container.innerHTML = currentStaff
           .map(
             (staff, index) => `
-          <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-white rounded border">
+          <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-white rounded border shadow-sm staff-card-item" onclick="showEventStaffDetails(${index})" style="cursor:pointer;">
             <div class="d-flex align-items-center">
               ${
-                staff.photoUrl
+                staff.eventPhotoUrl || staff.photoUrl
                   ? `
-                <img src="${staff.photoUrl}" alt="${staff.name}" 
-                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
+                <img src="${staff.eventPhotoUrl || staff.photoUrl}" alt="${
+                      staff.name
+                    }"
+                     style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 12px; ${
+                       staff.eventPhotoUrl ? "border: 2px solid #007bff;" : ""
+                     }">
               `
                   : `
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: #e9ecef; 
-                           display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-                  <i class="fas fa-user text-muted"></i>
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: #e9ecef;
+                           display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                  <i class="fas fa-user text-muted fa-lg"></i>
                 </div>
               `
               }
               <div>
-                <strong>${staff.role}:</strong> ${staff.name}
+                <div class="fw-bold">${staff.name}</div>
+                <div class="small text-primary">${staff.role}${
+              staff.characterName ? ` (${staff.characterName})` : ""
+            }</div>
+                ${
+                  staff.originalRole && staff.originalRole !== staff.role
+                    ? `<div class="small text-muted">Asıl Görev: ${staff.originalRole}</div>`
+                    : ""
+                }
               </div>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStaff(${index})">
-              <i class="fas fa-times"></i>
-            </button>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-info btn-sm" onclick="event.stopPropagation(); showEventStaffDetails(${index});">
+                <i class="fas fa-info-circle me-1"></i>Detay
+              </button>
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); removeStaff(${index});">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
         `
           )
           .join("");
       }
 
+      function getFilmographyHtml(text) {
+        if (!text) {
+          return '<span class="text-muted">Henüz geçmiş proje bilgisi eklenmemiş.</span>';
+        }
+
+        const items = text
+          .split(/\n+/)
+          .map((item) => item.replace(/^[-•\s]+/, "").trim())
+          .filter(Boolean);
+
+        if (items.length === 0) {
+          return '<span class="text-muted">Henüz geçmiş proje bilgisi eklenmemiş.</span>';
+        }
+
+        return `<ul class="mb-0 ps-3">${items
+          .map((item) => `<li>${item}</li>`)
+          .join("")}</ul>`;
+      }
+
+      window.showEventStaffDetails = function (index) {
+        const staff = currentStaff[index];
+        if (!staff) return;
+
+        const photoContainer = document.getElementById("eventStaffDetailPhoto");
+        if (staff.eventPhotoUrl || staff.photoUrl) {
+          photoContainer.innerHTML = `<img src="${
+            staff.eventPhotoUrl || staff.photoUrl
+          }" alt="${staff.name}"
+        style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #0d6efd;">`;
+        } else {
+          photoContainer.innerHTML = `<div style="width: 120px; height: 120px; border-radius: 50%; background: #e9ecef;
+        display: flex; align-items: center; justify-content: center; border: 3px solid #6c757d;">
+        <i class="fas fa-user fa-3x text-muted"></i></div>`;
+        }
+
+        document.getElementById("eventStaffDetailName").textContent =
+          staff.name;
+        document.getElementById("eventStaffDetailRole").textContent =
+          staff.role;
+        document.getElementById("eventStaffDetailOriginalRole").textContent =
+          staff.originalRole
+            ? `Asıl Görev: ${staff.originalRole}`
+            : "Asıl Görev: -";
+        document.getElementById("eventStaffDetailCharacter").textContent =
+          staff.characterName
+            ? `Karakter: ${staff.characterName}`
+            : "Karakter: -";
+        document.getElementById("eventStaffDetailBio").textContent =
+          staff.bio || "-";
+        document.getElementById("eventStaffDetailFilmography").innerHTML =
+          getFilmographyHtml(staff.filmography);
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("eventStaffDetailsModal")
+        );
+        modal.show();
+      };
+
       // Kadro üyesini kaldır
-      window.removeStaff = function (index) {
+      window.removeStaff = async function (index) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        const removedStaff = currentStaff[index];
+
+        if (!confirm(`${removedStaff.name} kadrodan çıkarılsın mı?`)) {
+          return;
+        }
+
         currentStaff.splice(index, 1);
         renderStaffList();
+
+        // Eğer düzenleme modundaysa otomatik kaydet
+        if (editingEventId) {
+          try {
+            await saveStaffToFirebase(editingEventId);
+            console.log("Staff silme işlemi otomatik olarak kaydedildi");
+            alert(`${removedStaff.name} kadrodan çıkarıldı!`);
+            await logActivity(db, {
+              userEmail: currentUserEmail,
+              userName: currentUserName,
+              action: "activity_staff_remove",
+              page: "activity",
+              targetId: editingEventId,
+              targetType: "event",
+              meta: {
+                staffName: removedStaff.name,
+                role: removedStaff.role,
+              },
+            });
+          } catch (error) {
+            console.error("Otomatik kaydetme hatası:", error);
+            alert("Kadro güncellenirken hata oluştu!");
+          }
+        } else {
+          alert(`${removedStaff.name} kadrodan çıkarıldı!`);
+        }
       };
 
       // Kadro verilerini Firebase'e kaydet
       async function saveStaffToFirebase(eventId) {
+        if (!canWrite) {
+          throw new Error("Yetkiniz olmayan bir işlem denendi.");
+        }
         if (currentStaff.length === 0) return;
 
         try {
-          // Her kadro üyesi için ayrı document oluştur
-          for (const staff of currentStaff) {
+          // Önce mevcut kadro verilerini temizle
+          const staffCollectionRef = collection(
+            db,
+            "activity",
+            eventId,
+            "staff"
+          );
+          const existingStaff = await getDocs(staffCollectionRef);
+
+          // Mevcut kadro üyelerini sil
+          const deletePromises = existingStaff.docs.map((doc) =>
+            deleteDoc(doc.ref)
+          );
+          await Promise.all(deletePromises);
+
+          // Yeni kadro üyelerini ekle
+          const addPromises = currentStaff.map(async (staff, index) => {
             const staffRef = doc(collection(db, "activity", eventId, "staff"));
-            await setDoc(staffRef, {
+            return setDoc(staffRef, {
               staffId: staff.staffId, // Firebase staff koleksiyonundaki ID
-              role: staff.role,
+              role: staff.role, // Bu etkinlikteki görevi
+              originalRole: staff.originalRole, // Asıl görevi
+              characterName: staff.characterName || "", // Karakter adı
               name: staff.name,
-              photoUrl: staff.photoUrl || "",
+              photoUrl: staff.photoUrl || "", // Asıl fotoğraf
+              eventPhotoUrl: staff.eventPhotoUrl || "", // Bu oyun için özel fotoğraf
+              bio: staff.bio || "",
+              filmography: staff.filmography || "",
+              order: index, // Sıralama için
               createdAt: Timestamp.now(),
             });
-          }
+          });
+
+          await Promise.all(addPromises);
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "activity_staff_sync",
+            page: "activity",
+            targetId: eventId,
+            targetType: "event",
+            meta: {
+              memberCount: currentStaff.length,
+            },
+          });
         } catch (error) {
           console.error("Error saving staff:", error);
           throw error;
@@ -1266,16 +2301,29 @@
           const querySnapshot = await getDocs(staffRef);
 
           currentStaff = [];
+          const staffArray = [];
+
           querySnapshot.forEach((doc) => {
             const data = doc.data();
-            currentStaff.push({
+            staffArray.push({
               id: doc.id,
               staffId: data.staffId, // Firebase staff koleksiyonundaki ID
-              role: data.role,
+              role: data.role, // Bu etkinlikteki görevi
+              originalRole: data.originalRole, // Asıl görevi
+              characterName: data.characterName || "", // Karakter adı
               name: data.name,
-              photoUrl: data.photoUrl || "",
+              photoUrl: data.photoUrl || "", // Asıl fotoğraf
+              eventPhotoUrl: data.eventPhotoUrl || "", // Bu oyun için özel fotoğraf
+              bio: data.bio || "",
+              filmography: data.filmography || "",
+              order: data.order || 0, // Sıralama
             });
           });
+
+          // Sıraya göre sırala
+          currentStaff = staffArray.sort(
+            (a, b) => (a.order || 0) - (b.order || 0)
+          );
 
           renderStaffList();
         } catch (error) {
@@ -1339,6 +2387,23 @@
         form.addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          if (!canWrite) {
+            alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+            return;
+          }
+
+          // Get location with coordinates
+          const locationSelect = document.getElementById("eventLocation");
+          const selectedOption =
+            locationSelect.options[locationSelect.selectedIndex];
+          const locationData = {
+            name: locationSelect.value,
+            coordinates: {
+              lat: parseFloat(selectedOption.dataset.lat) || null,
+              lng: parseFloat(selectedOption.dataset.lng) || null,
+            },
+          };
+
           const formData = {
             name: document.getElementById("eventName").value,
             description: document.getElementById("eventDescription").value,
@@ -1350,7 +2415,8 @@
               )
             ),
             time: document.getElementById("eventTime").value,
-            location: document.getElementById("eventLocation").value,
+            location: locationData.name,
+            locationCoordinates: locationData.coordinates,
             category: document.getElementById("eventCategory").value,
             imageUrl: document.getElementById("eventImage").value,
             posterImageUrl: document.getElementById("eventPosterImage").value,
@@ -1372,6 +2438,19 @@
                 await saveStaffToFirebase(eventId);
               }
 
+              await logActivity(db, {
+                userEmail: currentUserEmail,
+                userName: currentUserName,
+                action: "activity_event_update",
+                page: "activity",
+                targetId: eventId,
+                targetType: "event",
+                meta: {
+                  name: formData.name,
+                  category: formData.category,
+                },
+              });
+
               alert("Etkinlik güncellendi!");
             } else {
               // Add new event
@@ -1383,7 +2462,76 @@
                 await saveStaffToFirebase(eventId);
               }
 
+              await logActivity(db, {
+                userEmail: currentUserEmail,
+                userName: currentUserName,
+                action: "activity_event_create",
+                page: "activity",
+                targetId: eventId,
+                targetType: "event",
+                meta: {
+                  name: formData.name,
+                  category: formData.category,
+                },
+              });
+
               alert("Etkinlik eklendi!");
+            }
+
+            // Şablon olarak kaydet seçeneği işaretliyse
+            const saveAsTemplate =
+              document.getElementById("saveAsTemplate").checked;
+            if (saveAsTemplate && !editingEventId) {
+              try {
+                const templateData = {
+                  ...formData,
+                  title: formData.name, // Şablon başlığı
+                  templateName: formData.name, // Geriye uyumluluk için
+                  createdAt: Timestamp.now(),
+                };
+
+                // Tarih ve saat bilgilerini şablondan çıkar
+                delete templateData.date;
+                delete templateData.time;
+
+                if (
+                  formData.category === "Tiyatro" &&
+                  Array.isArray(currentStaff) &&
+                  currentStaff.length > 0
+                ) {
+                  templateData.theaterStaff = currentStaff.map((staff) => ({
+                    staffId: staff.staffId || "",
+                    name: staff.name || "",
+                    role: staff.role || "",
+                    originalRole: staff.originalRole || "",
+                    characterName: staff.characterName || "",
+                    photoUrl: staff.photoUrl || "",
+                    eventPhotoUrl: staff.eventPhotoUrl || "",
+                    bio: staff.bio || "",
+                    filmography: staff.filmography || "",
+                  }));
+                } else {
+                  delete templateData.theaterStaff;
+                }
+
+                await addDoc(collection(db, "eventTemplates"), templateData);
+                await logActivity(db, {
+                  userEmail: currentUserEmail,
+                  userName: currentUserName,
+                  action: "activity_template_create",
+                  page: "activity",
+                  targetId: eventId,
+                  targetType: "eventTemplate",
+                  meta: {
+                    name: formData.name,
+                    category: formData.category,
+                  },
+                });
+                alert("Etkinlik şablon olarak da kaydedildi!");
+              } catch (error) {
+                console.error("Error saving template:", error);
+                alert("Şablon kaydedilirken hata oluştu!");
+              }
             }
 
             // Form'u gizle ve temizle
@@ -1402,9 +2550,24 @@
 
       // Toggle slider visibility
       window.toggleSlider = async function (eventId, showInSlider) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
         try {
           const eventRef = doc(db, "activity", eventId);
           await updateDoc(eventRef, { showInSlider });
+
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: showInSlider
+              ? "activity_event_slider_enable"
+              : "activity_event_slider_disable",
+            page: "activity",
+            targetId: eventId,
+            targetType: "event",
+          });
 
           alert(
             showInSlider
@@ -1420,11 +2583,27 @@
 
       // Delete event
       window.deleteEvent = async function (eventId) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
         if (!confirm("Bu etkinliği silmek istediğinizden emin misiniz?"))
           return;
 
         try {
+          const event = events.find((e) => e.id === eventId);
           await deleteDoc(doc(db, "activity", eventId));
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "activity_event_delete",
+            page: "activity",
+            targetId: eventId,
+            targetType: "event",
+            meta: {
+              name: event?.name || "",
+            },
+          });
           alert("Etkinlik silindi!");
           loadEvents();
         } catch (error) {
@@ -1435,6 +2614,10 @@
 
       // Edit event
       window.editEvent = async function (eventId) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
         const event = events.find((e) => e.id === eventId);
         if (!event) return;
 
@@ -1512,6 +2695,386 @@
 
       // Make functions globally available
       window.loadEvents = loadEvents;
+      // Template System Functions
+      let eventTemplates = [];
+
+      // Show templates modal
+      async function showTemplatesModal() {
+        const modal = new bootstrap.Modal(
+          document.getElementById("templateModal")
+        );
+        modal.show();
+        await loadTemplates();
+      }
+
+      // Show from template modal
+      async function showFromTemplateModal() {
+        const modal = new bootstrap.Modal(
+          document.getElementById("fromTemplateModal")
+        );
+        modal.show();
+        await loadTemplateOptions();
+      }
+
+      // Load template options for select
+      async function loadTemplateOptions() {
+        try {
+          const templatesRef = collection(db, "eventTemplates");
+          const querySnapshot = await getDocs(templatesRef);
+          const select = document.getElementById("templateSelect");
+
+          select.innerHTML = '<option value="">Şablon seçin...</option>';
+
+          querySnapshot.forEach((doc) => {
+            const template = doc.data();
+            const option = document.createElement("option");
+            option.value = doc.id;
+            const title =
+              template.title ||
+              template.templateName ||
+              template.name ||
+              "İsimsiz Şablon";
+            const category = template.category || "Genel";
+            option.textContent = `${title} (${category})`;
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error loading template options:", error);
+        }
+      }
+
+      // Preview selected template
+      async function previewSelectedTemplate() {
+        const templateId = document.getElementById("templateSelect").value;
+        const preview = document.getElementById("selectedTemplatePreview");
+        const content = document.getElementById("templatePreviewContent");
+
+        if (!templateId) {
+          preview.style.display = "none";
+          return;
+        }
+
+        try {
+          const templateRef = doc(db, "eventTemplates", templateId);
+          const templateSnap = await getDoc(templateRef);
+
+          if (templateSnap.exists()) {
+            const template = templateSnap.data();
+            const title =
+              template.title ||
+              template.templateName ||
+              template.name ||
+              "İsimsiz Şablon";
+            const category = template.category || "Genel";
+            const location = template.location || "Belirtilmemiş";
+            const staffCount = Array.isArray(template.theaterStaff)
+              ? template.theaterStaff.length
+              : 0;
+
+            content.innerHTML = `
+              <h6 class="mb-2">${title}</h6>
+              <p class="mb-2 text-muted">${
+                template.description || "Açıklama yok"
+              }</p>
+              <div class="d-flex gap-2 flex-wrap">
+                <span class="badge bg-secondary">${category}</span>
+                <span class="badge bg-info">${location}</span>
+                ${
+                  template.registrationUrl || template.registrationLink
+                    ? '<span class="badge bg-success">Kayıt linki var</span>'
+                    : ""
+                }
+                ${
+                  staffCount > 0
+                    ? `<span class="badge bg-warning text-dark">${staffCount} kadro üyesi</span>`
+                    : ""
+                }
+              </div>
+            `;
+            preview.style.display = "block";
+          }
+        } catch (error) {
+          console.error("Error loading template preview:", error);
+        }
+      }
+
+      // Delete template
+      window.deleteTemplate = async function (templateId) {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        if (!confirm("Bu şablonu silmek istediğinizden emin misiniz?")) {
+          return;
+        }
+
+        try {
+          await deleteDoc(doc(db, "eventTemplates", templateId));
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "activity_template_delete",
+            page: "activity",
+            targetId: templateId,
+            targetType: "eventTemplate",
+          });
+          alert("Şablon silindi!");
+          loadTemplates();
+        } catch (error) {
+          console.error("Error deleting template:", error);
+          alert("Şablon silinirken hata oluştu!");
+        }
+      };
+
+      // Load templates from Firebase
+      async function loadTemplates() {
+        try {
+          const templatesRef = collection(db, "eventTemplates");
+          const querySnapshot = await getDocs(templatesRef);
+          eventTemplates = [];
+
+          querySnapshot.forEach((doc) => {
+            eventTemplates.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          });
+
+          renderTemplates();
+        } catch (error) {
+          console.error("Error loading templates:", error);
+          document.getElementById("templatesContainer").innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+              <p class="mt-2 text-danger">Şablonlar yüklenirken hata oluştu!</p>
+            </div>
+          `;
+        }
+      }
+
+      // Render templates in modal
+      function renderTemplates() {
+        const container = document.getElementById("templatesContainer");
+
+        if (eventTemplates.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-copy fa-2x text-muted"></i>
+              <p class="mt-2 text-muted">Henüz şablon bulunmuyor.</p>
+              <small class="text-muted">Etkinlik eklerken "Şablon olarak kaydet" seçeneğini işaretleyin.</small>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = eventTemplates
+          .map(
+            (template) => `
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                  <h6 class="card-title mb-2">
+                    <i class="fas fa-${getCategoryIcon(
+                      template.category || "Genel"
+                    )} me-2 text-primary"></i>
+                    ${
+                      template.title ||
+                      template.templateName ||
+                      template.name ||
+                      "İsimsiz Şablon"
+                    }
+                  </h6>
+                  <p class="card-text text-muted mb-2">${
+                    template.description || "Açıklama yok"
+                  }</p>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <span class="badge bg-secondary">${
+                      template.category || "Genel"
+                    }</span>
+                    <span class="badge bg-info">${
+                      template.location || "Belirtilmemiş"
+                    }</span>
+                    ${
+                      template.theaterStaff
+                        ? '<span class="badge bg-warning">Kadro var</span>'
+                        : ""
+                    }
+                  </div>
+                </div>
+                ${
+                  canWrite
+                    ? `<div class="ms-3">
+                        <button class="btn btn-danger btn-sm" onclick="deleteTemplate('${template.id}')">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>`
+                    : ""
+                }
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Create event from template
+      async function createEventFromTemplate() {
+        if (!canWrite) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+        const templateId = document.getElementById("templateSelect").value;
+        const eventDate = document.getElementById("templateEventDate").value;
+        const eventTime = document.getElementById("templateEventTime").value;
+
+        if (!templateId || !eventDate || !eventTime) {
+          alert("Lütfen tüm alanları doldurun!");
+          return;
+        }
+
+        try {
+          // Get template data
+          const templateRef = doc(db, "eventTemplates", templateId);
+          const templateSnap = await getDoc(templateRef);
+
+          if (!templateSnap.exists()) {
+            alert("Şablon bulunamadı!");
+            return;
+          }
+
+          const template = templateSnap.data();
+
+          // Create new event from template
+          const eventData = {
+            ...template,
+            name:
+              template.title ||
+              template.templateName ||
+              template.name ||
+              "İsimsiz Etkinlik",
+            date: eventDate,
+            time: eventTime,
+            createdAt: Timestamp.now(),
+          };
+
+          // Şablon-specific alanları temizle
+          delete eventData.title;
+          delete eventData.templateName;
+
+          // Add to events collection
+          const docRef = await addDoc(collection(db, "activity"), eventData);
+
+          if (
+            Array.isArray(template.theaterStaff) &&
+            template.theaterStaff.length > 0
+          ) {
+            await copyTemplateStaffToEvent(docRef.id, template.theaterStaff);
+          }
+
+          await logActivity(db, {
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "activity_event_create_from_template",
+            page: "activity",
+            targetId: docRef.id,
+            targetType: "event",
+            meta: {
+              templateId,
+              name: eventData.name,
+            },
+          });
+
+          alert("Etkinlik başarıyla oluşturuldu!");
+
+          // Close modal and refresh events
+          (function closeTemplateModal() {
+            try {
+              const modalElement = document.getElementById("fromTemplateModal");
+              if (!modalElement) return;
+              if (window.bootstrap && bootstrap.Modal) {
+                const instance = bootstrap.Modal.getInstance
+                  ? bootstrap.Modal.getInstance(modalElement)
+                  : null;
+                if (instance && typeof instance.hide === "function") {
+                  instance.hide();
+                  return;
+                }
+                if (typeof bootstrap.Modal === "function") {
+                  const newInstance = new bootstrap.Modal(modalElement);
+                  if (newInstance && typeof newInstance.hide === "function") {
+                    newInstance.hide();
+                  }
+                }
+              } else {
+                // Fallback for Bootstrap 4
+                window.$ && window.$(modalElement).modal("hide");
+              }
+            } catch (closeError) {
+              console.warn("Şablon modal kapatılırken hata:", closeError);
+            }
+          })();
+
+          // Form temizle
+          document.getElementById("templateEventDate").value = "";
+          document.getElementById("templateEventTime").value = "";
+          document.getElementById("templateSelect").value = "";
+          document.getElementById("selectedTemplatePreview").style.display =
+            "none";
+
+          loadEvents();
+        } catch (error) {
+          console.error("Error creating event from template:", error);
+          alert("Etkinlik oluşturulurken hata oluştu!");
+        }
+      }
+
+      async function copyTemplateStaffToEvent(eventId, staffList) {
+        try {
+          const staffCollectionRef = collection(
+            db,
+            "activity",
+            eventId,
+            "staff"
+          );
+          const addPromises = staffList.map((staff, index) => {
+            const staffRef = doc(staffCollectionRef);
+            return setDoc(staffRef, {
+              staffId: staff.staffId || "",
+              name: staff.name || "",
+              role: staff.role || "",
+              originalRole: staff.originalRole || "",
+              characterName: staff.characterName || "",
+              photoUrl: staff.photoUrl || "",
+              eventPhotoUrl: staff.eventPhotoUrl || "",
+              bio: staff.bio || "",
+              filmography: staff.filmography || "",
+              order: index,
+              createdAt: Timestamp.now(),
+            });
+          });
+          await Promise.all(addPromises);
+        } catch (error) {
+          console.error(
+            "Şablon kadrosu yeni etkinliğe aktarılırken hata:",
+            error
+          );
+        }
+      }
+
+      // Get category icon
+      function getCategoryIcon(category) {
+        const icons = {
+          Tiyatro: "theater-masks",
+          Konser: "music",
+          Sergi: "palette",
+          Konferans: "microphone",
+          Workshop: "tools",
+          Festival: "star",
+        };
+        return icons[category] || "calendar";
+      }
     </script>
   </body>
 </html>
