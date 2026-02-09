@@ -311,6 +311,20 @@ class SmoothScroll {
 
     e.preventDefault();
 
+    const performScroll = () => {
+      this.scrollToTarget(target, href);
+    };
+
+    const mobileMenuComponent = window.ebbApp?.getComponent("mobileMenu");
+    if (mobileMenuComponent && mobileMenuComponent.isOpen) {
+      mobileMenuComponent.close();
+      requestAnimationFrame(() => requestAnimationFrame(performScroll));
+    } else {
+      performScroll();
+    }
+  }
+
+  scrollToTarget(target, href) {
     const headerHeight = utils.$(".header")?.offsetHeight || 0;
     const targetPosition = target.offsetTop - headerHeight - 20;
 

@@ -442,7 +442,7 @@
       .slider-wrapper {
         position: relative;
         width: 100%;
-        height: 500px;
+        aspect-ratio: 3 / 1;
         overflow: hidden;
       }
 
@@ -466,6 +466,12 @@
         transform: translateX(-100%);
       }
 
+      .slide-image-wrapper {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
       .slide-image {
         width: 100%;
         height: 100%;
@@ -475,15 +481,23 @@
         left: 0;
       }
 
+      .slide-image--mobile {
+        display: none;
+        
+        
+      }
+
       .slide-content {
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
+        size: 100%;
         background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
         color: white;
         padding: 3rem 2rem 2rem;
         z-index: 2;
+        text-align: left;
       }
 
       .slide-category {
@@ -505,10 +519,7 @@
       }
 
       .slide-description {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
-        opacity: 0.9;
+        display: none;
       }
 
       .slide-meta {
@@ -523,6 +534,26 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+      }
+
+      .slide-bilet-al {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: rgba(40, 167, 69, 0.95);
+        color: white;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .slide-bilet-al:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       }
 
       .slider-controls {
@@ -645,6 +676,24 @@
 
       .thumbnail.active::after {
         background: transparent;
+      }
+
+      @media (max-width: 768px) {
+        .slide-content {
+          display: none;
+        }
+
+        .slide-image--desktop {
+          display: none;
+        }
+
+        .slide-image--mobile {
+          display: block;
+        }
+
+        .thumbnail-slider {
+          display: none;
+        }
       }
 
       /* Loading Animation */
@@ -932,6 +981,42 @@
         color: var(--text-dark);
         margin-bottom: 2rem;
         text-align: justify;
+        display: -webkit-box;
+        -webkit-line-clamp: 10;
+        line-clamp: 10;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .president-message-text.expanded {
+        display: block;
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+      }
+
+      .read-more-btn {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.95rem;
+      }
+
+      .read-more-btn:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+      }
+
+      .read-more-btn.hidden {
+        display: none;
       }
 
       .president-signature {
@@ -1260,7 +1345,7 @@
 
         /* Slider Responsive */
         .slider-wrapper {
-          height: 350px;
+          aspect-ratio: 1 / 1;
         }
 
         .slide-content {
@@ -1410,15 +1495,22 @@
     <!-- Header -->
     <header class="header">
       <nav class="nav container">
-        <a href="#" class="logo">
+        <a href="index.html" class="logo">
           <img src="assets/Asset 1.png" alt="EBB Logo" />
           <span>EBB Kültür Sanat</span>
         </a>
 
         <ul class="nav-menu" id="navMenu">
           <li><a href="#home" class="nav-link active">Ana Sayfa</a></li>
+          <li><a href="calendar.html" class="nav-link">Etkinliklermiz</a></li>
           <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
           <li><a href="news-list.html" class="nav-link">Haberler</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="#" class="nav-link has-dropdown">Formlar</a>
+            <ul class="dropdown-menu" id="formsDropdown">
+              <li><a href="anadolunun-renkleri-form.html" class="dropdown-item">Anadolunun Renkleri Başvuru Formu</a></li>
+            </ul>
+          </li>
           <li><a href="#contact" class="nav-link">İletişim</a></li>
         </ul>
 
@@ -1471,7 +1563,7 @@
           >
             <a href="calendar.html" class="btn btn-primary">
               <i class="fas fa-calendar"></i>
-              Programları Keşfet
+              Etkinliklerimizi Keşfet
             </a>
           </div>
         </div>
@@ -1610,7 +1702,7 @@
         <div class="president-content">
           <div class="president-text">
             <h2 class="president-title">Başkanımızın Mesajı</h2>
-            <div class="president-message-text">
+            <div class="president-message-text" id="presidentMessageText">
               <p>
                 Kültür ve sanat, bir milletin kimliğini koruyan, toplumsal
                 bağlarını güçlendiren ve gelecek nesillere ilham veren en
@@ -1690,6 +1782,7 @@
                 devam edecek.
               </p>
             </div>
+            <button class="read-more-btn" id="readMoreBtn">Devamını Oku</button>
             <div class="president-signature">
               <div class="signature-icon">
                 <i class="fas fa-user-tie"></i>
@@ -1723,10 +1816,8 @@
             <div class="contact-cta-sections">
               <div class="contact-info-card">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                  <span class="badge bg-warning text-dark px-3 py-2">
-                    <i class="fas fa-life-ring me-2"></i>Her Zaman Yanınızdayız
-                  </span>
-                  <span class="text-muted small text-uppercase">Bize Ulaşın</span>
+                
+              
                 </div>
                 <h3>Bize Ulaşın</h3>
                 <p class="text-muted">
@@ -1741,7 +1832,7 @@
                     </div>
                     <div>
                       <strong>Adres</strong>
-                      <p class="mb-0 text-muted">İbrahim Erkal Dadaş KSM, Erzurum</p>
+                      <p class="mb-0 text-muted">Muratpaşa Mah. Cumhuriyet Cad. Erzincankapı Sok. Dadaş Sitesi 1/1 Yakutiye Erzurum</p>
                     </div>
                   </li>
                   <li class="contact-info-item">
@@ -1750,7 +1841,7 @@
                     </div>
                     <div>
                       <strong>Telefon</strong>
-                      <p class="mb-0 text-muted">+90 (442) 123 45 67</p>
+                      <p class="mb-0 text-muted">+90 (442) 233 33 23</p>
                     </div>
                   </li>
                   <li class="contact-info-item">
@@ -1759,7 +1850,7 @@
                     </div>
                     <div>
                       <strong>E-posta</strong>
-                      <p class="mb-0 text-muted">info@ebbsanatmerkezi.com</p>
+                      <p class="mb-0 text-muted">bilgi@ebbkultursanat.com</p>
                     </div>
                   </li>
                   <li class="contact-info-item">
@@ -1777,12 +1868,12 @@
               <div class="contact-divider"></div>
 
               <div class="contact-form-card">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                  <span class="badge bg-primary-subtle text-primary px-3 py-2">
-                      <h3>Bize Yazın</h3>
-                  </span>
+             
+               
+                <h1>Bize Yazın</h1>
+                 
             
-                </div>
+               
               
                 <p class="text-muted">
                   Sorularınızı, önerilerinizi veya iş birliklerinizi bize yazabilirsiniz.
@@ -1884,10 +1975,20 @@
               >
                 <i class="fab fa-instagram"></i>
               </a>
-              <a href="#" class="social-link" target="_blank">
+              <a
+                href="https://twitter.com/erzurumbld"
+                class="social-link"
+                target="_blank"
+                rel="noopener"
+              >
                 <i class="fab fa-twitter"></i>
               </a>
-              <a href="#" class="social-link" target="_blank">
+              <a
+                href="https://www.youtube.com/@erzurumbuyuksehirbelediyes2404"
+                class="social-link"
+                target="_blank"
+                rel="noopener"
+              >
                 <i class="fab fa-youtube"></i>
               </a>
             </div>
@@ -1896,7 +1997,7 @@
           <div class="footer-section">
             <h3>Hızlı Linkler</h3>
             <p><a href="#home">Ana Sayfa</a></p>
-            <p><a href="#slider">Programlar</a></p>
+            <p><a href="calendar.html">Programlar</a></p>
             <p><a href="#features">Hizmetler</a></p>
             <p><a href="ourhalls.html">Salonlarımız</a></p>
             <p><a href="activity.html">Yönetim Paneli</a></p>
@@ -1904,10 +2005,11 @@
 
           <div class="footer-section">
             <h3>İletişim</h3>
-            <p><i class="fas fa-map-marker-alt"></i> Erzurum Merkez</p>
-            <p><i class="fas fa-phone"></i> +90 (442) 123 45 67</p>
-            <p><i class="fas fa-envelope"></i> info@ebbsanatmerkezi.com</p>
+
+            <p><i class="fas fa-phone"></i> +90 (442) 233 33 23</p>
+            <p><i class="fas fa-envelope"></i> bilgi@ebbkultursanat.com</p>
             <p><i class="fas fa-clock"></i> Pzt-Cum: 09:00-18:00</p>
+            <p><i class="fas fa-map-marker-alt"></i> Muratpaşa Mah. Cumhuriyet Cad. Erzincankapı Sok. Dadaş Sitesi 1/1 Yakutiye Erzurum</p>
           </div>
 
           <div class="footer-section">
@@ -1917,8 +2019,20 @@
                 >Erzurum Büyükşehir Belediyesi</a
               >
             </p>
-            <p><a href="#" target="_blank">Kültür ve Turizm Bakanlığı</a></p>
-            <p><a href="#" target="_blank">Erzurum Valiliği</a></p>
+            <p>
+              <a href="https://www.ktb.gov.tr/" target="_blank" rel="noopener"
+                >Kültür ve Turizm Bakanlığı</a
+              >
+            </p>
+            <p>
+              <a href="http://www.erzurum.gov.tr/" target="_blank" rel="noopener"
+                >Erzurum Valiliği</a
+              >
+            </p>
+
+            <p><a href="https://erzurumdiplomasi.org/" target="_blank" rel="noopener">Erzurum Diplomasi Akademisi</a></p>
+
+            <p><a href="https://www.bilimerzurum.org/" target="_blank" rel="noopener">Bilim Erzurum</a></p>
           </div>
         </div>
 
@@ -1964,9 +2078,12 @@
       let slides = [];
       let slideInterval;
 
-      // Load featured programs from Firebase
+      // Load featured programs and forms from Firebase
       async function loadFeaturedPrograms() {
         try {
+          slides = [];
+
+          // Load activities
           const programsRef = collection(db, "activity");
           const q = query(
             programsRef,
@@ -1975,7 +2092,6 @@
           );
           const querySnapshot = await getDocs(q);
 
-          slides = [];
           querySnapshot.forEach((doc) => {
             const data = doc.data();
             let slideDate = new Date();
@@ -1994,10 +2110,46 @@
             }
             slides.push({
               id: doc.id,
+              type: "activity",
               ...data,
               date: slideDate,
             });
           });
+
+          // Load forms
+          const formsRef = collection(db, "forms");
+          const formsSnapshot = await getDocs(formsRef);
+          
+          formsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            // Only add active forms that should be shown in slider
+            const isActive = data.isActive !== false;
+            let isExpired = false;
+            if (data.endDate) {
+              const endDate = data.endDate?.toDate 
+                ? data.endDate.toDate() 
+                : new Date(data.endDate);
+              isExpired = new Date() > endDate;
+            }
+            
+            if (data.showInSlider && isActive && !isExpired) {
+              slides.push({
+                id: data.id || doc.id,
+                type: "form",
+                name: data.title,
+                imageUrl: data.wideImageURL || data.posterURL, // Geniş format masaüstü için
+                squareImageUrl: data.squareImageURL || data.posterURL, // Kare format mobil için
+                description: data.description,
+                category: "Başvuru Formu",
+                date: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
+              });
+            }
+          });
+
+          // Limit to 6 slides total
+          if (slides.length > 6) {
+            slides = slides.slice(0, 6);
+          }
 
           if (slides.length > 0) {
             renderSlider();
@@ -2027,43 +2179,73 @@
           const slideElement = document.createElement("div");
           slideElement.className = `slide ${index === 0 ? "active" : ""}`;
           slideElement.style.cursor = "pointer";
+          const desktopImage =
+            slide.imageUrl ||
+            "https://via.placeholder.com/1200x500/667eea/ffffff?text=" +
+              encodeURIComponent(slide.name || "Etkinlik");
+          const squareImage =
+            slide.squareImageUrl ||
+            "https://via.placeholder.com/600x600/667eea/ffffff?text=" +
+              encodeURIComponent(slide.name || "Etkinlik");
+
           slideElement.innerHTML = `
-                    <img src="${
-                      slide.imageUrl ||
-                      "https://via.placeholder.com/800x400/667eea/ffffff?text=" +
-                        encodeURIComponent(slide.name || "Etkinlik")
-                    }" alt="${slide.name}" class="slide-image">
+                    <div class="slide-image-wrapper">
+                        <img src="${desktopImage}" alt="${slide.name}" class="slide-image slide-image--desktop">
+                        <img src="${squareImage}" alt="${slide.name}" class="slide-image slide-image--mobile">
+                    </div>
                     <div class="slide-content">
                         <span class="slide-category">${
-                          slide.category || "Etkinlik"
+                          slide.category || (slide.type === "form" ? "Başvuru Formu" : "Etkinlik")
                         }</span>
                         <h3 class="slide-title">${slide.name}</h3>
-                        <p class="slide-description">${
-                          slide.description || "Açıklama bulunmamaktadır."
-                        }</p>
                         <div class="slide-meta">
+                            ${
+                              slide.type === "form"
+                                ? `
+                            <div class="slide-date">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Başvuru Formu</span>
+                            </div>
+                            `
+                                : `
                             <div class="slide-date">
                                 <i class="fas fa-calendar"></i>
                                 <span>${
                                   formatDate(slide.date) ||
                                   "Tarih belirtilmemiş"
                                 }</span>
-        </div>
+                            </div>
                             <div class="slide-location">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <span>${
                                   slide.location || "Konum belirtilmemiş"
                                 }</span>
                             </div>
+                            ${
+                              slide.activityTicketInfo === true
+                                ? `
+                            <a href="buy-ticket.html?eventId=${slide.id}" class="slide-bilet-al" onclick="event.stopPropagation();">
+                                <i class="fas fa-ticket-alt"></i> Bilet Al
+                            </a>
+                            `
+                                : ""
+                            }
+                            `
+                            }
                         </div>
                     </div>
                 `;
-          // Go to event detail on slide click
+          // Go to event detail or form on slide click
           slideElement.addEventListener("click", (e) => {
             // Prevent when clicking navigation controls
             const control = e.target.closest('.slider-btn, .indicator, .thumbnail');
             if (control) return;
-            window.location.href = `event-detail.html?id=${slide.id}`;
+            
+            if (slide.type === "form") {
+              window.location.href = `form-application.html?id=${slide.id}`;
+            } else {
+              window.location.href = `event-detail.html?id=${slide.id}`;
+            }
           });
           mainSlider.appendChild(slideElement);
 
@@ -2073,11 +2255,7 @@
             index === 0 ? "active" : ""
           }`;
           thumbnailElement.innerHTML = `
-                    <img src="${
-                      slide.imageUrl ||
-                      "https://via.placeholder.com/200x120/667eea/ffffff?text=" +
-                        encodeURIComponent(slide.name || "Etkinlik")
-                    }" alt="${slide.name}">
+                    <img src="${squareImage}" alt="${slide.name}">
                 `;
           thumbnailElement.addEventListener("click", () => goToSlide(index));
           thumbnailSlider.appendChild(thumbnailElement);
@@ -2318,6 +2496,73 @@
       // Make functions globally available
       window.loadFeaturedPrograms = loadFeaturedPrograms;
       window.loadLatestNews = loadLatestNews;
+
+      // Load active forms for dropdown
+      async function loadActiveForms() {
+        try {
+          console.log("Loading active forms...");
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          const activeForms = [];
+          
+          formsSnapshot.forEach((doc) => {
+            const formData = doc.data();
+            const isActive = formData.isActive !== false; // Default to true
+            
+            // Check if form has expired
+            let isExpired = false;
+            if (formData.endDate) {
+              const endDate = formData.endDate?.toDate 
+                ? formData.endDate.toDate() 
+                : new Date(formData.endDate);
+              isExpired = new Date() > endDate;
+            }
+            
+            // Only add active and not expired forms
+            if (isActive && !isExpired) {
+              activeForms.push({
+                id: formData.id || doc.id,
+                title: formData.title || "Form",
+              });
+            }
+          });
+
+          console.log("Active forms found:", activeForms);
+
+          // Update dropdown menu - try multiple times if needed
+          let dropdownMenu = document.getElementById("formsDropdown");
+          let attempts = 0;
+          while (!dropdownMenu && attempts < 10) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            dropdownMenu = document.getElementById("formsDropdown");
+            attempts++;
+          }
+          
+          console.log("Dropdown menu element:", dropdownMenu);
+          
+          if (dropdownMenu && activeForms.length > 0) {
+            dropdownMenu.innerHTML = activeForms
+              .map(
+                (form) =>
+                  `<li><a href="form-application.html?id=${form.id}" class="dropdown-item">${form.title}</a></li>`
+              )
+              .join("");
+            console.log("Dropdown menu updated with", activeForms.length, "forms");
+          } else if (dropdownMenu && activeForms.length === 0) {
+            dropdownMenu.innerHTML =
+              '<li><span class="dropdown-item text-muted">Aktif form bulunmamaktadır</span></li>';
+            console.log("No active forms found");
+          } else {
+            console.warn("Dropdown menu element not found after", attempts, "attempts!");
+          }
+        } catch (error) {
+          console.error("Error loading active forms:", error);
+        }
+      }
+
+      // Load forms on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        loadActiveForms();
+      });
     </script>
 
     <!-- JavaScript -->
@@ -2364,6 +2609,53 @@
           section.style.transition = 'all 0.6s ease';
           observer.observe(section);
         });
+      })();
+
+      // President message read more functionality
+      (function() {
+        const messageText = document.getElementById('presidentMessageText');
+        const readMoreBtn = document.getElementById('readMoreBtn');
+        
+        if (!messageText || !readMoreBtn) return;
+
+        // Check if text is truncated by temporarily expanding it
+        function checkIfTruncated() {
+          const wasExpanded = messageText.classList.contains('expanded');
+          messageText.classList.remove('expanded');
+          
+          // Force reflow
+          void messageText.offsetHeight;
+          
+          const lineHeight = parseFloat(window.getComputedStyle(messageText).lineHeight);
+          const maxHeight = lineHeight * 10; // 10 lines
+          const actualHeight = messageText.scrollHeight;
+          
+          if (actualHeight <= maxHeight + 5) { // 5px tolerance
+            readMoreBtn.classList.add('hidden');
+          } else {
+            readMoreBtn.classList.remove('hidden');
+          }
+          
+          // Restore expanded state if it was expanded
+          if (wasExpanded) {
+            messageText.classList.add('expanded');
+          }
+        }
+
+        // Toggle expanded state
+        readMoreBtn.addEventListener('click', function() {
+          if (messageText.classList.contains('expanded')) {
+            messageText.classList.remove('expanded');
+            readMoreBtn.textContent = 'Devamını Oku';
+          } else {
+            messageText.classList.add('expanded');
+            readMoreBtn.textContent = 'Daha Az Göster';
+          }
+        });
+
+        // Check on load and resize
+        setTimeout(checkIfTruncated, 100); // Small delay to ensure styles are applied
+        window.addEventListener('resize', checkIfTruncated);
       })();
     </script>
   </body>

@@ -204,8 +204,8 @@ h6 {
   color: var(--btn-default-color);
   line-height: 1.5;
   padding: 0.65rem 1.4rem;
-  transition: transform 0.25s ease, box-shadow 0.25s ease,
-    filter 0.25s ease, background 0.25s ease, color 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease,
+    background 0.25s ease, color 0.25s ease;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -702,6 +702,82 @@ h6 {
   cursor: pointer;
 }
 
+/* Dropdown Menu Styles */
+.nav-item {
+  position: relative;
+}
+
+.nav-item.has-dropdown:hover .dropdown-menu,
+.nav-item.has-dropdown.active .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  min-width: 220px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  list-style: none;
+}
+
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: #2c3e50;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background: rgba(44, 90, 160, 0.1);
+  color: #2c5aa0;
+  padding-left: 1.75rem;
+}
+
+.dropdown-item.active {
+  background: rgba(44, 90, 160, 0.15);
+  color: #2c5aa0;
+}
+
+.nav-link.has-dropdown::after {
+  content: "\f107";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  transition: transform 0.3s ease;
+}
+
+.nav-item.has-dropdown:hover .nav-link.has-dropdown::after,
+.nav-item.has-dropdown.active .nav-link.has-dropdown::after {
+  transform: rotate(180deg);
+}
+
 @media (max-width: 768px) {
   .nav-menu {
     position: fixed;
@@ -726,5 +802,25 @@ h6 {
 
   .mobile-menu-btn {
     display: block;
+  }
+
+  .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0.5rem 0 0 1rem;
+    background: rgba(44, 90, 160, 0.05);
+    border-radius: 4px;
+  }
+
+  .dropdown-menu::before {
+    display: none;
+  }
+
+  .dropdown-item {
+    padding: 0.5rem 1rem;
   }
 }

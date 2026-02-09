@@ -43,6 +43,7 @@ const PAGE_PRIORITY = [
   { url: "costume.html", codes: ["1", "1a", "9", "9a"] },
   { url: "library.html", codes: ["1", "1a", "8", "8a"] },
   { url: "messages.html", codes: ["1", "1a", "2", "2a"] },
+  { url: "formlar.html", codes: ["1", "1a", "11", "11a"] },
 ];
 
 const GLOBAL_VIEW_CODES = new Set(["1", "1a"]);

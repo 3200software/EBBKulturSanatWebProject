@@ -347,7 +347,12 @@
               data-required-permissions="1,1a,3,3a"
               >Salon Takip</a
             >
-
+            <a
+              href="ticket-management.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,2,2a"
+              >Bilet Yönetimi</a
+            >
             <a
               href="news.html"
               class="list-group-item list-group-item-action"
@@ -597,6 +602,7 @@
                       <option value="Konser">Konser</option>
                       <option value="Tiyatro">Tiyatro</option>
                       <option value="Seminer">Seminer</option>
+                      <option value="Söyleşi">Söyleşi</option>
                       <option value="Sergi">Sergi</option>
                       <option value="Workshop">Workshop</option>
                       <option value="Diğer">Diğer</option>
@@ -766,6 +772,37 @@
                   </div>
 
                   <div class="mb-3">
+                    <label class="form-label"
+                      >Kare Fotoğraf (Mobil & Küçük Slider)</label
+                    >
+                    <div class="input-group mb-2">
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="eventSquareImageFile"
+                        accept="image/*"
+                      />
+                      <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="uploadSquareImageBtn"
+                      >
+                        <i class="fas fa-upload"></i> Yükle
+                      </button>
+                    </div>
+                    <input
+                      type="url"
+                      class="form-control"
+                      id="eventSquareImage"
+                      placeholder="Yüklenen kare fotoğraf URL'si"
+                      readonly
+                    />
+                    <small class="text-muted"
+                      >Önerilen oran 1:1 (örnek 800x800 piksel)</small
+                    >
+                  </div>
+
+                  <div class="mb-3">
                     <label class="form-label">Kayıt URL</label>
                     <input
                       type="url"
@@ -785,6 +822,20 @@
                       <strong>Slider'da Göster</strong>
                       <small class="d-block text-muted"
                         >Ana sayfada öne çıkarılsın</small
+                      >
+                    </label>
+                  </div>
+
+                  <div class="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="activityTicketInfo"
+                    />
+                    <label class="form-check-label" for="activityTicketInfo">
+                      <strong><i class="fas fa-ticket-alt me-1"></i>Biletli Etkinlik</strong>
+                      <small class="d-block text-muted"
+                        >Bu etkinlik için bilet satışı yapılacak</small
                       >
                     </label>
                   </div>
@@ -1615,6 +1666,30 @@
           });
         }
 
+        const uploadSquareImageBtn = document.getElementById(
+          "uploadSquareImageBtn"
+        );
+        if (uploadSquareImageBtn) {
+          uploadSquareImageBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventSquareImageFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir kare fotoğraf seçin!");
+              return;
+            }
+
+            try {
+              const downloadURL = await uploadImage(file, "event-square-images");
+              document.getElementById("eventSquareImage").value = downloadURL;
+              alert("Kare fotoğraf başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading square image:", error);
+              alert("Kare fotoğraf yüklenirken hata oluştu!");
+            }
+          });
+        }
+
         // Upload staff event photo
         const uploadStaffEventPhotoBtn = document.getElementById(
           "uploadStaffEventPhoto"
@@ -2384,6 +2459,29 @@
             }
           });
 
+        document
+          .getElementById("uploadSquareImageBtn")
+          .addEventListener("click", async () => {
+            const fileInput = document.getElementById("eventSquareImageFile");
+            const urlInput = document.getElementById("eventSquareImage");
+
+            if (fileInput.files[0]) {
+              try {
+                alert("Kare fotoğraf yükleniyor...");
+                const downloadURL = await uploadImage(
+                  fileInput.files[0],
+                  "event-square-images"
+                );
+                urlInput.value = downloadURL;
+                alert("Kare fotoğraf başarıyla yüklendi!");
+              } catch (error) {
+                alert("Kare fotoğraf yüklenirken hata oluştu!");
+              }
+            } else {
+              alert("Lütfen bir kare fotoğraf seçin!");
+            }
+          });
+
         form.addEventListener("submit", async (e) => {
           e.preventDefault();
 
@@ -2420,8 +2518,10 @@
             category: document.getElementById("eventCategory").value,
             imageUrl: document.getElementById("eventImage").value,
             posterImageUrl: document.getElementById("eventPosterImage").value,
+            squareImageUrl: document.getElementById("eventSquareImage").value,
             registrationUrl: document.getElementById("registrationUrl").value,
             showInSlider: document.getElementById("showInSlider").checked,
+            activityTicketInfo: document.getElementById("activityTicketInfo").checked,
           };
 
           try {
@@ -2635,10 +2735,14 @@
         document.getElementById("eventImage").value = event.imageUrl || "";
         document.getElementById("eventPosterImage").value =
           event.posterImageUrl || "";
+        document.getElementById("eventSquareImage").value =
+          event.squareImageUrl || "";
         document.getElementById("registrationUrl").value =
           event.registrationUrl || "";
         document.getElementById("showInSlider").checked =
           event.showInSlider || false;
+        document.getElementById("activityTicketInfo").checked =
+          event.activityTicketInfo || false;
 
         // Tiyatro ise kadro verilerini yükle ve göster
         if (event.category === "Tiyatro") {

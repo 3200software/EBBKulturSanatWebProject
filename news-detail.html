@@ -276,6 +276,18 @@
           <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
           <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
           <li><a href="news-list.html" class="nav-link active">Haberler</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="#" class="nav-link has-dropdown">Formlar</a>
+            <ul class="dropdown-menu" id="formsDropdown">
+              <li>
+                <a
+                  href="anadolunun-renkleri-form.html"
+                  class="dropdown-item"
+                  >Anadolunun Renkleri Başvuru Formu</a
+                >
+              </li>
+            </ul>
+          </li>
           <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
         </ul>
 
@@ -394,6 +406,8 @@
         getFirestore,
         doc,
         getDoc,
+        collection,
+        getDocs,
       } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
       // Firebase config
@@ -646,8 +660,71 @@
       }
 
       // Initialize page
+      // Load active forms for dropdown
+      async function loadActiveForms() {
+        try {
+          console.log("Loading active forms...");
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          const activeForms = [];
+          
+          formsSnapshot.forEach((doc) => {
+            const formData = doc.data();
+            const isActive = formData.isActive !== false; // Default to true
+            
+            // Check if form has expired
+            let isExpired = false;
+            if (formData.endDate) {
+              const endDate = formData.endDate?.toDate 
+                ? formData.endDate.toDate() 
+                : new Date(formData.endDate);
+              isExpired = new Date() > endDate;
+            }
+            
+            // Only add active and not expired forms
+            if (isActive && !isExpired) {
+              activeForms.push({
+                id: formData.id || doc.id,
+                title: formData.title || "Form",
+              });
+            }
+          });
+
+          console.log("Active forms found:", activeForms);
+
+          // Update dropdown menu - try multiple times if needed
+          let dropdownMenu = document.getElementById("formsDropdown");
+          let attempts = 0;
+          while (!dropdownMenu && attempts < 10) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            dropdownMenu = document.getElementById("formsDropdown");
+            attempts++;
+          }
+          
+          console.log("Dropdown menu element:", dropdownMenu);
+          
+          if (dropdownMenu && activeForms.length > 0) {
+            dropdownMenu.innerHTML = activeForms
+              .map(
+                (form) =>
+                  `<li><a href="form-application.html?id=${form.id}" class="dropdown-item">${form.title}</a></li>`
+              )
+              .join("");
+            console.log("Dropdown menu updated with", activeForms.length, "forms");
+          } else if (dropdownMenu && activeForms.length === 0) {
+            dropdownMenu.innerHTML =
+              '<li><span class="dropdown-item text-muted">Aktif form bulunmamaktadır</span></li>';
+            console.log("No active forms found");
+          } else {
+            console.warn("Dropdown menu element not found after", attempts, "attempts!");
+          }
+        } catch (error) {
+          console.error("Error loading active forms:", error);
+        }
+      }
+
       document.addEventListener("DOMContentLoaded", function () {
         loadNewsDetails();
+        loadActiveForms();
       });
     </script>
     <footer class="footer" id="contact">

@@ -32,6 +32,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
+    <link rel="stylesheet" href="css/global.css" />
+
     <!-- Styles -->
     <style>
       :root {
@@ -70,12 +72,8 @@
         padding: 0 20px;
       }
 
-      /* Header */
-      .header {
-        background: white;
-        box-shadow: var(--shadow-light);
-        padding: 1rem 0;
-        margin-bottom: 2rem;
+      .calendar-container {
+        max-width: 70%;
       }
 
       .nav {
@@ -300,15 +298,37 @@
       .event-item {
         background: var(--bg-light);
         border-radius: var(--border-radius);
-        padding: 1.5rem;
+        padding: 1rem;
         margin-bottom: 1rem;
         transition: var(--transition);
         border-left: 4px solid var(--primary-color);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
       }
 
       .event-item:hover {
         transform: translateY(-2px);
         box-shadow: var(--shadow-light);
+      }
+
+      .event-poster-wrapper {
+        width: 160px;
+        margin: 0 auto;
+      }
+
+      .event-poster {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      .event-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       .event-time {
@@ -330,10 +350,7 @@
       }
 
       .event-description {
-        color: var(--text-light);
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-        line-height: 1.5;
+        display: none;
       }
 
       .event-meta {
@@ -491,29 +508,50 @@
       }
     </style>
   </head>
-  <body>
+  <body class="has-fixed-header">
     <!-- Header -->
     <header class="header">
       <nav class="nav container">
         <a href="index.html" class="logo">
-          <img src="assets/Asset 1.png" alt="EBB Logo" />
+          <img src="assets/Asset 1.png" href="index.html" alt="EBB Logo" />
           <span>EBB Kültür Sanat</span>
         </a>
 
-        <a href="index.html" class="back-btn">
-          <i class="fas fa-arrow-left"></i>
-          Ana Sayfaya Dön
-        </a>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html" class="nav-link">Ana Sayfa</a></li>
+          <li>
+            <a href="calendar.html" class="nav-link active">Etkinliklermiz</a>
+          </li>
+          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="news-list.html" class="nav-link">Haberler</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="#" class="nav-link has-dropdown">Formlar</a>
+            <ul class="dropdown-menu" id="formsDropdown">
+              <li>
+                <a
+                  href="anadolunun-renkleri-form.html"
+                  class="dropdown-item"
+                  >Anadolunun Renkleri Başvuru Formu</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
+        </ul>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
       </nav>
     </header>
 
     <!-- Main Content -->
-    <main class="container">
+    <main class="container container-calendar mt-6">
       <div class="calendar-container">
         <!-- Calendar Section -->
         <div class="calendar-section">
           <div class="calendar-header">
-            <h1 class="calendar-title">Program Takvimi</h1>
+            <h1 class="calendar-title">Etkinlik Takvimi</h1>
             <p class="calendar-subtitle">
               Etkinliklerimizi keşfedin ve katılın
             </p>
@@ -787,15 +825,21 @@
             .map(
               (event) => `
                     <div class="event-item">
+                        ${
+                          event.posterImageUrl
+                            ? `<div class="event-poster-wrapper">
+                                <img src="${event.posterImageUrl}" alt="${
+                                event.name || "Etkinlik poster"
+                              }" class="event-poster">
+                              </div>`
+                            : ""
+                        }
                         <div class="event-time">
                             <i class="fas fa-clock"></i>
                             ${this.formatTime(event.time || "00:00")}
                         </div>
                         <div class="event-title">${
                           event.name || "Etkinlik"
-                        }</div>
-                        <div class="event-description">${
-                          event.description || "Açıklama bulunmamaktadır."
                         }</div>
                         <div class="event-meta">
                             <div class="event-location">
@@ -867,9 +911,72 @@
         window.location.href = `event-detail.html?id=${eventId}`;
       };
 
+      // Load active forms for dropdown
+      async function loadActiveForms() {
+        try {
+          console.log("Loading active forms...");
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          const activeForms = [];
+          
+          formsSnapshot.forEach((doc) => {
+            const formData = doc.data();
+            const isActive = formData.isActive !== false; // Default to true
+            
+            // Check if form has expired
+            let isExpired = false;
+            if (formData.endDate) {
+              const endDate = formData.endDate?.toDate 
+                ? formData.endDate.toDate() 
+                : new Date(formData.endDate);
+              isExpired = new Date() > endDate;
+            }
+            
+            // Only add active and not expired forms
+            if (isActive && !isExpired) {
+              activeForms.push({
+                id: formData.id || doc.id,
+                title: formData.title || "Form",
+              });
+            }
+          });
+
+          console.log("Active forms found:", activeForms);
+
+          // Update dropdown menu - try multiple times if needed
+          let dropdownMenu = document.getElementById("formsDropdown");
+          let attempts = 0;
+          while (!dropdownMenu && attempts < 10) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            dropdownMenu = document.getElementById("formsDropdown");
+            attempts++;
+          }
+          
+          console.log("Dropdown menu element:", dropdownMenu);
+          
+          if (dropdownMenu && activeForms.length > 0) {
+            dropdownMenu.innerHTML = activeForms
+              .map(
+                (form) =>
+                  `<li><a href="form-application.html?id=${form.id}" class="dropdown-item">${form.title}</a></li>`
+              )
+              .join("");
+            console.log("Dropdown menu updated with", activeForms.length, "forms");
+          } else if (dropdownMenu && activeForms.length === 0) {
+            dropdownMenu.innerHTML =
+              '<li><span class="dropdown-item text-muted">Aktif form bulunmamaktadır</span></li>';
+            console.log("No active forms found");
+          } else {
+            console.warn("Dropdown menu element not found after", attempts, "attempts!");
+          }
+        } catch (error) {
+          console.error("Error loading active forms:", error);
+        }
+      }
+
       // Initialize calendar when page loads
       document.addEventListener("DOMContentLoaded", () => {
         new EventCalendar();
+        loadActiveForms();
       });
     </script>
   </body>

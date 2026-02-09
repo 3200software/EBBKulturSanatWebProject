@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biletlerim - EBB Kültür Sanat</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: "Inter", -apple-system, sans-serif;
+      }
+      .page-header {
+        background: rgba(0,0,0,0.2);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+      }
+      .ticket-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #667eea;
+      }
+      .ticket-card h5 { margin-bottom: 0.5rem; color: #2c3e50; }
+      .ticket-card .text-muted { font-size: 0.9rem; }
+      .ticket-badge {
+        display: inline-block;
+        background: #28a745;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+      }
+      .login-prompt {
+        background: white;
+        border-radius: 12px;
+        padding: 3rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      }
+      .btn-giris {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        color: white;
+        padding: 12px 28px;
+        border-radius: 25px;
+        font-weight: 600;
+      }
+      .btn-giris:hover { color: white; opacity: 0.95; }
+      .btn-cikis {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+      .btn-iptal {
+        background: #dc3545;
+        border: none;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+      }
+      .btn-iptal:hover { color: white; opacity: 0.9; }
+    </style>
+  </head>
+  <body class="has-fixed-header">
+    <header class="header">
+      <nav class="nav container">
+        <a href="index.html" class="logo">
+          <img src="assets/Asset 1.png" alt="EBB Logo" />
+          <span>EBB Kültür Sanat</span>
+        </a>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
+          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="news-list.html" class="nav-link">Haberler</a></li>
+          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
+          <li><a href="biletlerim.html" class="nav-link">Biletlerim</a></li>
+        </ul>
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+      </nav>
+    </header>
+
+    <div class="page-header">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h1 class="h3 mb-0"><i class="fas fa-ticket-alt me-2"></i>Biletlerim</h1>
+          <div id="authInfo" style="display: none;">
+            <span class="me-2" id="userEmailLabel"></span>
+            <button type="button" class="btn btn-cikis btn-sm" id="btnLogout">Çıkış Yap</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container pb-5">
+      <div id="loginPrompt" class="login-prompt" style="display: none;">
+        <i class="fas fa-user-lock fa-3x text-muted mb-3"></i>
+        <h4>Giriş Yapın</h4>
+        <p class="text-muted">Biletlerinizi görmek için e-posta ve şifrenizle giriş yapın.</p>
+        <a href="giris.html?return=biletlerim.html" class="btn btn-giris">Giriş Yap</a>
+      </div>
+
+      <div id="ticketsListContainer" style="display: none;">
+        <div id="ticketsList"></div>
+        <div id="emptyTickets" class="text-center text-white py-5" style="display: none;">
+          <i class="fas fa-ticket-alt fa-3x mb-3 opacity-50"></i>
+          <p class="mb-2">Henüz biletiniz yok.</p>
+          <a href="calendar.html" class="btn btn-light">Etkinliklere Göz At</a>
+        </div>
+      </div>
+
+      <div id="loadingTickets" class="text-center text-white py-5">
+        <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+        <p class="mb-0">Yükleniyor...</p>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        doc,
+        query,
+        where,
+        getDocs,
+        deleteDoc,
+        setDoc,
+        Timestamp,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      function formatDate(val) {
+        if (!val) return "—";
+        try {
+          if (val.toDate) return val.toDate().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+          return new Date(val).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+        } catch (_) {
+          return "—";
+        }
+      }
+
+      /** Koltuk id'sini gösterim için kısalt: ON-A12 → A12, ORTA-K5 → K5, ARKA-T12 → T12 */
+      function formatSeatLabel(seatId) {
+        if (!seatId || typeof seatId !== "string") return seatId;
+        const s = seatId.trim();
+        if (s.startsWith("ON-")) return s.slice(3);
+        if (s.startsWith("ORTA-")) return s.slice(5);
+        if (s.startsWith("ARKA-")) return s.slice(5);
+        return s;
+      }
+
+      function formatSeatIdsForDisplay(seatIds) {
+        if (!Array.isArray(seatIds) || seatIds.length === 0) return "—";
+        return seatIds.map(formatSeatLabel).join(", ");
+      }
+
+      async function cancelTicket(ticketId, eventId, seatIds, cardEl) {
+        const btn = cardEl.querySelector(".ticket-cancel-btn");
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>İptal ediliyor...'; }
+        try {
+          for (const seatId of seatIds) {
+            const seatRef = doc(db, "activity", eventId, "seats", seatId);
+            await setDoc(seatRef, {
+              seatId,
+              eventId,
+              status: "available",
+              reservation: null,
+              updatedAt: Timestamp.now(),
+            }, { merge: true });
+          }
+          await deleteDoc(doc(db, "userTickets", ticketId));
+          cardEl.remove();
+          const listEl = document.getElementById("ticketsList");
+          if (listEl && listEl.children.length === 0) {
+            document.getElementById("emptyTickets").style.display = "block";
+          }
+        } catch (err) {
+          console.error(err);
+          alert("İptal işlemi sırasında hata oluştu.");
+          if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-times me-1"></i>İptal Et'; }
+        }
+      }
+
+      async function loadUserTickets(userId) {
+        const listEl = document.getElementById("ticketsList");
+        const emptyEl = document.getElementById("emptyTickets");
+        listEl.innerHTML = "";
+        try {
+          const q = query(
+            collection(db, "userTickets"),
+            where("userId", "==", userId)
+          );
+          const snap = await getDocs(q);
+          const docs = [];
+          snap.forEach((d) => docs.push({ id: d.id, ...d.data(), _createdAt: d.data().createdAt }));
+          docs.sort((a, b) => {
+            const ta = a._createdAt?.toMillis?.() ?? 0;
+            const tb = b._createdAt?.toMillis?.() ?? 0;
+            return tb - ta;
+          });
+          if (docs.length === 0) {
+            document.getElementById("ticketsListContainer").style.display = "block";
+            document.getElementById("loadingTickets").style.display = "none";
+            emptyEl.style.display = "block";
+            return;
+          }
+          docs.forEach((t) => {
+            const dateStr = formatDate(t.eventDate || t.createdAt);
+            const seatIds = t.seatIds || [];
+            const seatsDisplay = formatSeatIdsForDisplay(seatIds);
+            const card = document.createElement("div");
+            card.className = "ticket-card";
+            card.dataset.ticketId = t.id;
+            card.dataset.eventId = t.eventId || "";
+            card.dataset.seatIds = JSON.stringify(seatIds);
+            card.innerHTML = `
+              <h5>${t.eventName || "Etkinlik"}</h5>
+              <p class="text-muted mb-1"><i class="fas fa-calendar me-1"></i> ${dateStr}</p>
+              ${t.location ? `<p class="text-muted mb-1"><i class="fas fa-map-marker-alt me-1"></i> ${t.location}</p>` : ""}
+              <p class="text-muted mb-1"><i class="fas fa-chair me-1"></i> Koltuklar: ${seatsDisplay}</p>
+              <span class="ticket-badge"><i class="fas fa-check me-1"></i> Bilet Alındı</span>
+              <div class="mt-3">
+                <button type="button" class="btn btn-iptal ticket-cancel-btn"><i class="fas fa-times me-1"></i>İptal Et</button>
+              </div>
+            `;
+            listEl.appendChild(card);
+          });
+          document.getElementById("ticketsListContainer").style.display = "block";
+          document.getElementById("loadingTickets").style.display = "none";
+          emptyEl.style.display = "none";
+        } catch (err) {
+          console.error(err);
+          listEl.innerHTML = '<div class="alert alert-warning">Biletler yüklenirken hata oluştu.</div>';
+          document.getElementById("ticketsListContainer").style.display = "block";
+          document.getElementById("loadingTickets").style.display = "none";
+        }
+      }
+
+      onAuthStateChanged(auth, (user) => {
+        const loginPrompt = document.getElementById("loginPrompt");
+        const ticketsListContainer = document.getElementById("ticketsListContainer");
+        const loadingTickets = document.getElementById("loadingTickets");
+        const authInfo = document.getElementById("authInfo");
+        const userEmailLabel = document.getElementById("userEmailLabel");
+
+        if (!user) {
+          loginPrompt.style.display = "block";
+          ticketsListContainer.style.display = "none";
+          loadingTickets.style.display = "none";
+          authInfo.style.display = "none";
+          return;
+        }
+
+        loginPrompt.style.display = "none";
+        authInfo.style.display = "flex";
+        authInfo.style.alignItems = "center";
+        if (userEmailLabel) userEmailLabel.textContent = user.email || "Kullanıcı";
+        loadUserTickets(user.uid);
+      });
+
+      document.getElementById("btnLogout").addEventListener("click", () => {
+        signOut(auth).then(() => {
+          document.getElementById("loginPrompt").style.display = "block";
+          document.getElementById("ticketsListContainer").style.display = "none";
+          document.getElementById("authInfo").style.display = "none";
+          document.getElementById("ticketsList").innerHTML = "";
+          document.getElementById("loadingTickets").style.display = "none";
+        });
+      });
+
+      document.getElementById("ticketsListContainer").addEventListener("click", (e) => {
+        const btn = e.target.closest(".ticket-cancel-btn");
+        if (!btn) return;
+        const card = btn.closest(".ticket-card");
+        if (!card) return;
+        const ticketId = card.dataset.ticketId;
+        const eventId = card.dataset.eventId;
+        let seatIds = [];
+        try { seatIds = JSON.parse(card.dataset.seatIds || "[]"); } catch (_) {}
+        if (!ticketId || !eventId || seatIds.length === 0) return;
+        if (!confirm("Rezervasyonu iptal etmek istediğinize emin misiniz? Koltuklar boşalacaktır.")) return;
+        cancelTicket(ticketId, eventId, seatIds, card);
+      });
+    </script>
+  </body>
+</html>

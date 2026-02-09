@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Başvuru Formu | EBB Kültür Sanat</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="EBB Kültür ve Sanat Merkezi başvuru formu." />
+    <meta name="keywords" content="başvuru, form, Erzurum, kültür, sanat" />
+    <meta name="author" content="Erzurum Büyükşehir Belediyesi" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/Asset 1.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="css/global.css" />
+
+    <!-- Styles -->
+    <style>
+      :root {
+        --primary-color: #2c5aa0;
+        --secondary-color: #4a90c2;
+        --accent-color: #f39c12;
+        --text-dark: #2c3e50;
+        --text-light: #7f8c8d;
+        --bg-light: #f8f9fa;
+        --bg-white: #ffffff;
+        --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+        --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+        --border-radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+        background-color: var(--bg-light);
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .form-header h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 15px;
+      }
+
+      .form-header p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+      }
+
+      .form-section {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow-light);
+      }
+
+      .form-section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--bg-light);
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .form-label .required {
+        color: #dc3545;
+        margin-left: 3px;
+      }
+
+      .form-control,
+      .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+      }
+
+      .form-control.error {
+        border-color: #dc3545;
+      }
+
+      .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .help-text {
+        color: var(--text-light);
+        font-size: 0.875rem;
+        margin-top: 5px;
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: none;
+        border: 1px solid #c3e6cb;
+      }
+
+      .hero-image-section {
+        width: 100%;
+        aspect-ratio: 3 / 1;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 40px;
+        border-radius: var(--border-radius);
+      }
+
+      .hero-image-section img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .age-warning {
+        background: #fff3cd;
+        color: #856404;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ffeaa7;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px 15px;
+        }
+
+        .form-section {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Success Message -->
+      <div class="success-message" id="successMessage">
+        <h5><i class="fas fa-check-circle me-2"></i>Başvurunuz Başarıyla Gönderildi!</h5>
+        <p class="mb-0">Başvurunuz alınmıştır. En kısa sürede size dönüş yapılacaktır.</p>
+      </div>
+
+      <!-- Form Header -->
+      <div class="form-header" id="formHeader">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Yükleniyor...</span>
+        </div>
+      </div>
+
+      <!-- Hero Image -->
+      <div class="hero-image-section" id="heroImageSection" style="display: none;">
+        <img id="heroImage" src="" alt="Form Görseli" />
+      </div>
+
+      <!-- Age Warning -->
+      <div class="age-warning" id="ageWarning" style="display: none;">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Yaş Sınırlaması:</strong> Bu form <span id="ageRangeText"></span> yaş aralığındaki kişiler için geçerlidir.
+      </div>
+
+      <!-- Form -->
+      <form id="applicationForm">
+        <div id="formSections">
+          <!-- Form sections will be dynamically generated here -->
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <i class="fas fa-paper-plane me-2"></i>Başvuruyu Gönder
+        </button>
+      </form>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        doc,
+        getDoc,
+        addDoc,
+        Timestamp,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      // Get form ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const formId = urlParams.get("id");
+
+      if (!formId) {
+        document.getElementById("formHeader").innerHTML = `
+          <h1>Hata</h1>
+          <p>Form ID bulunamadı.</p>
+        `;
+        throw new Error("Form ID not found");
+      }
+
+      // Standard field configurations
+      const standardFieldConfigs = {
+        firstName: {
+          type: "text",
+          label: "Ad Soyad",
+          placeholder: "Adınız ve soyadınız",
+          icon: "fa-user",
+        },
+        email: {
+          type: "email",
+          label: "E-posta",
+          placeholder: "ornek@email.com",
+          icon: "fa-envelope",
+        },
+        phone: {
+          type: "tel",
+          label: "Telefon",
+          placeholder: "05XX XXX XX XX",
+          icon: "fa-phone",
+        },
+        birthDate: {
+          type: "date",
+          label: "Doğum Tarihi",
+          icon: "fa-calendar",
+        },
+        tcNo: {
+          type: "text",
+          label: "TC Kimlik No",
+          placeholder: "11 haneli TC kimlik numaranız",
+          icon: "fa-id-card",
+          maxLength: 11,
+        },
+        gender: {
+          type: "select",
+          label: "Cinsiyet",
+          options: [
+            { value: "bay", label: "Bay" },
+            { value: "bayan", label: "Bayan" },
+          ],
+          icon: "fa-venus-mars",
+        },
+        address: {
+          type: "textarea",
+          label: "Adres",
+          placeholder: "Adres bilgilerinizi giriniz",
+          icon: "fa-map-marker-alt",
+        },
+        city: {
+          type: "text",
+          label: "İl / İlçe",
+          placeholder: "İl ve ilçe bilgileriniz",
+          icon: "fa-city",
+        },
+        education: {
+          type: "select",
+          label: "Eğitim Durumu",
+          options: [
+            { value: "ilkokul", label: "İlkokul" },
+            { value: "ortaokul", label: "Ortaokul" },
+            { value: "lise", label: "Lise" },
+            { value: "universite", label: "Üniversite" },
+            { value: "mezun", label: "Mezun" },
+          ],
+          icon: "fa-graduation-cap",
+        },
+        isStudent: {
+          type: "select",
+          label: "Öğrenci misiniz?",
+          options: [
+            { value: "evet", label: "Evet" },
+            { value: "hayir", label: "Hayır" },
+          ],
+          icon: "fa-user-graduate",
+        },
+        experience: {
+          type: "select",
+          label: "Deneyim Seviyesi",
+          options: [
+            { value: "baslangic", label: "Başlangıç" },
+            { value: "orta", label: "Orta" },
+            { value: "ileri", label: "İleri" },
+          ],
+          icon: "fa-star",
+        },
+        notes: {
+          type: "textarea",
+          label: "Açıklama / Not",
+          placeholder: "Eklemek istediğiniz notlar...",
+          icon: "fa-comment",
+        },
+        kvkk: {
+          type: "checkbox",
+          label: "KVKK Aydınlatma Metnini okudum ve kabul ediyorum",
+          icon: "fa-shield-alt",
+        },
+        photoVideo: {
+          type: "checkbox",
+          label: "Fotoğraf ve video çekimine izin veriyorum",
+          icon: "fa-camera",
+        },
+        notification: {
+          type: "checkbox",
+          label: "SMS ve E-posta ile bilgilendirme izni veriyorum",
+          icon: "fa-bell",
+        },
+        profilePhoto: {
+          type: "file",
+          label: "Vesikalık Fotoğraf",
+          accept: "image/jpeg,image/png",
+          help: "Net, yüzünüzün göründüğü, iyi ışıklandırılmış bir fotoğraf yükleyiniz. Maksimum 5MB.",
+          icon: "fa-image",
+        },
+      };
+
+      // Load form schema
+      async function loadFormSchema() {
+        try {
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          let formSchema = null;
+
+          formsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.id === formId) {
+              formSchema = { id: doc.id, ...data };
+            }
+          });
+
+          if (!formSchema) {
+            document.getElementById("formHeader").innerHTML = `
+              <h1>Form Bulunamadı</h1>
+              <p>Belirtilen form bulunamadı.</p>
+            `;
+            return;
+          }
+
+          // Set page title
+          document.title = `${formSchema.title} | EBB Kültür Sanat`;
+
+          // Render header
+          document.getElementById("formHeader").innerHTML = `
+            <h1>${formSchema.title}</h1>
+            <p>${formSchema.description}</p>
+          `;
+
+          // Show hero image if exists
+          if (formSchema.posterURL) {
+            document.getElementById("heroImage").src = formSchema.posterURL;
+            document.getElementById("heroImageSection").style.display = "block";
+          }
+
+          // Show age warning if age range is set
+          if (formSchema.minAge || formSchema.maxAge) {
+            const minAge = formSchema.minAge || 0;
+            const maxAge = formSchema.maxAge || 100;
+            document.getElementById("ageRangeText").textContent = `${minAge}-${maxAge}`;
+            document.getElementById("ageWarning").style.display = "block";
+          }
+
+          // Render form fields
+          renderFormFields(formSchema);
+
+          // Store form schema globally
+          window.formSchema = formSchema;
+        } catch (error) {
+          console.error("Error loading form schema:", error);
+          document.getElementById("formHeader").innerHTML = `
+            <h1>Hata</h1>
+            <p>Form yüklenirken bir hata oluştu.</p>
+          `;
+        }
+      }
+
+      // Render form fields
+      function renderFormFields(schema) {
+        const sections = {
+          identity: { title: "Kimlik Bilgileri", fields: [] },
+          contact: { title: "İletişim Bilgileri", fields: [] },
+          demographic: { title: "Demografik Bilgiler", fields: [] },
+          course: { title: "Kurs/Etkinlik Bilgileri", fields: [] },
+          files: { title: "Dosyalar", fields: [] },
+          approvals: { title: "Onaylar", fields: [] },
+        };
+
+        const standardFields = schema.standardFields || {};
+        const customFields = schema.customFields || [];
+
+        // Categorize standard fields
+        Object.keys(standardFields).forEach((fieldId) => {
+          const state = standardFields[fieldId];
+          if (state === "hidden") return;
+
+          const config = standardFieldConfigs[fieldId];
+          if (!config) return;
+
+          const required = state === "required";
+          let section = "identity";
+
+          if (["email", "phone"].includes(fieldId)) {
+            section = "contact";
+          } else if (["birthDate", "gender", "city", "education", "isStudent"].includes(fieldId)) {
+            section = "demographic";
+          } else if (["experience", "notes"].includes(fieldId)) {
+            section = "course";
+          } else if (fieldId === "profilePhoto") {
+            section = "files";
+          } else if (["kvkk", "photoVideo", "notification"].includes(fieldId)) {
+            section = "approvals";
+          }
+
+          sections[section].fields.push({
+            id: fieldId,
+            config,
+            required,
+            type: "standard",
+          });
+        });
+
+        // Add custom fields
+        customFields
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .forEach((field) => {
+            sections.course.fields.push({
+              id: field.id,
+              config: field,
+              required: field.required,
+              type: "custom",
+            });
+          });
+
+        // Render sections
+        const container = document.getElementById("formSections");
+        container.innerHTML = Object.keys(sections)
+          .map((sectionKey) => {
+            const section = sections[sectionKey];
+            if (section.fields.length === 0) return "";
+
+            return `
+              <div class="form-section">
+                <h2 class="form-section-title">
+                  <i class="fas fa-${getSectionIcon(sectionKey)} me-2"></i>${section.title}
+                </h2>
+                ${section.fields.map((field) => renderField(field)).join("")}
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function getSectionIcon(sectionKey) {
+        const icons = {
+          identity: "user",
+          contact: "phone",
+          demographic: "users",
+          course: "book",
+          files: "file",
+          approvals: "check-circle",
+        };
+        return icons[sectionKey] || "circle";
+      }
+
+      function renderField(field) {
+        const { id, config, required, type } = field;
+        const label = config.label || config.label;
+        const placeholder = config.placeholder || "";
+        const help = config.help || "";
+        const icon = config.icon ? `<i class="fas ${config.icon} me-2"></i>` : "";
+
+        let fieldHTML = "";
+
+        switch (config.type) {
+          case "text":
+          case "email":
+          case "tel":
+          case "date":
+          case "number":
+            fieldHTML = `
+              <div class="form-group">
+                <label class="form-label">
+                  ${icon}${label}${required ? '<span class="required">*</span>' : ""}
+                </label>
+                <input
+                  type="${config.type}"
+                  class="form-control"
+                  id="${id}"
+                  name="${id}"
+                  placeholder="${placeholder}"
+                  ${required ? "required" : ""}
+                  ${config.maxLength ? `maxlength="${config.maxLength}"` : ""}
+                />
+                ${help ? `<div class="help-text">${help}</div>` : ""}
+                <div class="error-message" id="${id}-error"></div>
+              </div>
+            `;
+            break;
+
+          case "textarea":
+            fieldHTML = `
+              <div class="form-group">
+                <label class="form-label">
+                  ${icon}${label}${required ? '<span class="required">*</span>' : ""}
+                </label>
+                <textarea
+                  class="form-control"
+                  id="${id}"
+                  name="${id}"
+                  rows="4"
+                  placeholder="${placeholder}"
+                  ${required ? "required" : ""}
+                ></textarea>
+                ${help ? `<div class="help-text">${help}</div>` : ""}
+                <div class="error-message" id="${id}-error"></div>
+              </div>
+            `;
+            break;
+
+          case "select":
+            const options = config.options || [];
+            fieldHTML = `
+              <div class="form-group">
+                <label class="form-label">
+                  ${icon}${label}${required ? '<span class="required">*</span>' : ""}
+                </label>
+                <select
+                  class="form-select"
+                  id="${id}"
+                  name="${id}"
+                  ${required ? "required" : ""}
+                >
+                  <option value="">Seçiniz...</option>
+                  ${options.map((opt) => `<option value="${opt.value}">${opt.label || opt}</option>`).join("")}
+                </select>
+                ${help ? `<div class="help-text">${help}</div>` : ""}
+                <div class="error-message" id="${id}-error"></div>
+              </div>
+            `;
+            break;
+
+          case "radio":
+            const radioOptions = config.options || [];
+            fieldHTML = `
+              <div class="form-group">
+                <label class="form-label">
+                  ${icon}${label}${required ? '<span class="required">*</span>' : ""}
+                </label>
+                ${radioOptions
+                  .map(
+                    (opt, idx) => `
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="${id}"
+                      id="${id}_${idx}"
+                      value="${typeof opt === "string" ? opt : opt.value}"
+                      ${required ? "required" : ""}
+                    />
+                    <label class="form-check-label" for="${id}_${idx}">
+                      ${typeof opt === "string" ? opt : opt.label || opt.value}
+                    </label>
+                  </div>
+                `
+                  )
+                  .join("")}
+                ${help ? `<div class="help-text">${help}</div>` : ""}
+                <div class="error-message" id="${id}-error"></div>
+              </div>
+            `;
+            break;
+
+          case "checkbox-group":
+            const checkboxOptions = config.options || [];
+            fieldHTML = `
+              <div class="form-group">
+                <label class="form-label">
+                  ${icon}${label}${required ? '<span class="required">*</span>' : ""}
+                </label>
+                ${checkboxOptions
+                  .map(
+                    (opt, idx) => `
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="${id}[]"
+                      id="${id}_${idx}"
+                      value="${typeof opt === "string" ? opt : opt.value}"
+                    />
+                    <label class="form-check-label" for="${id}_${idx}">
+                      ${typeof opt === "string" ? opt : opt.label || opt.value}
+                    </label>
+                  </div>
+                `
+                  )
+                  .join("")}
+                ${help ? `<div class="help-text">${help}</div>` : ""}
+                <div class="error-message" id="${id}-error"></div>
+              </div>
+            `;
+            break;
+
+          case "checkbox":
+            fieldHTML = `
+              <div class="form-group">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="${id}"
+                    name="${id}"
+                    ${required ? "required" : ""}
+                  />
+                  <label class="form-check-label" for="${id}">
+                    ${icon}${label}${required ? '<span class="required">*</span>' : ""}
+                  </label>
+                </div>
+                ${help ? `<div class="help-text">${help}</div>` : ""}
+                <div class="error-message" id="${id}-error"></div>
+              </div>
+            `;
+            break;
+
+          case "file":
+            // Determine accept attribute from fileType or use config.accept
+            let fileAccept = config.accept || "*/*";
+            if (config.fileType && !config.accept) {
+              switch (config.fileType) {
+                case "image":
+                  fileAccept = "image/jpeg,image/png,image/gif,image/jpg";
+                  break;
+                case "pdf":
+                  fileAccept = "application/pdf";
+                  break;
+                case "excel":
+                  fileAccept = "application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                  break;
+                case "word":
+                  fileAccept = "application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                  break;
+                case "all":
+                  fileAccept = "*/*";
+                  break;
+              }
+            }
+            
+            // Determine help text based on file type
+            let fileHelp = help;
+            if (!fileHelp && config.fileType) {
+              switch (config.fileType) {
+                case "image":
+                  fileHelp = "Lütfen JPG, PNG veya GIF formatında bir resim yükleyin.";
+                  break;
+                case "pdf":
+                  fileHelp = "Lütfen PDF formatında bir dosya yükleyin.";
+                  break;
+                case "excel":
+                  fileHelp = "Lütfen Excel formatında bir dosya yükleyin (XLS, XLSX).";
+                  break;
+                case "word":
+                  fileHelp = "Lütfen Word formatında bir dosya yükleyin (DOC, DOCX).";
+                  break;
+              }
+            }
+            
+            fieldHTML = `
+              <div class="form-group">
+                <label class="form-label">
+                  ${icon}${label}${required ? '<span class="required">*</span>' : ""}
+                </label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="${id}"
+                  name="${id}"
+                  accept="${fileAccept}"
+                  ${required ? "required" : ""}
+                />
+                ${fileHelp ? `<div class="help-text">${fileHelp}</div>` : ""}
+                <div class="error-message" id="${id}-error"></div>
+              </div>
+            `;
+            break;
+        }
+
+        return fieldHTML;
+      }
+
+      // Form submission
+      document.getElementById("applicationForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const submitBtn = document.getElementById("submitBtn");
+        const successMessage = document.getElementById("successMessage");
+
+        // Validate KVKK is checked
+        const kvkkInput = document.getElementById("kvkk");
+        if (kvkkInput && !kvkkInput.checked) {
+          alert("KVKK Aydınlatma Metnini okudum ve kabul ediyorum alanını işaretlemeniz zorunludur.");
+          kvkkInput.focus();
+          return;
+        }
+
+        // Validate age if required
+        const schema = window.formSchema;
+        if (schema && (schema.minAge || schema.maxAge)) {
+          const birthDateInput = document.getElementById("birthDate");
+          if (birthDateInput && birthDateInput.value) {
+            const birthDate = new Date(birthDateInput.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+              age--;
+            }
+
+            if (schema.minAge && age < schema.minAge) {
+              alert(`Bu form için minimum yaş ${schema.minAge}'dir.`);
+              return;
+            }
+            if (schema.maxAge && age > schema.maxAge) {
+              alert(`Bu form için maksimum yaş ${schema.maxAge}'dir.`);
+              return;
+            }
+          }
+        }
+
+        // Collect form data
+        const formData = new FormData(form);
+        const data = {};
+        const files = {};
+
+        // Process form data
+        for (const [key, value] of formData.entries()) {
+          if (value instanceof File) {
+            files[key] = value;
+          } else if (key.endsWith("[]")) {
+            const fieldName = key.replace("[]", "");
+            if (!data[fieldName]) data[fieldName] = [];
+            data[fieldName].push(value);
+          } else {
+            data[key] = value;
+          }
+        }
+
+        // Upload files
+        try {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Gönderiliyor...';
+
+          for (const [fieldName, file] of Object.entries(files)) {
+            if (file) {
+              const filePath = `formApplications/${formId}/${Date.now()}_${file.name}`;
+              const fileRef = ref(storage, filePath);
+              await uploadBytes(fileRef, file);
+              const downloadURL = await getDownloadURL(fileRef);
+              data[fieldName] = downloadURL;
+            }
+          }
+
+          // Submit to Firestore
+          await addDoc(collection(db, "formApplications"), {
+            formType: formId,
+            ...data,
+            createdAt: Timestamp.now(),
+            status: "pending",
+          });
+
+          // Show success message
+          successMessage.style.display = "block";
+          form.reset();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+
+          setTimeout(() => {
+            successMessage.style.display = "none";
+          }, 10000);
+        } catch (error) {
+          console.error("Form submission error:", error);
+          alert("Başvurunuz gönderilirken bir hata oluştu. Lütfen tekrar deneyin.");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Başvuruyu Gönder';
+        }
+      });
+
+      // Load form on page load
+      loadFormSchema();
+    </script>
+  </body>
+</html>
+

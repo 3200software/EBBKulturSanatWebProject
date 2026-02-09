@@ -18,6 +18,45 @@
     <link rel="stylesheet" href="css/global.css" />
 
     <style>
+      :root {
+        --primary-color: #2c5aa0;
+        --secondary-color: #4a90c2;
+        --accent-color: #f39c12;
+        --text-dark: #2c3e50;
+        --text-light: #7f8c8d;
+        --bg-light: #f8f9fa;
+        --bg-white: #ffffff;
+        --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+        --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+        --shadow-heavy: 0 8px 30px rgba(0, 0, 0, 0.2);
+        --border-radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+        background-color: var(--bg-white);
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
       body {
         font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
       }
@@ -110,34 +149,28 @@
     <!-- Header -->
     <header class="header">
       <nav class="nav container">
-        <a href="#" class="logo">
+        <a href="index.html" class="logo">
           <img src="assets/Asset 1.png" alt="EBB Logo" />
           <span>EBB Kültür Sanat</span>
         </a>
 
         <ul class="nav-menu" id="navMenu">
-          <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
+          <li><a href="index.html" class="nav-link">Ana Sayfa</a></li>
+          <li><a href="calendar.html" class="nav-link">Etkinliklermiz</a></li>
           <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
-          <li><a href="news.html" class="nav-link">Haberler</a></li>
-          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
-        </ul>
-
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-          <i class="fas fa-bars"></i>
-        </button>
-      </nav>
-    </header>
-    <header class="header">
-      <nav class="nav container">
-        <a href="#" class="logo">
-          <img src="assets/Asset 1.png" alt="EBB Logo" />
-          <span>EBB Kültür Sanat</span>
-        </a>
-
-        <ul class="nav-menu" id="navMenu">
-          <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
-          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
-          <li><a href="news.html" class="nav-link">Haberler</a></li>
+          <li><a href="news-list.html" class="nav-link">Haberler</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="#" class="nav-link has-dropdown">Formlar</a>
+            <ul class="dropdown-menu" id="formsDropdown">
+              <li>
+                <a
+                  href="anadolunun-renkleri-form.html"
+                  class="dropdown-item"
+                  >Anadolunun Renkleri Başvuru Formu</a
+                >
+              </li>
+            </ul>
+          </li>
           <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
         </ul>
 
@@ -422,5 +455,76 @@
     </footer>
     <script src="js/index.js"></script>
     <script src="js/index.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // Load active forms for dropdown
+      async function loadActiveForms() {
+        try {
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          const activeForms = [];
+          
+          formsSnapshot.forEach((doc) => {
+            const formData = doc.data();
+            const isActive = formData.isActive !== false; // Default to true
+            
+            // Check if form has expired
+            let isExpired = false;
+            if (formData.endDate) {
+              const endDate = formData.endDate?.toDate 
+                ? formData.endDate.toDate() 
+                : new Date(formData.endDate);
+              isExpired = new Date() > endDate;
+            }
+            
+            // Only add active and not expired forms
+            if (isActive && !isExpired) {
+              activeForms.push({
+                id: formData.id || doc.id,
+                title: formData.title || "Form",
+              });
+            }
+          });
+
+          // Update dropdown menu
+          const dropdownMenu = document.getElementById("formsDropdown");
+          if (dropdownMenu && activeForms.length > 0) {
+            dropdownMenu.innerHTML = activeForms
+              .map(
+                (form) =>
+                  `<li><a href="form-application.html?id=${form.id}" class="dropdown-item">${form.title}</a></li>`
+              )
+              .join("");
+          } else if (dropdownMenu && activeForms.length === 0) {
+            dropdownMenu.innerHTML =
+              '<li><span class="dropdown-item text-muted">Aktif form bulunmamaktadır</span></li>';
+          }
+        } catch (error) {
+          console.error("Error loading active forms:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadActiveForms();
+      });
+    </script>
   </body>
 </html>

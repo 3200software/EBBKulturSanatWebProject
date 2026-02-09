@@ -1,0 +1,3608 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Başvuru Formları Yönetimi</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/tablet.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .offcanvas {
+        transform: translateX(-100%);
+        visibility: visible;
+        transition: transform 0.3s ease;
+        width: 400px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        height: 100vh;
+        background-color: white;
+      }
+
+      .offcanvas.show {
+        transform: translateX(0);
+      }
+
+      #mainContainer {
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        overflow-x: auto;
+        padding-bottom: 60px;
+      }
+
+      #mainContainer.shifted {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+      }
+
+      #menuButton {
+        display: inline-block;
+      }
+
+      @media (max-width: 992px) {
+        .offcanvas {
+          transform: translateX(-100%);
+        }
+
+        .offcanvas.show {
+          transform: translateX(0);
+        }
+
+        #mainContainer.shifted {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        #menuButton {
+          display: inline-block;
+        }
+
+        .menu-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+
+        .menu-overlay.active {
+          display: block;
+        }
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow-x: auto;
+        padding: 20px;
+      }
+
+      footer {
+        height: 50px;
+        background-color: var(--bs-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+
+      .container-fluid {
+        margin-bottom: 70px;
+      }
+
+      .stats-card {
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .stats-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .form-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .form-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: #007bff;
+      }
+
+      .form-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .form-card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+      }
+
+      .form-card-badge {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .form-card-description {
+        color: #6c757d;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .form-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid #e9ecef;
+      }
+
+      .form-card-stats {
+        display: flex;
+        gap: 20px;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+
+      .stat-item i {
+        color: #007bff;
+      }
+
+      .modal-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+      }
+
+      .application-item {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #fff;
+        transition: all 0.3s ease;
+      }
+
+      .application-item:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-color: #007bff;
+      }
+
+      .application-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .application-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #2c3e50;
+      }
+
+      .application-status {
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .status-pending {
+        background-color: #ffc107;
+        color: #856404;
+      }
+
+      .status-approved {
+        background-color: #28a745;
+        color: white;
+      }
+
+      .status-rejected {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      .application-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+
+      .detail-item i {
+        color: #007bff;
+        width: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .offcanvas {
+          width: 300px;
+        }
+
+        #mainContainer.shifted {
+          margin-left: 300px;
+          width: calc(100% - 300px);
+        }
+
+        .form-card-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .application-details {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Form Builder Styles */
+      .field-item {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: #f8f9fa;
+        position: relative;
+      }
+
+      .field-item:hover {
+        border-color: #007bff;
+      }
+
+      .field-item.dragging {
+        opacity: 0.5;
+      }
+
+      .field-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .field-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+      }
+
+      .field-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .field-toggle {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .toggle-btn {
+        padding: 5px 12px;
+        border: 1px solid #dee2e6;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+      }
+
+      .toggle-btn:hover {
+        background: #f8f9fa;
+      }
+
+      .toggle-btn.active {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+      }
+
+      .toggle-btn.required {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+      }
+
+      .custom-field-item {
+        border: 2px dashed #007bff;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: white;
+        cursor: move;
+      }
+
+      .custom-field-item:hover {
+        border-color: #0056b3;
+        background: #f0f7ff;
+      }
+
+      .drag-handle {
+        cursor: move;
+        color: #6c757d;
+        margin-right: 10px;
+      }
+
+      .drag-handle:hover {
+        color: #007bff;
+      }
+
+      .poster-preview-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .aspect-ratio-check {
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+
+      .aspect-ratio-check.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .aspect-ratio-check.warning {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
+
+      .aspect-ratio-check.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div
+        class="offcanvas offcanvas-start"
+        data-bs-backdrop="false"
+        id="adminPanelSideMenu"
+      >
+        <div
+          class="offcanvas-header d-flex justify-content-start"
+          style="margin-top: 2%"
+        >
+          <div>
+            <img
+              src="assets/274348852_320609883437173_4953649348556891409_n.jpg"
+              alt="profilResmi"
+              width="50px"
+              height="50px"
+              style="border-radius: 50px"
+            />
+          </div>
+          <div class="offcanvas-title text-primary ms-4 h4">Yönetim Paneli</div>
+        </div>
+
+        <div
+          class="offcanvas-body offcanvas-primary d-flex align-items-top flex-column"
+        >
+          <div class="list-group mb-auto p2">
+            <a
+              href="activity.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,2,2a"
+              >Etkinlikler
+            </a>
+            <a
+              href="staff.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,10,10a"
+              >Ekip</a
+            >
+            <a
+              href="salooncontrol.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,3,3a"
+              >Salon Takip</a
+            >
+            <a
+              href="news.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,5,5a"
+              >Haberler</a
+            >
+            <a
+              href="costume.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,9,9a"
+              >Kostümler</a
+            >
+            <a
+              href="library.html"
+              class="list-group-item list-group-item-action"
+              data-required-permissions="1,1a,8,8a"
+              >Kütüphane</a
+            >
+            <a
+              href="formlar.html"
+              class="list-group-item list-group-item-action active"
+              data-required-permissions="1,1a"
+              >Başvuru Formları</a
+            >
+            <a
+              href="messages.html"
+              class="list-group-item list-group-item-action messages-link"
+              style="display: none"
+              data-required-permissions="1,1a,2,2a"
+              >Mesajlar</a
+            >
+          </div>
+
+          <div class="list-group">
+            <button
+              class="list-group-item list-group-item-action bg-danger text-white"
+              id="logoutButton"
+            >
+              Çıkış Yap
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+      <div class="container-fluid" id="mainContainer">
+        <div
+          class="containerTitle d-flex justify-content-between border-bottom border-primary bg-white"
+        >
+          <button class="btn btn-primary mb-3 mt-3" id="menuButton">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="h3 text-primary m-3 pb-0 flex-fill">
+            Başvuru Formları Yönetimi
+          </div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="row mt-4">
+          <div class="col-md-4 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #007bff, #0056b3)"
+            >
+              <div class="stats-number" id="totalForms">0</div>
+              <div class="stats-label">Toplam Form</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #28a745, #20c997)"
+            >
+              <div class="stats-number" id="totalApplications">0</div>
+              <div class="stats-label">Toplam Başvuru</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div
+              class="stats-card"
+              style="background: linear-gradient(135deg, #ffc107, #fd7e14)"
+            >
+              <div class="stats-number" id="pendingApplications">0</div>
+              <div class="stats-label">Bekleyen Başvurular</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Kartları -->
+        <div class="row" id="formsContainer">
+          <div class="col-12">
+            <div class="card">
+              <div
+                class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0">
+                  <i class="fas fa-file-alt me-2"></i>Başvuru Formları
+                </h5>
+                <div>
+                  <button
+                    id="newFormBtn"
+                    class="btn btn-success btn-sm me-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#newFormModal"
+                    style="display: none"
+                  >
+                    <i class="fas fa-plus me-1"></i>Yeni Form Ekle
+                  </button>
+                  <button
+                    class="btn btn-outline-light btn-sm"
+                    onclick="loadForms()"
+                  >
+                    <i class="fas fa-sync-alt me-1"></i>Yenile
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="formsList">
+                  <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                    <p class="mt-2 text-muted">Formlar yükleniyor...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Yeni Form Ekle Modal -->
+    <div
+      class="modal fade"
+      id="newFormModal"
+      tabindex="-1"
+      aria-labelledby="newFormModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newFormModalLabel">
+              <i class="fas fa-plus-circle me-2"></i>Yeni Form Oluştur
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="newFormForm">
+              <!-- Temel Form Bilgileri -->
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Temel Form Bilgileri
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="formTitle" class="form-label"
+                        >Form Başlığı <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="formTitle"
+                        placeholder="Örn: Anadolunun Renkleri Başvuru Formu"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="formDescription" class="form-label"
+                      >Açıklama <span class="text-danger">*</span></label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="formDescription"
+                      rows="3"
+                      placeholder="Form hakkında açıklama giriniz..."
+                      required
+                    ></textarea>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 mb-3">
+                      <label for="formPoster" class="form-label"
+                        >Form Afişi/Görseli (Detay Sayfası için)</label
+                      >
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="formPoster"
+                        accept="image/*"
+                      />
+                      <small class="form-text text-muted">
+                        Önerilen boyut: 1500x500 (3:1 oran) - Sadece form detay
+                        sayfasında görünür
+                      </small>
+                      <div
+                        id="posterPreview"
+                        class="mt-2"
+                        style="display: none"
+                      >
+                        <img
+                          id="posterPreviewImg"
+                          src=""
+                          alt="Önizleme"
+                          class="img-fluid"
+                          style="max-height: 200px; border-radius: 8px"
+                        />
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-danger mt-2"
+                          onclick="clearPosterPreview()"
+                        >
+                          <i class="fas fa-times me-1"></i>Kaldır
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="formWideImageFile" class="form-label"
+                        >Geniş Format Fotoğraf (Masaüstü)</label
+                      >
+                      <div class="input-group mb-2">
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="formWideImageFile"
+                          accept="image/*"
+                        />
+                        <button
+                          class="btn btn-outline-secondary"
+                          type="button"
+                          id="uploadWideImageBtn"
+                        >
+                          <i class="fas fa-upload"></i> Yükle
+                        </button>
+                      </div>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="formWideImage"
+                        placeholder="Yüklenen geniş format görsel URL'si"
+                        readonly
+                      />
+                      <small class="form-text text-muted">
+                        Masaüstü görünümü için - Önerilen oran: 3:1 veya geniş
+                        format
+                      </small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="formSquareImageFile" class="form-label"
+                        >Kare Format Fotoğraf (Mobil)</label
+                      >
+                      <div class="input-group mb-2">
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="formSquareImageFile"
+                          accept="image/*"
+                        />
+                        <button
+                          class="btn btn-outline-secondary"
+                          type="button"
+                          id="uploadSquareImageBtn"
+                        >
+                          <i class="fas fa-upload"></i> Yükle
+                        </button>
+                      </div>
+                      <input
+                        type="url"
+                        class="form-control"
+                        id="formSquareImage"
+                        placeholder="Yüklenen kare format görsel URL'si"
+                        readonly
+                      />
+                      <small class="form-text text-muted">
+                        Mobil görünümü için - Önerilen oran: 1:1 (örnek 800x800
+                        piksel)
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hedef Kitle ve Yaş Aralığı -->
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h6 class="mb-0">
+                    <i class="fas fa-users me-2"></i>Hedef Kitle ve Yaş Aralığı
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label"
+                      >Hedef Kitle <span class="text-danger">*</span></label
+                    >
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="targetAudience"
+                        id="audienceAll"
+                        value="all"
+                        checked
+                      />
+                      <label class="form-check-label" for="audienceAll">
+                        Herkese Açık
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="targetAudience"
+                        id="audienceMale"
+                        value="male"
+                      />
+                      <label class="form-check-label" for="audienceMale">
+                        Sadece Erkekler
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="targetAudience"
+                        id="audienceFemale"
+                        value="female"
+                      />
+                      <label class="form-check-label" for="audienceFemale">
+                        Sadece Kadınlar
+                      </label>
+                    </div>
+                    <div class="mt-2">
+                      <label class="form-label"
+                        >Ek Hedef Kitle Etiketleri</label
+                      >
+                      <div class="d-flex flex-wrap gap-2">
+                        <input
+                          type="checkbox"
+                          class="btn-check"
+                          id="tagChild"
+                          value="child"
+                        />
+                        <label
+                          class="btn btn-outline-primary btn-sm"
+                          for="tagChild"
+                          >Çocuk</label
+                        >
+                        <input
+                          type="checkbox"
+                          class="btn-check"
+                          id="tagYouth"
+                          value="youth"
+                        />
+                        <label
+                          class="btn btn-outline-primary btn-sm"
+                          for="tagYouth"
+                          >Genç</label
+                        >
+                        <input
+                          type="checkbox"
+                          class="btn-check"
+                          id="tagAdult"
+                          value="adult"
+                        />
+                        <label
+                          class="btn btn-outline-primary btn-sm"
+                          for="tagAdult"
+                          >Yetişkin</label
+                        >
+                        <input
+                          type="checkbox"
+                          class="btn-check"
+                          id="tagSenior"
+                          value="senior"
+                        />
+                        <label
+                          class="btn btn-outline-primary btn-sm"
+                          for="tagSenior"
+                          >Emekli</label
+                        >
+                        <input
+                          type="checkbox"
+                          class="btn-check"
+                          id="tagDisabled"
+                          value="disabled"
+                        />
+                        <label
+                          class="btn btn-outline-primary btn-sm"
+                          for="tagDisabled"
+                          >Engelli</label
+                        >
+                        <input
+                          type="checkbox"
+                          class="btn-check"
+                          id="tagStudent"
+                          value="student"
+                        />
+                        <label
+                          class="btn btn-outline-primary btn-sm"
+                          for="tagStudent"
+                          >Öğrenci</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="minAge" class="form-label">Minimum Yaş</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="minAge"
+                        min="0"
+                        max="100"
+                        placeholder="Örn: 18"
+                      />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="maxAge" class="form-label"
+                        >Maksimum Yaş</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="maxAge"
+                        min="0"
+                        max="100"
+                        placeholder="Örn: 65"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slider Görünürlük -->
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h6 class="mb-0">
+                    <i class="fas fa-images me-2"></i>Slider Görünürlük
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="showInSlider"
+                      />
+                      <label class="form-check-label" for="showInSlider">
+                        <strong>Sliderda Göster</strong>
+                        <br />
+                        <small class="text-muted"
+                          >Aktif olduğunda form ana sayfadaki slider'da görünür
+                          ve tıklanınca direkt başvuru formu açılır</small
+                        >
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Standart Alanlar -->
+              <div class="card mb-4">
+                <div
+                  class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+                >
+                  <h6 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Standart Alanlar
+                  </h6>
+                  <small
+                    >Her alan için: Gizli / Göster / Göster + Zorunlu</small
+                  >
+                </div>
+                <div class="card-body">
+                  <div id="standardFieldsContainer">
+                    <!-- Standart alanlar buraya dinamik olarak eklenecek -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Özel Alanlar -->
+              <div class="card mb-4">
+                <div
+                  class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+                >
+                  <h6 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>Özel Alanlar
+                  </h6>
+                  <button
+                    type="button"
+                    class="btn btn-light btn-sm"
+                    onclick="addCustomField()"
+                  >
+                    <i class="fas fa-plus me-1"></i>Özel Alan Ekle
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="customFieldsContainer">
+                    <p class="text-muted text-center py-3">
+                      <i class="fas fa-info-circle me-2"></i>
+                      Henüz özel alan eklenmedi. "Özel Alan Ekle" butonuna
+                      tıklayarak alan ekleyebilirsiniz.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              İptal
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="saveNewForm()"
+              id="saveFormBtn"
+            >
+              <i class="fas fa-save me-1"></i>Formu Kaydet
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Özel Alan Ekle Modal -->
+    <div
+      class="modal fade"
+      id="customFieldModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Özel Alan Ekle</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="customFieldForm">
+              <div class="mb-3">
+                <label class="form-label"
+                  >Alan Tipi <span class="text-danger">*</span></label
+                >
+                <select class="form-select" id="fieldType" required>
+                  <option value="">Seçiniz...</option>
+                  <option value="text">Kısa Metin</option>
+                  <option value="textarea">Uzun Metin</option>
+                  <option value="number">Sayı</option>
+                  <option value="date">Tarih</option>
+                  <option value="radio">Tek Seçim (Radio)</option>
+                  <option value="checkbox-group">Çoklu Seçim (Checkbox)</option>
+                  <option value="select">Dropdown</option>
+                  <option value="file">Dosya Yükleme</option>
+                  <option value="checkbox">Onay Kutusu</option>
+                  <option value="tel">Telefon</option>
+                  <option value="email">E-posta</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label"
+                  >Alan Adı (Label) <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="fieldLabel"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Placeholder</label>
+                <input type="text" class="form-control" id="fieldPlaceholder" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Yardım Metni</label>
+                <textarea
+                  class="form-control"
+                  id="fieldHelp"
+                  rows="2"
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="fieldRequired"
+                  />
+                  <label class="form-check-label" for="fieldRequired">
+                    Zorunlu Alan
+                  </label>
+                </div>
+              </div>
+              <div
+                class="mb-3"
+                id="fieldOptionsContainer"
+                style="display: none"
+              >
+                <label class="form-label"
+                  >Seçenekler <span class="text-danger">*</span></label
+                >
+                <textarea
+                  class="form-control"
+                  id="fieldOptions"
+                  rows="4"
+                  placeholder="Her satıra bir seçenek yazın"
+                ></textarea>
+                <small class="form-text text-muted"
+                  >Her satıra bir seçenek yazın</small
+                >
+              </div>
+              <div class="mb-3" id="fileTypeContainer" style="display: none">
+                <label class="form-label"
+                  >Dosya Türü <span class="text-danger">*</span></label
+                >
+                <select class="form-select" id="fileType">
+                  <option value="">Seçiniz...</option>
+                  <option value="image">Resim (JPG, PNG, GIF)</option>
+                  <option value="pdf">PDF</option>
+                  <option value="excel">Excel (XLS, XLSX)</option>
+                  <option value="word">Word (DOC, DOCX)</option>
+                  <option value="all">Tüm Dosya Türleri</option>
+                </select>
+                <small class="form-text text-muted"
+                  >Kullanıcıların yükleyebileceği dosya türünü seçin</small
+                >
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              İptal
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="addCustomFieldToForm()"
+            >
+              Ekle
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form URL ve QR Kod Modal -->
+    <div
+      class="modal fade"
+      id="formUrlModal"
+      tabindex="-1"
+      aria-labelledby="formUrlModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="formUrlModalLabel">
+              <i class="fas fa-link me-2"></i>Form URL ve QR Kod
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="mb-4">
+              <label class="form-label fw-bold">Form URL</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="formUrlInput"
+                  readonly
+                />
+                <button
+                  class="btn btn-outline-primary"
+                  type="button"
+                  onclick="copyFormUrl()"
+                >
+                  <i class="fas fa-copy me-1"></i>Kopyala
+                </button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">QR Kod</label>
+              <div class="d-flex justify-content-center">
+                <canvas
+                  id="qrCodeCanvas"
+                  class="border rounded p-2 bg-white"
+                ></canvas>
+              </div>
+              <button class="btn btn-primary mt-3" onclick="downloadQRCode()">
+                <i class="fas fa-download me-1"></i>QR Kodu İndir
+              </button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Detay Modal -->
+    <div
+      class="modal fade"
+      id="formDetailModal"
+      tabindex="-1"
+      aria-labelledby="formDetailModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="formDetailModalLabel">
+              <i class="fas fa-info-circle me-2"></i>Form Detayları
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="formDetailContent">
+              <!-- Form detayları buraya yüklenecek -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Başvuru Detay Modal -->
+    <div
+      class="modal fade"
+      id="applicationDetailModal"
+      tabindex="-1"
+      aria-labelledby="applicationDetailModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="applicationDetailModalLabel">
+              <i class="fas fa-user me-2"></i>Başvuru Detayları
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="applicationDetailContent">
+              <!-- Başvuru detayları buraya yüklenecek -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mesaj Gönderme Modal -->
+    <div
+      class="modal fade"
+      id="sendMessageModal"
+      tabindex="-1"
+      aria-labelledby="sendMessageModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="sendMessageModalLabel">
+              <i class="fas fa-paper-plane me-2"></i>Mesaj Gönder
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="messageForm">
+              <div class="mb-3">
+                <label class="form-label">Mesaj İçeriği</label>
+                <textarea
+                  class="form-control"
+                  id="messageContent"
+                  rows="5"
+                  placeholder="Başvuru sonucu mesajınızı buraya yazınız..."
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">İletişim Kanalları</label>
+                <div id="contactChannels" class="d-flex flex-column gap-2">
+                  <!-- İletişim kanalları buraya dinamik olarak eklenecek -->
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              İptal
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="sendMessage()"
+            >
+              <i class="fas fa-paper-plane me-1"></i>Gönder
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Başvurular Modal -->
+    <div
+      class="modal fade"
+      id="applicationsModal"
+      tabindex="-1"
+      aria-labelledby="applicationsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="applicationsModalLabel">
+              <i class="fas fa-users me-2"></i>Başvurular
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="applicationsList">
+              <div class="text-center py-4">
+                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                <p class="mt-2 text-muted">Başvurular yükleniyor...</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p class="mb-0">&copy; 2024 EBB Kültür ve Sanat Merkezi</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+    <!-- Firebase -->
+    <script type="module">
+      import {
+        initializeApp,
+        getApp,
+        getApps,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        getDoc,
+        addDoc,
+        doc,
+        updateDoc,
+        deleteDoc,
+        query,
+        where,
+        orderBy,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+      import { ensureAuth, logActivity } from "./js/authGuard.js";
+      import {
+        updateMessagesLinkVisibility,
+        enforceLinkPermissions,
+      } from "./js/offcanvas.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD978ixFjE9KVlNsm6-BYww3B6S4qPVLfQ",
+        authDomain: "ebbkultursanatapp.firebaseapp.com",
+        projectId: "ebbkultursanatapp",
+        storageBucket: "ebbkultursanatapp.appspot.com",
+        messagingSenderId: "540910775157",
+        appId: "1:540910775157:web:4af35312414acf20bd013c",
+        measurementId: "G-4JCKV13ER8",
+      };
+
+      const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      // Standart alanlar tanımları
+      const standardFields = [
+        {
+          id: "firstName",
+          label: "Ad Soyad",
+          defaultState: "required",
+          icon: "fa-user",
+        },
+        {
+          id: "lastName",
+          label: "Soyad",
+          defaultState: "required",
+          icon: "fa-user",
+        },
+        {
+          id: "email",
+          label: "E-posta",
+          defaultState: "optional",
+          icon: "fa-envelope",
+        },
+        {
+          id: "phone",
+          label: "Telefon",
+          defaultState: "optional",
+          icon: "fa-phone",
+        },
+        {
+          id: "birthDate",
+          label: "Doğum Tarihi",
+          defaultState: "optional",
+          icon: "fa-calendar",
+        },
+        {
+          id: "tcNo",
+          label: "TC Kimlik No",
+          defaultState: "hidden",
+          icon: "fa-id-card",
+        },
+        {
+          id: "gender",
+          label: "Cinsiyet",
+          defaultState: "optional",
+          icon: "fa-venus-mars",
+        },
+        {
+          id: "address",
+          label: "Adres",
+          defaultState: "hidden",
+          icon: "fa-map-marker-alt",
+        },
+        {
+          id: "city",
+          label: "İl / İlçe",
+          defaultState: "hidden",
+          icon: "fa-city",
+        },
+        {
+          id: "education",
+          label: "Eğitim Durumu",
+          defaultState: "hidden",
+          icon: "fa-graduation-cap",
+        },
+        {
+          id: "isStudent",
+          label: "Öğrenci mi?",
+          defaultState: "hidden",
+          icon: "fa-user-graduate",
+        },
+        {
+          id: "experience",
+          label: "Deneyim Seviyesi",
+          defaultState: "hidden",
+          icon: "fa-star",
+        },
+        {
+          id: "notes",
+          label: "Açıklama / Not",
+          defaultState: "hidden",
+          icon: "fa-comment",
+        },
+        {
+          id: "kvkk",
+          label: "KVKK Onayı",
+          defaultState: "optional",
+          icon: "fa-shield-alt",
+        },
+        {
+          id: "photoVideo",
+          label: "Fotoğraf/Video Çekimi Onayı",
+          defaultState: "optional",
+          icon: "fa-camera",
+        },
+        {
+          id: "notification",
+          label: "Bilgilendirme İzni (SMS/E-posta)",
+          defaultState: "optional",
+          icon: "fa-bell",
+        },
+        {
+          id: "profilePhoto",
+          label: "Vesikalık Fotoğraf",
+          defaultState: "optional",
+          icon: "fa-image",
+        },
+      ];
+
+      // Form state
+      let customFields = [];
+      let standardFieldsState = {};
+      let currentFormId = null;
+
+      // Generate form ID from title
+      function generateFormId(title) {
+        // Turkish character mapping
+        const turkishMap = {
+          ç: "c",
+          Ç: "c",
+          ğ: "g",
+          Ğ: "g",
+          ı: "i",
+          İ: "i",
+          ö: "o",
+          Ö: "o",
+          ş: "s",
+          Ş: "s",
+          ü: "u",
+          Ü: "u",
+        };
+
+        let id = title
+          .toLowerCase()
+          .split("")
+          .map((char) => turkishMap[char] || char)
+          .join("")
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
+
+        return id;
+      }
+
+      // Check if form ID exists and generate unique one
+      async function generateUniqueFormId(title) {
+        let baseId = generateFormId(title);
+        let formId = baseId;
+        let counter = 1;
+
+        const existingFormsSnapshot = await getDocs(collection(db, "forms"));
+        const existingIds = new Set();
+        existingFormsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.id) existingIds.add(data.id);
+        });
+
+        while (existingIds.has(formId)) {
+          formId = `${baseId}-${counter}`;
+          counter++;
+        }
+
+        return formId;
+      }
+
+      const authContext = await ensureAuth({
+        app,
+        auth,
+        db,
+        requiredAny: ["1", "1a", "11", "11a"],
+        writeCodes: ["1", "11"],
+        pageName: "Başvuru Formları Yönetimi",
+      }).catch((error) => {
+        console.error("Yetkilendirme başarısız:", error);
+        return null;
+      });
+
+      if (!authContext) {
+        throw new Error("Authorisation failed");
+      }
+
+      const currentUserEmail = authContext.user.email;
+      const currentUserName =
+        authContext.profile?.userName || authContext.user.displayName || "";
+      const userAuthorityArray = authContext.permissions || [];
+      window.canWriteForms =
+        authContext.canWrite ||
+        userAuthorityArray.includes("1") ||
+        userAuthorityArray.includes("11");
+      updateMessagesLinkVisibility(userAuthorityArray);
+      enforceLinkPermissions(userAuthorityArray);
+
+      // Show/hide "Yeni Form Ekle" button based on permissions
+      const newFormBtn = document.getElementById("newFormBtn");
+      if (newFormBtn) {
+        newFormBtn.style.display = window.canWriteForms
+          ? "inline-block"
+          : "none";
+      }
+
+      // Load forms from Firebase
+      async function loadForms() {
+        try {
+          const formsList = document.getElementById("formsList");
+          formsList.innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+              <p class="mt-2 text-muted">Formlar yükleniyor...</p>
+            </div>
+          `;
+
+          // Get forms from Firebase
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          const formDefinitions = [];
+          formsSnapshot.forEach((doc) => {
+            const formData = doc.data();
+            formDefinitions.push({
+              id: formData.id || doc.id,
+              ...formData,
+            });
+          });
+
+          // No default form creation - users must create forms manually
+
+          let totalApplications = 0;
+          let pendingApplications = 0;
+
+          // Get all applications once (to avoid multiple queries and index issues)
+          const allApplicationsSnapshot = await getDocs(
+            collection(db, "formApplications")
+          );
+          const allApplications = [];
+          allApplicationsSnapshot.forEach((doc) => {
+            allApplications.push({ id: doc.id, ...doc.data() });
+          });
+
+          const formsHTML = await Promise.all(
+            formDefinitions.map(async (form) => {
+              // Filter and sort applications client-side
+              const applications = allApplications
+                .filter((app) => app.formType === form.id)
+                .sort((a, b) => {
+                  const aDate = a.createdAt?.toDate
+                    ? a.createdAt.toDate()
+                    : new Date(a.createdAt?.seconds * 1000 || 0);
+                  const bDate = b.createdAt?.toDate
+                    ? b.createdAt.toDate()
+                    : new Date(b.createdAt?.seconds * 1000 || 0);
+                  return bDate - aDate; // Descending order
+                });
+
+              const pendingCount = applications.filter(
+                (app) => app.status === "pending"
+              ).length;
+
+              // Check if form is active (for display purposes only, all forms are shown)
+              const isActive = form.isActive !== false; // Default to true if not set
+
+              // Check if form has expired
+              let isExpired = false;
+              if (form.endDate) {
+                const endDate = form.endDate?.toDate
+                  ? form.endDate.toDate()
+                  : new Date(form.endDate);
+                isExpired = new Date() > endDate;
+              }
+
+              // Show all forms regardless of active status
+              // Always count applications
+              totalApplications += applications.length;
+              pendingApplications += pendingCount;
+
+              return `
+                <div class="form-card">
+                  <div class="form-card-header">
+                    <div>
+                      <h3 class="form-card-title">
+                        <i class="fas ${form.icon} me-2"></i>${form.title}
+                        ${
+                          isExpired
+                            ? '<span class="badge bg-secondary ms-2">Süresi Doldu</span>'
+                            : ""
+                        }
+                        ${
+                          !isActive
+                            ? '<span class="badge bg-danger ms-2">Pasif</span>'
+                            : ""
+                        }
+                      </h3>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="form-card-badge">${
+                        applications.length
+                      } Başvuru</span>
+                      <div class="form-check form-switch">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="formActiveSwitch_${form.id}"
+                          ${isActive ? "checked" : ""}
+                          onchange="toggleFormActive('${
+                            form.id
+                          }', this.checked)"
+                          style="cursor: pointer;"
+                        />
+                        <label class="form-check-label" for="formActiveSwitch_${
+                          form.id
+                        }" style="cursor: pointer;">
+                          <small>${isActive ? "Aktif" : "Pasif"}</small>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="form-card-description">${form.description}</p>
+                  <div class="form-card-footer">
+                    <div class="form-card-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span>Toplam: ${applications.length}</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Bekleyen: ${pendingCount}</span>
+                      </div>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                      <a href="form-application.html?id=${
+                        form.id
+                      }" target="_blank" class="btn btn-success btn-sm">
+                        <i class="fas fa-external-link-alt me-1"></i>Başvuru Formu
+                      </a>
+                      <button class="btn btn-info btn-sm" onclick="showFormDetail('${
+                        form.id
+                      }')">
+                        <i class="fas fa-info-circle me-1"></i>Detaylar
+                      </button>
+                      <button class="btn btn-primary btn-sm" onclick="showApplications('${
+                        form.id
+                      }', '${form.title}')">
+                        <i class="fas fa-eye me-1"></i>Başvuruları Görüntüle
+                      </button>
+                      ${
+                        window.canWriteForms
+                          ? `
+                      <button class="btn btn-danger btn-sm" onclick="deleteForm('${form.id}', '${form.title}')">
+                        <i class="fas fa-trash me-1"></i>Sil
+                      </button>
+                      `
+                          : ""
+                      }
+                    </div>
+                  </div>
+                </div>
+              `;
+            })
+          );
+
+          formsList.innerHTML = formsHTML.join("");
+
+          // Update stats
+          document.getElementById("totalForms").textContent =
+            formDefinitions.length;
+          document.getElementById("totalApplications").textContent =
+            totalApplications;
+          document.getElementById("pendingApplications").textContent =
+            pendingApplications;
+        } catch (error) {
+          console.error("Error loading forms:", error);
+          document.getElementById("formsList").innerHTML = `
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Formlar yüklenirken bir hata oluştu.
+            </div>
+          `;
+        }
+      }
+
+      // Show applications for a form
+      window.showApplications = async function (formType, formTitle) {
+        const modal = new bootstrap.Modal(
+          document.getElementById("applicationsModal")
+        );
+        document.getElementById("applicationsModalLabel").innerHTML = `
+          <i class="fas fa-users me-2"></i>${formTitle} - Başvurular
+        `;
+
+        const applicationsList = document.getElementById("applicationsList");
+        applicationsList.innerHTML = `
+          <div class="text-center py-4">
+            <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+            <p class="mt-2 text-muted">Başvurular yükleniyor...</p>
+          </div>
+        `;
+
+        modal.show();
+
+        try {
+          // Get all applications and filter client-side to avoid index requirement
+          const applicationsSnapshot = await getDocs(
+            collection(db, "formApplications")
+          );
+
+          // Filter and sort applications client-side
+          const allApplications = [];
+          applicationsSnapshot.forEach((doc) => {
+            allApplications.push({ id: doc.id, ...doc.data() });
+          });
+
+          const filteredApplications = allApplications
+            .filter((app) => app.formType === formType)
+            .sort((a, b) => {
+              const aDate = a.createdAt?.toDate
+                ? a.createdAt.toDate()
+                : new Date(a.createdAt?.seconds * 1000 || 0);
+              const bDate = b.createdAt?.toDate
+                ? b.createdAt.toDate()
+                : new Date(b.createdAt?.seconds * 1000 || 0);
+              return bDate - aDate; // Descending order
+            });
+
+          if (filteredApplications.length === 0) {
+            applicationsList.innerHTML = `
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Bu form için henüz başvuru bulunmamaktadır.
+              </div>
+            `;
+            return;
+          }
+
+          const applicationsHTML = [];
+          filteredApplications.forEach((app) => {
+            const createdAt = app.createdAt?.toDate
+              ? app.createdAt.toDate()
+              : new Date();
+            const formattedDate = createdAt.toLocaleDateString("tr-TR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            const statusClass =
+              app.status === "approved"
+                ? "status-approved"
+                : app.status === "rejected"
+                ? "status-rejected"
+                : "status-pending";
+
+            const statusText =
+              app.status === "approved"
+                ? "Onaylandı"
+                : app.status === "rejected"
+                ? "Reddedildi"
+                : "Beklemede";
+
+            applicationsHTML.push(`
+              <div class="application-item">
+                <div class="application-header">
+                  <div class="application-name">
+                    ${app.firstName} ${app.lastName}
+                  </div>
+                  <span class="application-status ${statusClass}">
+                    ${statusText}
+                  </span>
+                </div>
+                <div class="application-details">
+                  <div class="detail-item">
+                    <i class="fas fa-calendar"></i>
+                    <span><strong>Doğum Tarihi:</strong> ${
+                      app.birthDate || "Belirtilmemiş"
+                    }</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-venus-mars"></i>
+                    <span><strong>Cinsiyet:</strong> ${
+                      app.gender === "bay" ? "Bay" : "Bayan"
+                    }</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-phone"></i>
+                    <span><strong>Telefon:</strong> ${app.phone || "-"}</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-envelope"></i>
+                    <span><strong>E-posta:</strong> ${app.email || "-"}</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-clock"></i>
+                    <span><strong>Başvuru Tarihi:</strong> ${formattedDate}</span>
+                  </div>
+                </div>
+                <div class="mt-3 text-end">
+                  <button
+                    class="btn btn-sm btn-info"
+                    onclick="showApplicationDetail('${app.id}', '${formType}')"
+                  >
+                    <i class="fas fa-info-circle me-1"></i>Detay
+                  </button>
+                </div>
+              </div>
+            `);
+          });
+
+          applicationsList.innerHTML = applicationsHTML.join("");
+        } catch (error) {
+          console.error("Error loading applications:", error);
+          applicationsList.innerHTML = `
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Başvurular yüklenirken bir hata oluştu.
+            </div>
+          `;
+        }
+      };
+
+      // Menu toggle
+      function toggleMenu() {
+        const offcanvas = document.getElementById("adminPanelSideMenu");
+        const overlay = document.getElementById("menuOverlay");
+        const mainContainer = document.getElementById("mainContainer");
+        const menuButton = document.getElementById("menuButton");
+
+        if (offcanvas.classList.contains("show")) {
+          offcanvas.classList.remove("show");
+          overlay.classList.remove("active");
+          mainContainer.classList.remove("shifted");
+          menuButton.innerHTML = '<i class="fas fa-bars"></i>';
+        } else {
+          offcanvas.classList.add("show");
+          overlay.classList.add("active");
+          if (window.innerWidth > 992) {
+            mainContainer.classList.add("shifted");
+          }
+          menuButton.innerHTML = '<i class="fas fa-times"></i>';
+        }
+      }
+
+      window.toggleMenu = toggleMenu;
+
+      document
+        .getElementById("menuButton")
+        .addEventListener("click", toggleMenu);
+
+      // Logout
+      document
+        .getElementById("logoutButton")
+        .addEventListener("click", async () => {
+          try {
+            await auth.signOut();
+            window.location.href = "adminpanellogin.html";
+          } catch (error) {
+            console.error("Logout error:", error);
+            alert("Çıkış yapılırken bir hata oluştu.");
+          }
+        });
+
+      // Initialize standard fields state
+      function initializeStandardFields() {
+        standardFields.forEach((field) => {
+          standardFieldsState[field.id] = field.defaultState;
+        });
+        renderStandardFields();
+      }
+
+      // Render standard fields
+      function renderStandardFields() {
+        const container = document.getElementById("standardFieldsContainer");
+        container.innerHTML = standardFields
+          .map((field) => {
+            const state = standardFieldsState[field.id] || field.defaultState;
+            return `
+              <div class="field-item">
+                <div class="field-header">
+                  <div>
+                    <i class="fas ${field.icon} me-2"></i>
+                    <span class="field-title">${field.label}</span>
+                  </div>
+                  <div class="field-toggle">
+                    <button
+                      type="button"
+                      class="toggle-btn ${state === "hidden" ? "active" : ""}"
+                      onclick="setFieldState('${field.id}', 'hidden')"
+                    >
+                      Gizli
+                    </button>
+                    <button
+                      type="button"
+                      class="toggle-btn ${state === "optional" ? "active" : ""}"
+                      onclick="setFieldState('${field.id}', 'optional')"
+                    >
+                      Göster
+                    </button>
+                    <button
+                      type="button"
+                      class="toggle-btn ${
+                        state === "required" ? "required" : ""
+                      }"
+                      onclick="setFieldState('${field.id}', 'required')"
+                    >
+                      Zorunlu
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      // Set field state
+      window.setFieldState = function (fieldId, state) {
+        standardFieldsState[fieldId] = state;
+        renderStandardFields();
+      };
+
+      // Add custom field modal
+      window.addCustomField = function () {
+        const modal = new bootstrap.Modal(
+          document.getElementById("customFieldModal")
+        );
+        document.getElementById("customFieldForm").reset();
+        document.getElementById("fieldOptionsContainer").style.display = "none";
+        document.getElementById("fileTypeContainer").style.display = "none";
+
+        // Remove existing event listeners by cloning the element
+        const fieldTypeSelect = document.getElementById("fieldType");
+        const newFieldTypeSelect = fieldTypeSelect.cloneNode(true);
+        fieldTypeSelect.parentNode.replaceChild(
+          newFieldTypeSelect,
+          fieldTypeSelect
+        );
+
+        newFieldTypeSelect.addEventListener("change", function () {
+          const type = this.value;
+          const optionsContainer = document.getElementById(
+            "fieldOptionsContainer"
+          );
+          const fileTypeContainer =
+            document.getElementById("fileTypeContainer");
+
+          if (["radio", "checkbox-group", "select"].includes(type)) {
+            optionsContainer.style.display = "block";
+            document.getElementById("fieldOptions").required = true;
+            fileTypeContainer.style.display = "none";
+            document.getElementById("fileType").required = false;
+          } else if (type === "file") {
+            optionsContainer.style.display = "none";
+            document.getElementById("fieldOptions").required = false;
+            fileTypeContainer.style.display = "block";
+            document.getElementById("fileType").required = true;
+          } else {
+            optionsContainer.style.display = "none";
+            document.getElementById("fieldOptions").required = false;
+            fileTypeContainer.style.display = "none";
+            document.getElementById("fileType").required = false;
+          }
+        });
+        modal.show();
+      };
+
+      // Add custom field to form
+      window.addCustomFieldToForm = function () {
+        const type = document.getElementById("fieldType").value;
+        const label = document.getElementById("fieldLabel").value;
+        const placeholder = document.getElementById("fieldPlaceholder").value;
+        const help = document.getElementById("fieldHelp").value;
+        const required = document.getElementById("fieldRequired").checked;
+        const options = document.getElementById("fieldOptions").value;
+        const fileType = document.getElementById("fileType").value;
+
+        if (!type || !label) {
+          alert("Lütfen alan tipi ve alan adını giriniz.");
+          return;
+        }
+
+        if (
+          ["radio", "checkbox-group", "select"].includes(type) &&
+          !options.trim()
+        ) {
+          alert("Lütfen seçenekleri giriniz.");
+          return;
+        }
+
+        if (type === "file" && !fileType) {
+          alert("Lütfen dosya türünü seçiniz.");
+          return;
+        }
+
+        // Determine accept attribute based on file type
+        let accept = "*/*";
+        if (type === "file" && fileType) {
+          switch (fileType) {
+            case "image":
+              accept = "image/jpeg,image/png,image/gif,image/jpg";
+              break;
+            case "pdf":
+              accept = "application/pdf";
+              break;
+            case "excel":
+              accept =
+                "application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+              break;
+            case "word":
+              accept =
+                "application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+              break;
+            case "all":
+              accept = "*/*";
+              break;
+          }
+        }
+
+        const field = {
+          id: `custom_${Date.now()}`,
+          type,
+          label,
+          placeholder,
+          help,
+          required,
+          options: options
+            ? options
+                .split("\n")
+                .map((o) => o.trim())
+                .filter((o) => o)
+            : [],
+          fileType: type === "file" ? fileType : null,
+          accept: type === "file" ? accept : null,
+          order: customFields.length,
+        };
+
+        customFields.push(field);
+        renderCustomFields();
+
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("customFieldModal")
+        );
+        modal.hide();
+      };
+
+      // Render custom fields
+      function renderCustomFields() {
+        const container = document.getElementById("customFieldsContainer");
+        if (customFields.length === 0) {
+          container.innerHTML = `
+            <p class="text-muted text-center py-3">
+              <i class="fas fa-info-circle me-2"></i>
+              Henüz özel alan eklenmedi. "Özel Alan Ekle" butonuna tıklayarak alan ekleyebilirsiniz.
+            </p>
+          `;
+          return;
+        }
+
+        container.innerHTML = customFields
+          .map((field, index) => {
+            const typeLabels = {
+              text: "Kısa Metin",
+              textarea: "Uzun Metin",
+              number: "Sayı",
+              date: "Tarih",
+              radio: "Tek Seçim",
+              "checkbox-group": "Çoklu Seçim",
+              select: "Dropdown",
+              file: "Dosya Yükleme",
+              checkbox: "Onay Kutusu",
+              tel: "Telefon",
+              email: "E-posta",
+            };
+
+            return `
+              <div class="custom-field-item" data-field-id="${field.id}">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                      <i class="fas fa-grip-vertical drag-handle me-2"></i>
+                      <strong>${field.label}</strong>
+                      <span class="badge bg-secondary ms-2">${
+                        typeLabels[field.type] || field.type
+                      }</span>
+                      ${
+                        field.required
+                          ? '<span class="badge bg-danger ms-2">Zorunlu</span>'
+                          : ""
+                      }
+                    </div>
+                    ${
+                      field.placeholder
+                        ? `<small class="text-muted">Placeholder: ${field.placeholder}</small><br>`
+                        : ""
+                    }
+                    ${
+                      field.help
+                        ? `<small class="text-muted">${field.help}</small>`
+                        : ""
+                    }
+                    ${
+                      field.options.length > 0
+                        ? `<div class="mt-2"><small><strong>Seçenekler:</strong> ${field.options.join(
+                            ", "
+                          )}</small></div>`
+                        : ""
+                    }
+                    ${
+                      field.type === "file" && field.fileType
+                        ? `<div class="mt-2"><small><strong>Dosya Türü:</strong> ${
+                            field.fileType === "image"
+                              ? "Resim (JPG, PNG, GIF)"
+                              : field.fileType === "pdf"
+                              ? "PDF"
+                              : field.fileType === "excel"
+                              ? "Excel (XLS, XLSX)"
+                              : field.fileType === "word"
+                              ? "Word (DOC, DOCX)"
+                              : field.fileType === "all"
+                              ? "Tüm Dosya Türleri"
+                              : field.fileType
+                          }</small></div>`
+                        : ""
+                    }
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    onclick="removeCustomField('${field.id}')"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      // Remove custom field
+      window.removeCustomField = function (fieldId) {
+        if (confirm("Bu alanı silmek istediğinize emin misiniz?")) {
+          customFields = customFields.filter((f) => f.id !== fieldId);
+          renderCustomFields();
+        }
+      };
+
+      // Poster preview and validation
+      document
+        .getElementById("formPoster")
+        ?.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          // Check file type
+          if (!file.type.startsWith("image/")) {
+            alert("Lütfen bir resim dosyası seçiniz.");
+            e.target.value = "";
+            return;
+          }
+
+          // Check aspect ratio
+          const img = new Image();
+          img.onload = function () {
+            const aspectRatio = img.width / img.height;
+            const targetRatio = 3 / 1; // 3:1
+            const tolerance = 0.1;
+
+            const previewDiv = document.getElementById("posterPreview");
+            const previewImg = document.getElementById("posterPreviewImg");
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              previewImg.src = e.target.result;
+              previewDiv.style.display = "block";
+
+              let message = "";
+              let className = "";
+
+              if (Math.abs(aspectRatio - targetRatio) <= tolerance) {
+                message = `✓ Görsel oranı uygun (${img.width}x${img.height})`;
+                className = "success";
+              } else if (aspectRatio > targetRatio) {
+                message = `⚠ Görsel çok geniş. Önerilen: 3:1 oran (örn: 1500x500). Mevcut: ${img.width}x${img.height}`;
+                className = "warning";
+              } else {
+                message = `⚠ Görsel çok yüksek. Önerilen: 3:1 oran (örn: 1500x500). Mevcut: ${img.width}x${img.height}`;
+                className = "warning";
+              }
+
+              // Remove existing check message
+              const existingCheck = previewDiv.querySelector(
+                ".aspect-ratio-check"
+              );
+              if (existingCheck) existingCheck.remove();
+
+              // Add check message
+              const checkDiv = document.createElement("div");
+              checkDiv.className = `aspect-ratio-check ${className}`;
+              checkDiv.textContent = message;
+              previewDiv.appendChild(checkDiv);
+            };
+
+            reader.readAsDataURL(file);
+          };
+
+          img.src = URL.createObjectURL(file);
+        });
+
+      // Clear poster preview
+      window.clearPosterPreview = function () {
+        document.getElementById("formPoster").value = "";
+        document.getElementById("posterPreview").style.display = "none";
+      };
+
+      // Upload file to Firebase Storage
+      async function uploadFileToStorage(file, path) {
+        try {
+          const storageRef = ref(storage, path);
+          const snapshot = await uploadBytes(storageRef, file);
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          return downloadURL;
+        } catch (error) {
+          console.error("File upload error:", error);
+          throw error;
+        }
+      }
+
+      // Upload image to Firebase Storage (for wide and square images)
+      async function uploadImage(file, folder) {
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
+        const storageRef = ref(storage, `${folder}/${fileName}`);
+
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      }
+
+      // Setup upload buttons for wide and square images
+      function setupFormImageUploads() {
+        // Upload wide image
+        const uploadWideImageBtn =
+          document.getElementById("uploadWideImageBtn");
+        if (uploadWideImageBtn) {
+          uploadWideImageBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("formWideImageFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              uploadWideImageBtn.disabled = true;
+              uploadWideImageBtn.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
+              const downloadURL = await uploadImage(file, "form-wide-images");
+              document.getElementById("formWideImage").value = downloadURL;
+              alert("Geniş format görsel başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading wide image:", error);
+              alert("Görsel yüklenirken hata oluştu!");
+            } finally {
+              uploadWideImageBtn.disabled = false;
+              uploadWideImageBtn.innerHTML =
+                '<i class="fas fa-upload"></i> Yükle';
+            }
+          });
+        }
+
+        // Upload square image
+        const uploadSquareImageBtn = document.getElementById(
+          "uploadSquareImageBtn"
+        );
+        if (uploadSquareImageBtn) {
+          uploadSquareImageBtn.addEventListener("click", async () => {
+            const fileInput = document.getElementById("formSquareImageFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Lütfen bir dosya seçin!");
+              return;
+            }
+
+            try {
+              uploadSquareImageBtn.disabled = true;
+              uploadSquareImageBtn.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
+              const downloadURL = await uploadImage(file, "form-square-images");
+              document.getElementById("formSquareImage").value = downloadURL;
+              alert("Kare format görsel başarıyla yüklendi!");
+            } catch (error) {
+              console.error("Error uploading square image:", error);
+              alert("Görsel yüklenirken hata oluştu!");
+            } finally {
+              uploadSquareImageBtn.disabled = false;
+              uploadSquareImageBtn.innerHTML =
+                '<i class="fas fa-upload"></i> Yükle';
+            }
+          });
+        }
+      }
+
+      // Call setup function when modal is shown
+      document
+        .getElementById("newFormModal")
+        ?.addEventListener("shown.bs.modal", function () {
+          setupFormImageUploads();
+        });
+
+      // Save new form with all configurations
+      window.saveNewForm = async function () {
+        const formTitle = document.getElementById("formTitle").value.trim();
+        const formDescription = document
+          .getElementById("formDescription")
+          .value.trim();
+        const formPoster = document.getElementById("formPoster").files[0];
+        const targetAudience = document.querySelector(
+          'input[name="targetAudience"]:checked'
+        ).value;
+        const minAge = document.getElementById("minAge").value
+          ? parseInt(document.getElementById("minAge").value)
+          : null;
+        const maxAge = document.getElementById("maxAge").value
+          ? parseInt(document.getElementById("maxAge").value)
+          : null;
+        // New forms are always active by default
+        const isActive = true;
+        const showApplications = true;
+        const endDate = null;
+        const showInSlider = document.getElementById("showInSlider").checked;
+
+        // Get target audience tags
+        const tags = [];
+        [
+          "tagChild",
+          "tagYouth",
+          "tagAdult",
+          "tagSenior",
+          "tagDisabled",
+          "tagStudent",
+        ].forEach((id) => {
+          if (document.getElementById(id)?.checked) {
+            tags.push(document.getElementById(id).value);
+          }
+        });
+
+        // Validation
+        if (!formTitle || !formDescription) {
+          alert("Lütfen zorunlu alanları doldurunuz.");
+          return;
+        }
+
+        // Check KVKK field is required
+        if (standardFieldsState.kvkk !== "required") {
+          alert(
+            "KVKK Onayı alanı zorunlu olmalıdır. Lütfen KVKK Onayı alanını 'Zorunlu' olarak işaretleyiniz."
+          );
+          return;
+        }
+
+        if (minAge && maxAge && minAge > maxAge) {
+          alert("Minimum yaş maksimum yaştan büyük olamaz.");
+          return;
+        }
+
+        try {
+          const saveBtn = document.getElementById("saveFormBtn");
+          saveBtn.disabled = true;
+          saveBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin me-1"></i>Kaydediliyor...';
+
+          // Generate unique form ID
+          const formId = await generateUniqueFormId(formTitle);
+
+          // Upload poster if exists
+          let posterURL = null;
+          if (formPoster) {
+            const posterPath = `forms/${formId}/poster_${Date.now()}_${
+              formPoster.name
+            }`;
+            posterURL = await uploadFileToStorage(formPoster, posterPath);
+          }
+
+          // Get wide and square image URLs (already uploaded via buttons)
+          const wideImageURL =
+            document.getElementById("formWideImage")?.value.trim() || null;
+          const squareImageURL =
+            document.getElementById("formSquareImage")?.value.trim() || null;
+
+          // Prepare form schema
+          const formSchema = {
+            id: formId,
+            title: formTitle,
+            description: formDescription,
+            icon: "fa-file-alt",
+            posterURL: posterURL,
+            wideImageURL: wideImageURL,
+            squareImageURL: squareImageURL,
+            targetAudience: targetAudience,
+            targetTags: tags,
+            minAge: minAge,
+            maxAge: maxAge,
+            isActive: isActive,
+            showApplications: showApplications,
+            endDate: endDate,
+            showInSlider: showInSlider,
+            standardFields: standardFieldsState,
+            customFields: customFields.map((f, index) => ({
+              ...f,
+              order: index,
+            })),
+            createdAt: new Date(),
+            createdBy: currentUserEmail,
+          };
+
+          // Save to Firebase
+          const docRef = await addDoc(collection(db, "forms"), formSchema);
+          currentFormId = formId;
+
+          // Log activity
+          await logActivity({
+            db,
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "Yeni form oluşturuldu",
+            details: `Form: ${formTitle} (ID: ${formId})`,
+            pageName: "Başvuru Formları Yönetimi",
+          });
+
+          // Close modal and reset form
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("newFormModal")
+          );
+          modal.hide();
+          document.getElementById("newFormForm").reset();
+          document.getElementById("posterPreview").style.display = "none";
+          customFields = [];
+          initializeStandardFields();
+
+          // Reload forms
+          await loadForms();
+
+          // Show URL and QR code modal
+          showFormUrlAndQR(formId);
+        } catch (error) {
+          console.error("Error saving form:", error);
+          alert("Form kaydedilirken bir hata oluştu: " + error.message);
+        } finally {
+          const saveBtn = document.getElementById("saveFormBtn");
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="fas fa-save me-1"></i>Formu Kaydet';
+        }
+      };
+
+      // Show form URL and QR code
+      async function showFormUrlAndQR(formId) {
+        const formUrl = `${
+          window.location.origin
+        }${window.location.pathname.replace(
+          "formlar.html",
+          "form-application.html"
+        )}?id=${formId}`;
+
+        document.getElementById("formUrlInput").value = formUrl;
+
+        // Generate QR code
+        const canvas = document.getElementById("qrCodeCanvas");
+        await QRCode.toCanvas(canvas, formUrl, {
+          width: 300,
+          margin: 2,
+        });
+
+        // Show modal
+        const modal = new bootstrap.Modal(
+          document.getElementById("formUrlModal")
+        );
+        modal.show();
+      }
+
+      // Copy form URL
+      window.copyFormUrl = function () {
+        const urlInput = document.getElementById("formUrlInput");
+        urlInput.select();
+        document.execCommand("copy");
+        alert("URL kopyalandı!");
+      };
+
+      // Download QR code
+      window.downloadQRCode = function () {
+        const canvas = document.getElementById("qrCodeCanvas");
+        const url = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `form-qr-${currentFormId || "code"}.png`;
+        a.click();
+      };
+
+      // Show form detail
+      window.showFormDetail = async function (formId) {
+        try {
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          let formData = null;
+
+          formsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.id === formId) {
+              formData = { id: doc.id, ...data };
+            }
+          });
+
+          if (!formData) {
+            alert("Form bulunamadı.");
+            return;
+          }
+
+          const formUrl = `${
+            window.location.origin
+          }${window.location.pathname.replace(
+            "formlar.html",
+            "form-application.html"
+          )}?id=${formId}`;
+
+          const detailContent = document.getElementById("formDetailContent");
+          detailContent.innerHTML = `
+            <div class="mb-4">
+              <h6 class="fw-bold">Form Bilgileri</h6>
+              <p><strong>Başlık:</strong> ${formData.title}</p>
+              <p><strong>Açıklama:</strong> ${formData.description}</p>
+              <p><strong>Form ID:</strong> ${formData.id}</p>
+              <p><strong>Hedef Kitle:</strong> ${
+                formData.targetAudience === "all"
+                  ? "Herkese Açık"
+                  : formData.targetAudience === "male"
+                  ? "Sadece Erkekler"
+                  : "Sadece Kadınlar"
+              }</p>
+              ${
+                formData.minAge || formData.maxAge
+                  ? `<p><strong>Yaş Aralığı:</strong> ${
+                      formData.minAge || 0
+                    } - ${formData.maxAge || 100}</p>`
+                  : ""
+              }
+            </div>
+            <div class="mb-4">
+              <h6 class="fw-bold">Form URL</h6>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" id="detailFormUrl" value="${formUrl}" readonly>
+                <button class="btn btn-outline-primary" type="button" onclick="copyDetailFormUrl()">
+                  <i class="fas fa-copy me-1"></i>Kopyala
+                </button>
+              </div>
+            </div>
+            <div class="mb-4">
+              <h6 class="fw-bold">QR Kod</h6>
+              <div class="d-flex justify-content-center mb-3">
+                <canvas id="detailQRCodeCanvas" class="border rounded p-2 bg-white"></canvas>
+              </div>
+              <div class="text-center">
+                <button class="btn btn-primary" onclick="downloadDetailQRCode('${formId}')">
+                  <i class="fas fa-download me-1"></i>QR Kodu İndir
+                </button>
+              </div>
+            </div>
+            ${
+              window.canWriteForms
+                ? `
+            <div class="mb-4">
+              <h6 class="fw-bold">Slider Görünürlük</h6>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="detailShowInSlider"
+                  ${formData.showInSlider ? "checked" : ""}
+                  onchange="updateFormShowInSlider('${formId}', this.checked)"
+                  style="cursor: pointer;"
+                />
+                <label class="form-check-label" for="detailShowInSlider" style="cursor: pointer;">
+                  <strong>Sliderda Göster</strong>
+                  <br />
+                  <small class="text-muted"
+                    >Aktif olduğunda form ana sayfadaki slider'da görünür</small
+                  >
+                </label>
+              </div>
+            </div>
+            `
+                : ""
+            }
+          `;
+
+          // Generate QR code for detail
+          const detailCanvas = document.getElementById("detailQRCodeCanvas");
+          await QRCode.toCanvas(detailCanvas, formUrl, {
+            width: 300,
+            margin: 2,
+          });
+
+          // Show modal
+          const modal = new bootstrap.Modal(
+            document.getElementById("formDetailModal")
+          );
+          modal.show();
+        } catch (error) {
+          console.error("Error loading form detail:", error);
+          alert("Form detayları yüklenirken bir hata oluştu.");
+        }
+      };
+
+      // Update form showInSlider
+      window.updateFormShowInSlider = async function (formId, showInSlider) {
+        if (!window.canWriteForms) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+
+        try {
+          // Find form document
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          let formDocId = null;
+          formsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.id === formId) {
+              formDocId = doc.id;
+            }
+          });
+
+          if (formDocId) {
+            await updateDoc(doc(db, "forms", formDocId), {
+              showInSlider: showInSlider,
+            });
+
+            await logActivity({
+              db,
+              userEmail: currentUserEmail,
+              userName: currentUserName,
+              action: `Form slider görünürlüğü ${
+                showInSlider ? "açıldı" : "kapatıldı"
+              }`,
+              details: `Form ID: ${formId}`,
+              pageName: "Başvuru Formları Yönetimi",
+            });
+
+            // Reload form detail
+            await showFormDetail(formId);
+          }
+        } catch (error) {
+          console.error("Error updating showInSlider:", error);
+          alert("Slider görünürlüğü güncellenirken bir hata oluştu.");
+        }
+      };
+
+      // Copy detail form URL
+      window.copyDetailFormUrl = function () {
+        const urlInput = document.getElementById("detailFormUrl");
+        urlInput.select();
+        document.execCommand("copy");
+        alert("URL kopyalandı!");
+      };
+
+      // Download detail QR code
+      window.downloadDetailQRCode = function (formId) {
+        const canvas = document.getElementById("detailQRCodeCanvas");
+        const url = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `form-qr-${formId}.png`;
+        a.click();
+      };
+
+      // Reset form when modal is closed
+      const newFormModal = document.getElementById("newFormModal");
+      newFormModal.addEventListener("show.bs.modal", function () {
+        initializeStandardFields();
+        customFields = [];
+        renderCustomFields();
+      });
+      newFormModal.addEventListener("hidden.bs.modal", function () {
+        document.getElementById("newFormForm").reset();
+        document.getElementById("posterPreview").style.display = "none";
+        customFields = [];
+        standardFieldsState = {};
+      });
+
+      // Show application detail
+      window.showApplicationDetail = async function (applicationId, formType) {
+        try {
+          // Close applications modal if open
+          const applicationsModal = bootstrap.Modal.getInstance(
+            document.getElementById("applicationsModal")
+          );
+          if (applicationsModal && applicationsModal._isShown) {
+            applicationsModal.hide();
+          }
+
+          const applicationDoc = await getDoc(
+            doc(db, "formApplications", applicationId)
+          );
+
+          if (!applicationDoc.exists()) {
+            alert("Başvuru bulunamadı.");
+            return;
+          }
+
+          const app = { id: applicationDoc.id, ...applicationDoc.data() };
+          const createdAt = app.createdAt?.toDate
+            ? app.createdAt.toDate()
+            : new Date(app.createdAt?.seconds * 1000 || Date.now());
+          const formattedDate = createdAt.toLocaleDateString("tr-TR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          // Load form schema to get custom field labels
+          let formSchema = null;
+          if (formType) {
+            const formsSnapshot = await getDocs(collection(db, "forms"));
+            formsSnapshot.forEach((doc) => {
+              const data = doc.data();
+              if (data.id === formType) {
+                formSchema = data;
+              }
+            });
+          }
+
+          // Create field label mapping
+          const fieldLabels = {};
+
+          // Add standard field labels
+          standardFields.forEach((field) => {
+            fieldLabels[field.id] = field.label;
+          });
+
+          // Add custom field labels from form schema
+          if (formSchema && formSchema.customFields) {
+            formSchema.customFields.forEach((field) => {
+              fieldLabels[field.id] = field.label;
+            });
+          }
+
+          // Get all fields from application, separate approval fields
+          const approvalFields = ["kvkk", "photoVideo", "notification"];
+          const allFields = Object.keys(app).filter(
+            (key) =>
+              ![
+                "id",
+                "formType",
+                "createdAt",
+                "status",
+                "evaluationNote",
+                "evaluatedAt",
+                "evaluatedBy",
+                "lastMessageSent",
+                "lastMessageContent",
+                "lastMessageChannels",
+                ...approvalFields, // Exclude approval fields from main list
+              ].includes(key)
+          );
+
+          // Get approval fields separately
+          const approvalFieldsData = approvalFields
+            .filter((key) => app.hasOwnProperty(key))
+            .map((key) => ({
+              key,
+              value: app[key],
+              label: fieldLabels[key] || key,
+            }));
+
+          let detailHTML = `
+            <div class="row">
+              <div class="col-md-8">
+                <h6 class="fw-bold mb-3">Başvuru Bilgileri</h6>
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <tbody>
+                      ${allFields
+                        .map((key) => {
+                          let value = app[key];
+                          // Get label from mapping or generate from key
+                          let label = fieldLabels[key];
+                          if (!label) {
+                            // If custom field, try to find in form schema
+                            if (
+                              key.startsWith("custom_") &&
+                              formSchema &&
+                              formSchema.customFields
+                            ) {
+                              const customField = formSchema.customFields.find(
+                                (f) => f.id === key
+                              );
+                              if (customField && customField.label) {
+                                label = customField.label;
+                              } else {
+                                label = "Özel Alan";
+                              }
+                            } else {
+                              // Generate label from key name for standard fields
+                              label = key
+                                .replace(/([A-Z])/g, " $1")
+                                .replace(/^./, (str) => str.toUpperCase())
+                                .trim();
+                            }
+                          }
+
+                          // Format checkbox values (but not approval fields - they'll be shown separately)
+                          if (
+                            typeof value === "boolean" &&
+                            !approvalFields.includes(key)
+                          ) {
+                            value = value ? "Evet" : "Hayır";
+                          }
+
+                          // Format file URLs
+                          if (
+                            typeof value === "string" &&
+                            value.startsWith("http")
+                          ) {
+                            // Check if it's a profile photo (vesikalık fotoğraf)
+                            if (
+                              key === "profilePhoto" ||
+                              label.toLowerCase().includes("vesikalık")
+                            ) {
+                              const photoUrl = value;
+                              value = `
+                                <div class="d-flex align-items-center gap-3">
+                                  <div style="width: 80px; height: 100px; border: 2px solid #dee2e6; border-radius: 4px; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                    <img src="${photoUrl}" alt="Vesikalık Fotoğraf" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-image text-muted\\'></i>';" />
+                                  </div>
+                                  <a href="${photoUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download me-1"></i>Dosyayı İndir
+                                  </a>
+                                </div>
+                              `;
+                            } else {
+                              value = `<a href="${value}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-download me-1"></i>Dosyayı İndir
+                              </a>`;
+                            }
+                          }
+
+                          // Format arrays
+                          if (Array.isArray(value)) {
+                            value = value.join(", ");
+                          }
+
+                          return `
+                            <tr>
+                              <th style="width: 200px;">${label}</th>
+                              <td>${value || "-"}</td>
+                            </tr>
+                          `;
+                        })
+                        .join("")}
+                      <tr>
+                        <th>Başvuru Tarihi</th>
+                        <td>${formattedDate}</td>
+                      </tr>
+                      <tr>
+                        <th>Durum</th>
+                        <td>
+                          <span class="badge ${
+                            app.status === "approved"
+                              ? "bg-success"
+                              : app.status === "rejected"
+                              ? "bg-danger"
+                              : "bg-warning"
+                          }">
+                            ${
+                              app.status === "approved"
+                                ? "Onaylandı"
+                                : app.status === "rejected"
+                                ? "Reddedildi"
+                                : "Beklemede"
+                            }
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <h6 class="fw-bold mb-3">Değerlendirme</h6>
+                <form id="evaluationForm">
+                  <div class="mb-3">
+                    <label class="form-label">Durum</label>
+                    <select class="form-select" id="evaluationStatus" required>
+                      <option value="pending" ${
+                        app.status === "pending" ? "selected" : ""
+                      }>Beklemede</option>
+                      <option value="approved" ${
+                        app.status === "approved" ? "selected" : ""
+                      }>Olumlu</option>
+                      <option value="rejected" ${
+                        app.status === "rejected" ? "selected" : ""
+                      }>Olumsuz</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Değerlendirme Notu</label>
+                    <textarea
+                      class="form-control"
+                      id="evaluationNote"
+                      rows="4"
+                      placeholder="Değerlendirme notunuzu yazınız..."
+                    >${app.evaluationNote || ""}</textarea>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100 mb-2"
+                    onclick="saveEvaluation('${applicationId}')"
+                  >
+                    <i class="fas fa-save me-1"></i>Kaydet
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-success w-100 mb-2"
+                    onclick="openSendMessageModal('${applicationId}')"
+                  >
+                    <i class="fas fa-paper-plane me-1"></i>Mesaj Gönder
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger w-100"
+                    onclick="downloadApplicationPDF('${applicationId}')"
+                  >
+                    <i class="fas fa-file-pdf me-1"></i>PDF İndir
+                  </button>
+                </form>
+              </div>
+            </div>
+          `;
+
+          document.getElementById("applicationDetailContent").innerHTML =
+            detailHTML;
+
+          // Store application data globally for message modal
+          window.currentApplication = app;
+
+          // Store original values for change detection
+          window.originalEvaluationStatus = app.status || "pending";
+          window.originalEvaluationNote = app.evaluationNote || "";
+
+          const modalElement = document.getElementById(
+            "applicationDetailModal"
+          );
+          const modal = new bootstrap.Modal(modalElement);
+
+          // Check for unsaved changes before closing
+          const checkUnsavedChanges = function (event) {
+            const currentStatus =
+              document.getElementById("evaluationStatus")?.value || "pending";
+            const currentNote =
+              document.getElementById("evaluationNote")?.value.trim() || "";
+
+            const statusChanged =
+              currentStatus !== window.originalEvaluationStatus;
+            const noteChanged = currentNote !== window.originalEvaluationNote;
+
+            if (statusChanged || noteChanged) {
+              if (
+                !confirm(
+                  "Değerlendirme durumu veya notunda değişiklik yaptınız. Kaydetmeden kapatmak istediğinize emin misiniz?"
+                )
+              ) {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+              }
+            }
+          };
+
+          // Remove existing listener and add new one
+          modalElement.removeEventListener(
+            "hide.bs.modal",
+            checkUnsavedChanges
+          );
+          modalElement.addEventListener("hide.bs.modal", checkUnsavedChanges);
+
+          // Clean up backdrop when modal is hidden
+          modalElement.addEventListener("hidden.bs.modal", function () {
+            const backdrop = document.querySelector(".modal-backdrop");
+            if (backdrop) {
+              backdrop.remove();
+            }
+            document.body.classList.remove("modal-open");
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+          });
+
+          modal.show();
+        } catch (error) {
+          console.error("Error loading application detail:", error);
+          alert("Başvuru detayları yüklenirken bir hata oluştu.");
+        }
+      };
+
+      // Save evaluation
+      window.saveEvaluation = async function (applicationId) {
+        const status = document.getElementById("evaluationStatus").value;
+        const note = document.getElementById("evaluationNote").value.trim();
+
+        try {
+          await updateDoc(doc(db, "formApplications", applicationId), {
+            status: status,
+            evaluationNote: note,
+            evaluatedAt: new Date(),
+            evaluatedBy: currentUserEmail,
+          });
+
+          await logActivity({
+            db,
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "Başvuru değerlendirildi",
+            details: `Başvuru ID: ${applicationId}, Durum: ${status}`,
+            pageName: "Başvuru Formları Yönetimi",
+          });
+
+          // Update original values to prevent warning on close
+          window.originalEvaluationStatus = status;
+          window.originalEvaluationNote = note;
+
+          alert("Değerlendirme kaydedildi!");
+
+          // Close detail modal properly
+          const detailModal = bootstrap.Modal.getInstance(
+            document.getElementById("applicationDetailModal")
+          );
+          if (detailModal) {
+            detailModal.hide();
+            // Remove backdrop if exists
+            const backdrop = document.querySelector(".modal-backdrop");
+            if (backdrop) {
+              backdrop.remove();
+            }
+            // Remove modal-open class from body
+            document.body.classList.remove("modal-open");
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+          }
+
+          // Reload applications if modal is open
+          const applicationsModal = bootstrap.Modal.getInstance(
+            document.getElementById("applicationsModal")
+          );
+          if (applicationsModal && applicationsModal._isShown) {
+            // Reload current form's applications
+            const formType = window.currentApplication?.formType;
+            const formTitle = window.currentApplication?.formType || "Form";
+            if (formType) {
+              await showApplications(formType, formTitle);
+            }
+          }
+        } catch (error) {
+          console.error("Error saving evaluation:", error);
+          alert("Değerlendirme kaydedilirken bir hata oluştu.");
+        }
+      };
+
+      // Open send message modal
+      window.openSendMessageModal = function (applicationId) {
+        const app = window.currentApplication;
+        if (!app) return;
+
+        document.getElementById("messageContent").value = "";
+        const channelsContainer = document.getElementById("contactChannels");
+        channelsContainer.innerHTML = "";
+
+        // Add email channel if available
+        if (app.email) {
+          channelsContainer.innerHTML += `
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="channelEmail" value="email" checked>
+              <label class="form-check-label" for="channelEmail">
+                <i class="fas fa-envelope me-2"></i>E-posta: ${app.email}
+              </label>
+            </div>
+          `;
+        }
+
+        // Add SMS channel if phone available
+        if (app.phone) {
+          channelsContainer.innerHTML += `
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="channelSMS" value="sms" checked>
+              <label class="form-check-label" for="channelSMS">
+                <i class="fas fa-sms me-2"></i>SMS: ${app.phone}
+              </label>
+            </div>
+          `;
+        }
+
+        if (channelsContainer.innerHTML === "") {
+          channelsContainer.innerHTML =
+            '<p class="text-muted">İletişim bilgisi bulunamadı.</p>';
+        }
+
+        // Store application ID globally
+        window.currentMessageApplicationId = applicationId;
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("sendMessageModal")
+        );
+        modal.show();
+      };
+
+      // Send message
+      window.sendMessage = async function () {
+        const message = document.getElementById("messageContent").value.trim();
+        const applicationId = window.currentMessageApplicationId;
+        const app = window.currentApplication;
+
+        if (!message) {
+          alert("Lütfen mesaj içeriğini giriniz.");
+          return;
+        }
+
+        const emailChecked = document.getElementById("channelEmail")?.checked;
+        const smsChecked = document.getElementById("channelSMS")?.checked;
+
+        if (!emailChecked && !smsChecked) {
+          alert("Lütfen en az bir iletişim kanalı seçiniz.");
+          return;
+        }
+
+        try {
+          // Update application with message sent status
+          await updateDoc(doc(db, "formApplications", applicationId), {
+            lastMessageSent: new Date(),
+            lastMessageContent: message,
+            lastMessageChannels: {
+              email: emailChecked || false,
+              sms: smsChecked || false,
+            },
+          });
+
+          // Send email if selected
+          if (emailChecked && app.email) {
+            const emailSubject = encodeURIComponent(
+              "Başvuru Sonucu - EBB Kültür Sanat"
+            );
+            const emailBody = encodeURIComponent(message);
+            window.open(
+              `mailto:${app.email}?subject=${emailSubject}&body=${emailBody}`
+            );
+          }
+
+          // Send SMS if selected
+          if (smsChecked && app.phone) {
+            const phoneNumber = app.phone.replace(/\D/g, "");
+            const smsBody = encodeURIComponent(message);
+            window.open(`sms:${phoneNumber}?body=${smsBody}`);
+          }
+
+          await logActivity({
+            db,
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "Başvuru sahibine mesaj gönderildi",
+            details: `Başvuru ID: ${applicationId}, Kanallar: ${
+              emailChecked ? "E-posta " : ""
+            }${smsChecked ? "SMS" : ""}`,
+            pageName: "Başvuru Formları Yönetimi",
+          });
+
+          alert("Mesaj gönderildi!");
+
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("sendMessageModal")
+          );
+          modal.hide();
+        } catch (error) {
+          console.error("Error sending message:", error);
+          alert("Mesaj gönderilirken bir hata oluştu.");
+        }
+      };
+
+      // Toggle form active status
+      window.toggleFormActive = async function (formId, isActive) {
+        try {
+          // Find form document
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          let formDocId = null;
+          formsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.id === formId) {
+              formDocId = doc.id;
+            }
+          });
+
+          if (formDocId) {
+            await updateDoc(doc(db, "forms", formDocId), {
+              isActive: isActive,
+            });
+
+            await logActivity({
+              db,
+              userEmail: currentUserEmail,
+              userName: currentUserName,
+              action: `Form ${isActive ? "aktif" : "pasif"} edildi`,
+              details: `Form ID: ${formId}`,
+              pageName: "Başvuru Formları Yönetimi",
+            });
+
+            // Reload forms
+            await loadForms();
+          }
+        } catch (error) {
+          console.error("Error toggling form active:", error);
+          alert("Form durumu güncellenirken bir hata oluştu.");
+        }
+      };
+
+      // Toggle show applications
+      window.toggleShowApplications = async function (
+        formId,
+        showApplications
+      ) {
+        try {
+          // Find form document
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          let formDocId = null;
+          formsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.id === formId) {
+              formDocId = doc.id;
+            }
+          });
+
+          if (formDocId) {
+            await updateDoc(doc(db, "forms", formDocId), {
+              showApplications: showApplications,
+            });
+
+            await logActivity({
+              db,
+              userEmail: currentUserEmail,
+              userName: currentUserName,
+              action: `Başvurular ${
+                showApplications ? "gösterildi" : "gizlendi"
+              }`,
+              details: `Form ID: ${formId}`,
+              pageName: "Başvuru Formları Yönetimi",
+            });
+
+            // Reload forms
+            await loadForms();
+          }
+        } catch (error) {
+          console.error("Error toggling show applications:", error);
+          alert("Başvuru görünürlüğü güncellenirken bir hata oluştu.");
+        }
+      };
+
+      // Download application as PDF
+      window.downloadApplicationPDF = async function (applicationId) {
+        try {
+          const app = window.currentApplication;
+          if (!app) {
+            alert("Başvuru bilgileri yüklenemedi.");
+            return;
+          }
+
+          // Load form schema for labels
+          let formSchema = null;
+          if (app.formType) {
+            const formsSnapshot = await getDocs(collection(db, "forms"));
+            formsSnapshot.forEach((doc) => {
+              const data = doc.data();
+              if (data.id === app.formType) {
+                formSchema = data;
+              }
+            });
+          }
+
+          // Create field label mapping
+          const fieldLabels = {};
+          standardFields.forEach((field) => {
+            fieldLabels[field.id] = field.label;
+          });
+          if (formSchema && formSchema.customFields) {
+            formSchema.customFields.forEach((field) => {
+              fieldLabels[field.id] = field.label;
+            });
+          }
+
+          // Create PDF
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF();
+
+          // Title
+          pdf.setFontSize(18);
+          pdf.text("Başvuru Formu", 105, 20, { align: "center" });
+
+          // Get all fields
+          const allFields = Object.keys(app).filter(
+            (key) =>
+              ![
+                "id",
+                "formType",
+                "createdAt",
+                "status",
+                "evaluationNote",
+                "evaluatedAt",
+                "evaluatedBy",
+                "lastMessageSent",
+                "lastMessageContent",
+                "lastMessageChannels",
+              ].includes(key)
+          );
+
+          let yPos = 35;
+          pdf.setFontSize(12);
+
+          allFields.forEach((key) => {
+            let value = app[key];
+            let label = fieldLabels[key] || key;
+
+            // Format values
+            if (typeof value === "boolean") {
+              value = value ? "Evet" : "Hayır";
+            } else if (Array.isArray(value)) {
+              value = value.join(", ");
+            } else if (typeof value === "string" && value.startsWith("http")) {
+              value = "[Dosya Linki]";
+            }
+
+            // Check if we need a new page
+            if (yPos > 270) {
+              pdf.addPage();
+              yPos = 20;
+            }
+
+            // Add field to PDF
+            pdf.setFont("helvetica", "bold");
+            pdf.text(`${label}:`, 15, yPos);
+            pdf.setFont("helvetica", "normal");
+
+            // Handle long text
+            const textLines = pdf.splitTextToSize(String(value || "-"), 170);
+            pdf.text(textLines, 15, yPos + 5);
+
+            yPos += textLines.length * 5 + 8;
+          });
+
+          // Add status
+          if (yPos > 270) {
+            pdf.addPage();
+            yPos = 20;
+          }
+          pdf.setFont("helvetica", "bold");
+          pdf.text("Durum: ", 15, yPos);
+          pdf.setFont("helvetica", "normal");
+          const statusText =
+            app.status === "approved"
+              ? "Onaylandı"
+              : app.status === "rejected"
+              ? "Reddedildi"
+              : "Beklemede";
+          pdf.text(statusText, 50, yPos);
+
+          // Save PDF
+          const fileName = `basvuru_${applicationId}_${new Date().getTime()}.pdf`;
+          pdf.save(fileName);
+        } catch (error) {
+          console.error("Error generating PDF:", error);
+          alert("PDF oluşturulurken bir hata oluştu.");
+        }
+      };
+
+      // Delete form
+      window.deleteForm = async function (formId, formTitle) {
+        if (!window.canWriteForms) {
+          alert("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+          return;
+        }
+
+        if (
+          !confirm(
+            `"${formTitle}" formunu silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve form ile ilgili tüm başvurular da silinecektir.`
+          )
+        ) {
+          return;
+        }
+
+        try {
+          // Find form document
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          let formDocId = null;
+          formsSnapshot.forEach((docSnapshot) => {
+            const data = docSnapshot.data();
+            if (data.id === formId) {
+              formDocId = docSnapshot.id;
+            }
+          });
+
+          if (!formDocId) {
+            alert("Form bulunamadı.");
+            return;
+          }
+
+          // Delete form
+          await deleteDoc(doc(db, "forms", formDocId));
+
+          // Delete all applications for this form
+          const applicationsSnapshot = await getDocs(
+            collection(db, "formApplications")
+          );
+          const deletePromises = [];
+          applicationsSnapshot.forEach((docSnapshot) => {
+            const appData = docSnapshot.data();
+            if (appData.formType === formId) {
+              deletePromises.push(
+                deleteDoc(doc(db, "formApplications", docSnapshot.id))
+              );
+            }
+          });
+          await Promise.all(deletePromises);
+
+          await logActivity({
+            db,
+            userEmail: currentUserEmail,
+            userName: currentUserName,
+            action: "Form silindi",
+            details: `Form: ${formTitle} (ID: ${formId})`,
+            pageName: "Başvuru Formları Yönetimi",
+          });
+
+          alert("Form başarıyla silindi!");
+
+          // Reload forms
+          await loadForms();
+        } catch (error) {
+          console.error("Error deleting form:", error);
+          alert("Form silinirken bir hata oluştu: " + error.message);
+        }
+      };
+
+      // Initial load
+      loadForms();
+    </script>
+  </body>
+</html>

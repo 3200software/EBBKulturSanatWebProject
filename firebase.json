@@ -1,6 +1,10 @@
 {
   "hosting": {
-    "public": "EBBKulturSanatWebProject",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
   }
 }

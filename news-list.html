@@ -20,6 +20,60 @@
     />
     <link rel="stylesheet" href="css/global.css" />
     <style>
+      /* Override Bootstrap dropdown styles for our custom dropdown */
+      .nav-item.has-dropdown .dropdown-menu {
+        display: block !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(-10px) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      
+      .nav-item.has-dropdown:hover .dropdown-menu,
+      .nav-item.has-dropdown.active .dropdown-menu {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+      }
+      :root {
+        --primary-color: #2c5aa0;
+        --secondary-color: #4a90c2;
+        --accent-color: #f39c12;
+        --text-dark: #2c3e50;
+        --text-light: #7f8c8d;
+        --bg-light: #f8f9fa;
+        --bg-white: #ffffff;
+        --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+        --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+        --shadow-heavy: 0 8px 30px rgba(0, 0, 0, 0.2);
+        --border-radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+        background-color: var(--bg-white);
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
       body {
         background: #f4f6fb;
         font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -31,6 +85,12 @@
         padding: 80px 0 120px;
         position: relative;
         overflow: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
       }
 
       .news-hero::after {
@@ -173,6 +233,40 @@
     </style>
   </head>
   <body class="has-fixed-header">
+    <!-- Header -->
+    <header class="header">
+      <nav class="nav container">
+        <a href="index.html" class="logo">
+          <img src="assets/Asset 1.png" alt="EBB Logo" />
+          <span>EBB Kültür Sanat</span>
+        </a>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html" class="nav-link">Ana Sayfa</a></li>
+          <li><a href="calendar.html" class="nav-link">Etkinliklermiz</a></li>
+          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
+          <li><a href="news-list.html" class="nav-link active">Haberler</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="#" class="nav-link has-dropdown">Formlar</a>
+            <ul class="dropdown-menu" id="formsDropdown">
+              <li>
+                <a
+                  href="anadolunun-renkleri-form.html"
+                  class="dropdown-item"
+                  >Anadolunun Renkleri Başvuru Formu</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
+        </ul>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </header>
+
     <div id="loadingState" class="loading-spinner" style="background: none">
       <div class="text-center text-primary">
         <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
@@ -187,26 +281,6 @@
         <p class="text-muted">Lütfen daha sonra tekrar deneyin.</p>
       </div>
     </div>
-
-    <header class="header" id="mainHeader" style="display: none">
-      <nav class="nav container">
-        <a href="index.html" class="logo">
-          <img src="assets/Asset 1.png" alt="EBB Logo" />
-          <span>EBB Kültür Sanat</span>
-        </a>
-
-        <ul class="nav-menu" id="navMenu">
-          <li><a href="index.html#home" class="nav-link">Ana Sayfa</a></li>
-          <li><a href="ourhalls.html" class="nav-link">Salonlarımız</a></li>
-          <li><a href="news-list.html" class="nav-link active">Haberler</a></li>
-          <li><a href="index.html#contact" class="nav-link">İletişim</a></li>
-        </ul>
-
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-          <i class="fas fa-bars"></i>
-        </button>
-      </nav>
-    </header>
 
     <section class="news-hero">
       <div class="container">
@@ -318,9 +392,95 @@
       const errorState = document.getElementById("errorState");
       const mainHeader = document.getElementById("mainHeader");
 
+      // Load active forms for dropdown
+      async function loadActiveForms() {
+        try {
+          console.log("Loading active forms...");
+          const formsSnapshot = await getDocs(collection(db, "forms"));
+          const activeForms = [];
+          
+          formsSnapshot.forEach((doc) => {
+            const formData = doc.data();
+            const isActive = formData.isActive !== false; // Default to true
+            
+            // Check if form has expired
+            let isExpired = false;
+            if (formData.endDate) {
+              const endDate = formData.endDate?.toDate 
+                ? formData.endDate.toDate() 
+                : new Date(formData.endDate);
+              isExpired = new Date() > endDate;
+            }
+            
+            // Only add active and not expired forms
+            if (isActive && !isExpired) {
+              activeForms.push({
+                id: formData.id || doc.id,
+                title: formData.title || "Form",
+              });
+            }
+          });
+
+          console.log("Active forms found:", activeForms);
+
+          // Update dropdown menu - try multiple times if needed
+          let dropdownMenu = document.getElementById("formsDropdown");
+          let attempts = 0;
+          while (!dropdownMenu && attempts < 20) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            dropdownMenu = document.getElementById("formsDropdown");
+            attempts++;
+          }
+          
+          console.log("Dropdown menu element:", dropdownMenu, "after", attempts, "attempts");
+          
+          if (dropdownMenu && activeForms.length > 0) {
+            const formsHTML = activeForms
+              .map(
+                (form) =>
+                  `<li><a href="form-application.html?id=${form.id}" class="dropdown-item">${form.title}</a></li>`
+              )
+              .join("");
+            dropdownMenu.innerHTML = formsHTML;
+            // Force CSS to ensure dropdown is visible on hover (override Bootstrap)
+            dropdownMenu.style.display = '';
+            dropdownMenu.style.opacity = '';
+            dropdownMenu.style.visibility = '';
+            console.log("Dropdown menu updated with", activeForms.length, "forms");
+            console.log("Dropdown menu HTML:", dropdownMenu.innerHTML);
+            console.log("Dropdown menu children:", dropdownMenu.children.length);
+          } else if (dropdownMenu && activeForms.length === 0) {
+            dropdownMenu.innerHTML =
+              '<li><span class="dropdown-item text-muted">Aktif form bulunmamaktadır</span></li>';
+            console.log("No active forms found");
+          } else {
+            console.warn("Dropdown menu element not found after", attempts, "attempts!");
+            // Try one more time after a longer delay
+            setTimeout(async () => {
+              const retryMenu = document.getElementById("formsDropdown");
+              if (retryMenu && activeForms.length > 0) {
+                retryMenu.innerHTML = activeForms
+                  .map(
+                    (form) =>
+                      `<li><a href="form-application.html?id=${form.id}" class="dropdown-item">${form.title}</a></li>`
+                  )
+                  .join("");
+                console.log("Dropdown menu updated on retry");
+              }
+            }, 1000);
+          }
+        } catch (error) {
+          console.error("Error loading active forms:", error);
+        }
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         setupMobileNav();
         loadNewsList();
+        // Load forms after a delay to ensure dropdown is ready
+        setTimeout(() => {
+          loadActiveForms();
+        }, 500);
       });
 
       function setupMobileNav() {
@@ -345,7 +505,6 @@
 
           renderNewsCards(items);
           loadingState.style.display = "none";
-          mainHeader.style.display = "block";
         } catch (error) {
           console.error("News load error:", error);
           loadingState.style.display = "none";
